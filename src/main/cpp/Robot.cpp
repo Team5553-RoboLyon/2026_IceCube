@@ -34,9 +34,13 @@ void Robot::TeleopInit() {}
 void Robot::TeleopPeriodic() {}
 void Robot::TeleopExit() {}
 
-void Robot::DisabledInit() {}
+void Robot::DisabledInit() {
+  m_container.intakeSubsystem.SetControlMode(ControlMode::DISABLED);
+}
 void Robot::DisabledPeriodic() {}
-void Robot::DisabledExit() {}
+void Robot::DisabledExit() {
+  m_container.intakeSubsystem.SetControlMode(IntakeConstants::MainControlMode);
+}
 
 void Robot::TestInit() {}
 void Robot::TestPeriodic() {}

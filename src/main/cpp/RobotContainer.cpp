@@ -12,6 +12,7 @@
 RobotContainer::RobotContainer()
 {
     ConfigureBindings();
+    intakeSubsystem.SetManualControlInput([this] { return -operatorGamepad.GetLeftY(); });
 }
 
 void RobotContainer::ConfigureBindings() {
