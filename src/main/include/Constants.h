@@ -93,4 +93,6 @@ namespace ControlPanelConstants
     constexpr int JOYSTICK_ROTATION_ID = 1;
     constexpr int OPERATOR_GAMEPAD_PORT = 2;
     constexpr double OPERATOR_GAMEPAD_THRESHOLD = 0.1;
+    constexpr int SLOW_DRIVE_BUTTON = 1;
+    constexpr int ACTION_DRIVE_BUTTON = 2;
 }  // namespace ControlPanelConstants

@@ -26,7 +26,9 @@ void Robot::RobotPeriodic() {
 
 void Robot::DriverStationConnected() {}
 
-void Robot::AutonomousInit() {}
+void Robot::AutonomousInit() {
+  m_container.drivetrain.SetWantedDrive(DriveMode::AUTO_PATH_FOLLOWER);
+}
 void Robot::AutonomousPeriodic() {}
 void Robot::AutonomousExit() {}
 
@@ -34,12 +36,16 @@ void Robot::TeleopInit() {}
 void Robot::TeleopPeriodic() {}
 void Robot::TeleopExit() {}
 
-void Robot::DisabledInit() {}
+void Robot::DisabledInit() {
+  m_container.drivetrain.SetWantedDrive(DriveMode::DISABLE);
+}
 void Robot::DisabledPeriodic() {}
 void Robot::DisabledExit() {}
 
 void Robot::TestInit() {}
-void Robot::TestPeriodic() {}
+void Robot::TestPeriodic() {
+  m_container.drivetrain.SetWantedDrive(driveConstants::desiredDriveControl);
+}
 void Robot::TestExit() {}
 
 void Robot::SimulationInit() {}
