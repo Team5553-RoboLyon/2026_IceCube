@@ -5,10 +5,14 @@
 #pragma once
 
 #include <frc/TimedRobot.h>
+#include "RobotContainer.h"
+
+#include "Lyonlib/logging/Alert.h"
 
 class Robot : public frc::TimedRobot {
  public:
   Robot();
+  void RobotInit() override;
   void RobotPeriodic() override;
 
   void AutonomousInit() override;
@@ -25,4 +29,12 @@ class Robot : public frc::TimedRobot {
 
   void SimulationInit() override;
   void SimulationPeriodic() override;
+ private:
+  RobotContainer m_container; 
+
+  Alert m_isNotCompetitionRobot{"Not CompBot used", Alert::AlertType::WARNING};
+
+  Alert m_pilot{"Pilot currently driving :", Alert::AlertType::INFO};
+  Alert m_operator{"Operator currently operatoring :", Alert::AlertType::INFO};
+  Alert m_robot{"Operator currently used :", Alert::AlertType::INFO};
 };
