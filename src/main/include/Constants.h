@@ -21,6 +21,67 @@
 #define DEBUG_MODE
 #endif
 
+#ifndef ROBOT_MODEL
+    #error ROBOT_MODEL must be defined
+#endif
+
+#ifndef OPERATOR
+    #error OPERATOR must be defined
+#endif
+
+#ifndef PILOT
+    #error PILOT must be defined
+#endif
+
+inline constexpr const char* RobotToString()
+{
+    #if ROBOT_MODEL == COMPETITION
+        return "Competition";
+    #elif ROBOT_MODEL == TRAINING
+        return "Training";
+    #elif ROBOT_MODEL == PROTOTYPE
+        return "Prototype";
+    #elif ROBOT_MODEL == DEMO
+        return "Demo";
+    #elif ROBOT_MODEL == SIMULATION
+        return "Simulation";
+    #else
+        #error Invalid ROBOT_MODEL value
+    #endif
+    
+}
+inline constexpr const char* PilotToString()
+{
+    #if PILOT == ADAM
+        return "Adam";
+    #elif PILOT == VICTOR
+        return "Victor";
+    #elif PILOT == ALEXIS
+        return "Alexis";
+    #elif PILOT == LENA
+        return "Lena";
+    #elif PILOT == TEST
+        return "Test";
+    #else
+        return "Unknown";
+    #endif
+}
+inline constexpr const char* OperatorToString()
+{
+    #if CURRENT_OPERATOR == ADAM
+        return "Adam";
+    #elif CURRENT_OPERATOR == VICTOR
+        return "Victor";
+    #elif CURRENT_OPERATOR == ALEXIS
+        return "Alexis";
+    #elif CURRENT_OPERATOR == LENA
+        return "Lena";
+    #elif CURRENT_OPERATOR == TEST
+        return "Test";
+    #else
+        return "Unknown";
+    #endif
+}
 constexpr double ENCODER_TICKS_PER_REVOLUTION_K2X = 2048.0;
 constexpr double TIME_PER_CYCLE = 0.02; // 20ms
 

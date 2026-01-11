@@ -4,7 +4,21 @@
 
 #include "Robot.h"
 
+#include <frc/DataLogManager.h>
+#include <frc/DriverStation.h>
+
 Robot::Robot() {}
+void Robot::RobotInit() {
+  frc::DataLogManager::Start();
+  frc::DriverStation::StartDataLog(frc::DataLogManager::GetLog());
+
+  m_pilot.Set(true);
+  m_pilot.SetText(std::string("Pilot currently driving : ") + PilotToString());
+  m_operator.Set(true);
+  m_operator.SetText(std::string("Operator currently operatoring : ") + OperatorToString());
+  m_robot.Set(true);
+  m_robot.SetText(std::string("Robot used : ") + RobotToString());
+}
 void Robot::RobotPeriodic() {}
 
 void Robot::AutonomousInit() {}
