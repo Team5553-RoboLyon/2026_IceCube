@@ -4,10 +4,15 @@
 
 #pragma once
 
+#include "subsystems/shooter/ShooterSubsystem.h"
+
+#include "subsystems/shooter/ShooterIOSpark.h"
+
 class RobotContainer {
  public:
   RobotContainer();
 
+  ShooterSubsystem m_ShooterSubsystem{new ShooterIOSpark()};
  private:
 
   void ConfigureBindings();
