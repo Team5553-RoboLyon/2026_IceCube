@@ -36,6 +36,7 @@ void Robot::TeleopExit() {}
 
 void Robot::DisabledInit() {}
 void Robot::DisabledPeriodic() {}
+void Robot::DisabledExit() {}
 
 void Robot::TestInit() {}
 void Robot::TestPeriodic() {}
