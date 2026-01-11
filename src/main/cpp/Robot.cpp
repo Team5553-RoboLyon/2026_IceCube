@@ -18,20 +18,28 @@ void Robot::RobotInit() {
   m_operator.SetText(std::string("Operator currently operatoring : ") + OperatorToString());
   m_robot.Set(true);
   m_robot.SetText(std::string("Robot used : ") + RobotToString());
+  m_isNotCompetitionRobot.Set(ROBOT_MODEL != COMPETITON);
 }
-void Robot::RobotPeriodic() {}
+void Robot::RobotPeriodic() {
+  frc2::CommandScheduler::GetInstance().Run();
+}
+
+void Robot::DriverStationConnected() {}
 
 void Robot::AutonomousInit() {}
 void Robot::AutonomousPeriodic() {}
+void Robot::AutonomousExit() {}
 
 void Robot::TeleopInit() {}
 void Robot::TeleopPeriodic() {}
+void Robot::TeleopExit() {}
 
 void Robot::DisabledInit() {}
 void Robot::DisabledPeriodic() {}
 
 void Robot::TestInit() {}
 void Robot::TestPeriodic() {}
+void Robot::TestExit() {}
 
 void Robot::SimulationInit() {}
 void Robot::SimulationPeriodic() {}
