@@ -7,11 +7,15 @@
 #include "subsystems/Operator.h"
 #include "Constants.h"
 
+#include <frc/Joystick.h>
+
 class RobotContainer {
  public:
   RobotContainer();
 
-  Operator operatorGamepad{OPERATOR_GAMEPAD_PORT, OPERATOR_GAMEPAD_THRESHOLD};
+  Operator operatorGamepad{ControlPanelConstants::OPERATOR_GAMEPAD_PORT, ControlPanelConstants::OPERATOR_GAMEPAD_THRESHOLD};
+  frc::Joystick forwardJoystick{ControlPanelConstants::JOYSTICK_FORWARD_ID};
+  frc::Joystick rotationJoystick{ControlPanelConstants::JOYSTICK_ROTATION_ID};
  private:
   void ConfigureBindings();
 };
