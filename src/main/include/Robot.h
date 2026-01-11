@@ -14,18 +14,24 @@ class Robot : public frc::TimedRobot {
   Robot();
   void RobotInit() override;
   void RobotPeriodic() override;
+  
+  void DriverStationConnected() override;
 
   void AutonomousInit() override;
   void AutonomousPeriodic() override;
+  void AutonomousExit() override;
 
   void TeleopInit() override;
   void TeleopPeriodic() override;
+  void TeleopExit() override;  
 
   void DisabledInit() override;
   void DisabledPeriodic() override;
+  void DisabledExit() override;
 
   void TestInit() override;
   void TestPeriodic() override;
+  void TestExit() override;
 
   void SimulationInit() override;
   void SimulationPeriodic() override;
