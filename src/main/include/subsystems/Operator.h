@@ -19,6 +19,9 @@ public:
     Operator(int port, double threshold) : RevGamepad(port, threshold){};
     ~Operator() override = default;
 
+    frc2::Trigger stopShooter{_crossButton};
+    frc2::Trigger startShooter{_squareButton};
+
 #endif
 
 
