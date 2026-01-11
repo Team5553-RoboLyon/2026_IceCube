@@ -3,7 +3,9 @@
 
 #define COMPETITON 0
 #define TRAINING 1
-#define SIMULATION 2
+#define PROTOTYPE 2
+#define DEMO 3
+#define SIMULATION 4
 
 #define ADAM 0
 #define VICTOR 1
@@ -21,3 +23,7 @@
 
 constexpr double ENCODER_TICKS_PER_REVOLUTION_K2X = 2048.0;
 constexpr double TIME_PER_CYCLE = 0.02; // 20ms
+
+
+constexpr int OPERATOR_GAMEPAD_PORT = 2;
+constexpr double OPERATOR_GAMEPAD_THRESHOLD = 0.1;

@@ -7,13 +7,15 @@
 #include "subsystems/shooter/ShooterSubsystem.h"
 
 #include "subsystems/shooter/ShooterIOSpark.h"
+#include "subsystems/Operator.h"
+#include "Constants.h"
 
 class RobotContainer {
  public:
   RobotContainer();
 
   ShooterSubsystem m_ShooterSubsystem{new ShooterIOSpark()};
+  Operator operatorGamepad{OPERATOR_GAMEPAD_PORT, OPERATOR_GAMEPAD_THRESHOLD};
  private:
-
   void ConfigureBindings();
 };
