@@ -14,8 +14,8 @@
 RobotContainer::RobotContainer()
 {
     ConfigureBindings();
-    operatorGamepad.startShooter.OnTrue(ActivateShooterCmd(&m_ShooterSubsystem, ShooterSubsystem::WantedState::SHOOT).WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
-    operatorGamepad.stopShooter.OnTrue(ActivateShooterCmd(&m_ShooterSubsystem, ShooterSubsystem::WantedState::STOP).WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
+    operatorGamepad.startShooter.OnTrue(ActivateShooterCmd(&shooterSubsystem, ShooterSubsystem::WantedState::SHOOT).WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
+    operatorGamepad.stopShooter.OnTrue(ActivateShooterCmd(&shooterSubsystem, ShooterSubsystem::WantedState::STOP).WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
 }
 
 void RobotContainer::ConfigureBindings() {

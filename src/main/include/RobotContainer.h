@@ -14,7 +14,7 @@ class RobotContainer {
  public:
   RobotContainer();
 
-  ShooterSubsystem m_ShooterSubsystem{new ShooterIOSpark()};
+  ShooterSubsystem shooterSubsystem{new ShooterIOSpark()};
   Operator operatorGamepad{OPERATOR_GAMEPAD_PORT, OPERATOR_GAMEPAD_THRESHOLD};
  private:
   void ConfigureBindings();
