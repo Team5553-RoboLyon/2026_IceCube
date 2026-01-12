@@ -25,15 +25,17 @@ void IntakeSubsystem::SetControlMode(const ControlMode mode)
     switch (mode)
     {
     
-    case ControlMode::MANUAL_DUTY_CYCLE:
-        m_output = IntakeConstants::Speed::REST;
+    case ControlMode::MANUAL_VELOCITY:
+        m_leftOutput = IntakeConstants::Speed::REST;
+        m_rightOutput = IntakeConstants::Speed::REST;
         m_manualControlInput = IntakeConstants::Speed::REST;
 
         m_controlMode = mode;
-        break; //end of ControlMode::MANUAL_DUTY_CYCLE
+        break; //end of ControlMode::MANUAL_VELOCITY
     
     case ControlMode::DISABLED :
-        m_output = IntakeConstants::Speed::REST;
+        m_leftOutput = IntakeConstants::Speed::REST;
+        m_rightOutput = IntakeConstants::Speed::REST;
 
         m_controlMode = mode;
         break; //end of ControlMode::DISABLED
@@ -79,10 +81,10 @@ void IntakeSubsystem::ToggleControlMode()
 //     }
 // }
 
-void IntakeSubsystem::SetManualControlInput(const std::function<double()> Axis)
-{
-    m_fxAxis = Axis;
-}
+// void IntakeSubsystem::SetManualControlInput(const std::function<double()> Axis)
+// {
+//     m_fxAxis = Axis;
+// }
 
 // This method will be called once per scheduler run
 void IntakeSubsystem::Periodic()
@@ -93,7 +95,7 @@ void IntakeSubsystem::Periodic()
     m_pIntakeIO->UpdateInputs(inputs);
     m_logger.Log(inputs);
 
-    m_manualControlInput = m_fxAxis();
+    // m_manualControlInput = m_fxAxis();
     
         m_leftMotorDisconnected.Set(!inputs.isleftMotorConnected);
     m_leftMotorHot.Set(inputs.leftMotorTemperature > IntakeConstants::leftMotor::HOT_THRESHOLD);
@@ -114,12 +116,14 @@ void IntakeSubsystem::Periodic()
 
         switch (m_controlMode) //actualise motion
         {
-        case ControlMode::MANUAL_DUTY_CYCLE :
-            m_output = m_manualControlInput;
-            break; //end of ControlMode::MANUAL_DUTY_CYCLE
+        case ControlMode::MANUAL_VELOCITY:
+            m_leftOutput = m_tunableLeftVelocityLogger.Get()/IntakeConstants::Specifications::leftMotor_FREE_SPEED * IntakeConstants::leftMotor::VOLTAGE_COMPENSATION;
+            m_rightOutput = m_tunableRightVelocityLogger.Get()/IntakeConstants::Specifications::rightMotor_FREE_SPEED * IntakeConstants::rightMotor::VOLTAGE_COMPENSATION;
+            break; //end of ControlMode::MANUAL_VELOCITY
 
         case ControlMode::DISABLED :
-            m_output = IntakeConstants::Speed::REST;
+            m_leftOutput = IntakeConstants::Speed::REST;
+            m_rightOutput = IntakeConstants::Speed::REST;
             break; //end of ControlMode::DISABLED
         default:
             DEBUG_ASSERT(false, "Intake : impossible state");
@@ -132,7 +136,7 @@ void IntakeSubsystem::Periodic()
     
 
     // Apply output
-    m_pIntakeIO->SetDutyCycle(m_output);
+    m_pIntakeIO->SetVoltage(m_leftOutput, m_rightOutput);
 
 
 
@@ -141,6 +145,8 @@ void IntakeSubsystem::Periodic()
     frc::SmartDashboard::PutNumber("intake/SystemState", (int)m_systemState);
     frc::SmartDashboard::PutNumber("intake/ControlMode", (int)m_controlMode);
     frc::SmartDashboard::PutBoolean("intake/isInit", m_isInitialized);
+    frc::SmartDashboard::PutNumber("intake/LeftOutput", m_leftOutput);
+    frc::SmartDashboard::PutNumber("intake/RightOutput", m_rightOutput);
 }
 
 void IntakeSubsystem::RunStateMachine()

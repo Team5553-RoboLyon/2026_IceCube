@@ -11,7 +11,7 @@ public:
     void Log(const IntakeIOInputs& inputs);
 
 private:
-        wpi::log::BooleanLogEntry isleftMotorConnected;
+    wpi::log::BooleanLogEntry isleftMotorConnected;
     wpi::log::DoubleLogEntry leftMotorCurrent;
     wpi::log::DoubleLogEntry leftMotorAppliedVoltage;
     wpi::log::DoubleLogEntry leftMotorBusVoltage;

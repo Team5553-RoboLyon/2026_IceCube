@@ -2,7 +2,7 @@
 
 struct IntakeIOInputs
 {
-        bool isleftMotorConnected = true;
+    bool isleftMotorConnected = true;
     
     double leftMotorAppliedVoltage = 0.0;
     double leftMotorBusVoltage = 0.0;
@@ -24,8 +24,8 @@ public:
 
     virtual void UpdateInputs(IntakeIOInputs& inputs) = 0;
 
-    virtual void SetVoltage(double voltage) = 0; 
-    virtual void SetDutyCycle(double dutyCycle) = 0;
+    virtual void SetVoltage(double leftVoltage, double rightVoltage) = 0; 
+    virtual void SetDutyCycle(double leftDutyCycle, double rightDutyCycle) = 0;
 
     
 };

@@ -14,6 +14,7 @@
 #include "LyonLib/control/RateLimiter.h"
 #include "LyonLib/control/pidRBL.h"
 #include "LyonLib/logging/Alert.h"
+#include "LyonLib/logging/TunableValueLogger.h"
 
 class IntakeSubsystem : public frc2::SubsystemBase {
   public:
@@ -36,7 +37,7 @@ class IntakeSubsystem : public frc2::SubsystemBase {
     bool IsResting();
     bool IsInitialized() { return m_isInitialized; }
     // void SetManualControlInput(const double value);
-    void SetManualControlInput(const std::function<double()> Axis); //temporary
+    // void SetManualControlInput(const std::function<double()> Axis); //temporary
 
 
     void Periodic() override;
@@ -53,10 +54,13 @@ class IntakeSubsystem : public frc2::SubsystemBase {
     // === Motion Control (PID / Filters) ===
       PidRBL m_IntakePIDController;
     // === Control Inputs / Outputs ===
-      double m_output{0.0};
+      double m_leftOutput{0.0};
+      double m_rightOutput{0.0};
       double m_manualControlInput{0.0};
       double m_timestamp{0.0};
-      std::function<double()> m_fxAxis; //temporary
+      // std::function<double()> m_fxAxis; //temporary
+      TunableValueLogger m_tunableLeftVelocityLogger{"Intake/Left", 0.0}; //RPM
+      TunableValueLogger m_tunableRightVelocityLogger{"Intake/Right", 0.0}; //RPM
     // === Status Flags ===
       bool m_isInitialized = true;
     // === System Alerts ===

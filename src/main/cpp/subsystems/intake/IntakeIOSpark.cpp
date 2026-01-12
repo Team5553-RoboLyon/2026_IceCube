@@ -46,29 +46,31 @@ void IntakeIOSpark::UpdateInputs(IntakeIOInputs& inputs)
     inputs.rightMotorBusVoltage = m_rightMotor.GetBusVoltage();
     inputs.rightMotorCurrent = m_rightMotor.GetOutputCurrent();
     inputs.rightMotorTemperature = m_rightMotor.GetMotorTemperature();
-    
-    
+
+    frc::SmartDashboard::PutNumber("intake/LeftMotorVelocity", m_leftMotor.GetEncoder().GetVelocity());
+    frc::SmartDashboard::PutNumber("intake/RightMotorVelocity", m_rightMotor.GetEncoder().GetVelocity());   
 }
 
-void IntakeIOSpark::SetVoltage(double voltage)
+void IntakeIOSpark::SetVoltage(double leftVoltage, double rightVoltage)
 {
-        DEBUG_ASSERT((voltage <= IntakeConstants::leftMotor::VOLTAGE_COMPENSATION) 
-        && (voltage >= -IntakeConstants::leftMotor::VOLTAGE_COMPENSATION) 
+    DEBUG_ASSERT((leftVoltage <= IntakeConstants::leftMotor::VOLTAGE_COMPENSATION) 
+        && (leftVoltage >= -IntakeConstants::leftMotor::VOLTAGE_COMPENSATION) 
         ,"Intake Voltage out of range");
-    
-    m_leftMotor.SetVoltage(units::volt_t(voltage));
-    DEBUG_ASSERT((voltage <= IntakeConstants::rightMotor::VOLTAGE_COMPENSATION) 
-        && (voltage >= -IntakeConstants::rightMotor::VOLTAGE_COMPENSATION) 
+    DEBUG_ASSERT((rightVoltage <= IntakeConstants::rightMotor::VOLTAGE_COMPENSATION) 
+        && (rightVoltage >= -IntakeConstants::rightMotor::VOLTAGE_COMPENSATION) 
         ,"Intake Voltage out of range");
-    
-    m_rightMotor.SetVoltage(units::volt_t(voltage));
+
+    m_leftMotor.SetVoltage(units::volt_t(leftVoltage));
+    m_rightMotor.SetVoltage(units::volt_t(rightVoltage));
 }
 
-void IntakeIOSpark::SetDutyCycle(double dutyCycle)
+void IntakeIOSpark::SetDutyCycle(double leftDutyCycle, double rightDutyCycle)
 {
-    DEBUG_ASSERT((dutyCycle <= 1.0) && (dutyCycle >= -1.0) 
+    DEBUG_ASSERT((leftDutyCycle <= 1.0) && (leftDutyCycle >= -1.0) 
         ,"Intake Duty Cycle out of range");
-        m_leftMotor.Set(dutyCycle);
-    m_rightMotor.Set(dutyCycle);
+    DEBUG_ASSERT((rightDutyCycle <= 1.0) && (rightDutyCycle >= -1.0) 
+        ,"Intake Duty Cycle out of range");
+    m_leftMotor.Set(leftDutyCycle);
+    m_rightMotor.Set(rightDutyCycle);
 }
 

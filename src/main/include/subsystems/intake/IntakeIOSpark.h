@@ -22,8 +22,8 @@ class IntakeIOSpark  final : public IntakeIO
     ~IntakeIOSpark() = default;
 
     void UpdateInputs(IntakeIOInputs& inputs) override;
-    void SetVoltage(double voltage) override; //COMMENTME
-    void SetDutyCycle(double dutyCycle) override; //COMMENTME
+    void SetVoltage(double leftVoltage, double rightVoltage) override; //COMMENTME
+    void SetDutyCycle(double leftDutyCycle, double rightDutyCycle) override; //COMMENTME
 
     
 };

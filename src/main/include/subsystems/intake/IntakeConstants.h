@@ -8,7 +8,7 @@ using IdleMode = rev::spark::SparkBaseConfig::IdleMode;
 
 namespace IntakeConstants
 {
-    constexpr ControlMode MainControlMode = ControlMode::MANUAL_DUTY_CYCLE;
+    constexpr ControlMode MainControlMode = ControlMode::MANUAL_VELOCITY;
     constexpr ControlMode EmergencyControlMode = ControlMode::DISABLED;
 
         namespace leftMotor
