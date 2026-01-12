@@ -7,10 +7,17 @@
 #include <frc/DataLogManager.h>
 #include <frc/DriverStation.h>
 
+#include <frc/Filesystem.h>
+#include <wpinet/WebServer.h>
+
 Robot::Robot() {}
 void Robot::RobotInit() {
+  //start data logging
   frc::DataLogManager::Start();
+  //link driver station to data logging
   frc::DriverStation::StartDataLog(frc::DataLogManager::GetLog());
+  //
+  wpi::WebServer::GetInstance().Start(5800, frc::filesystem::GetDeployDirectory());
 
   m_pilot.Set(true);
   m_pilot.SetText(std::string("Pilot currently driving : ") + PilotToString());
