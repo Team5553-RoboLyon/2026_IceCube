@@ -86,5 +86,11 @@ constexpr double ENCODER_TICKS_PER_REVOLUTION_K2X = 2048.0;
 constexpr double TIME_PER_CYCLE = 0.02; // 20ms
 
 
-constexpr int OPERATOR_GAMEPAD_PORT = 2;
-constexpr double OPERATOR_GAMEPAD_THRESHOLD = 0.1;
+
+namespace ControlPanelConstants 
+{
+    constexpr int JOYSTICK_FORWARD_ID = 0;
+    constexpr int JOYSTICK_ROTATION_ID = 1;
+    constexpr int OPERATOR_GAMEPAD_PORT = 2;
+    constexpr double OPERATOR_GAMEPAD_THRESHOLD = 0.1;
+}  // namespace ControlPanelConstants
