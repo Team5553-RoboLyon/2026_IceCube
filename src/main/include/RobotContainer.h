@@ -9,9 +9,14 @@
 
 #include <frc/Joystick.h>
 
+#include "subsystems/turret/TurretIOSpark.h"
+#include "subsystems/turret/TurretSubsystem.h"
+
 class RobotContainer {
  public:
   RobotContainer();
+
+  TurretSubsystem turretSubsystem{new TurretIOSpark()};
 
   Operator operatorGamepad{ControlPanelConstants::OPERATOR_GAMEPAD_PORT, ControlPanelConstants::OPERATOR_GAMEPAD_THRESHOLD};
   frc::Joystick forwardJoystick{ControlPanelConstants::JOYSTICK_FORWARD_ID};
