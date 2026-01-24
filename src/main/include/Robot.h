@@ -37,6 +37,7 @@ class Robot : public frc::TimedRobot {
   void SimulationPeriodic() override;
  private:
   RobotContainer m_container; 
+  std::string gameData;
 
   Alert m_isNotCompetitionRobot{"Not CompBot used", Alert::AlertType::WARNING};
 
