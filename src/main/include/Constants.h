@@ -15,7 +15,7 @@
 #define LENA 3
 #define TEST 4
 
-#define ROBOT_MODEL (TRAINING) // Change this to the desired robot model
+#define ROBOT_MODEL (T_NOR) // Change this to the desired robot model
 #define PILOT (ALEXIS)
 #define OPERATOR (VICTOR)
 
@@ -49,6 +49,8 @@ inline constexpr const char* RobotToString()
         return "Simulation";
     #elif ROBOT_MODEL == BRICE
         return "Brice";
+    #elif ROBOT_MODEL == T_NOR
+        return "T-Nor";
     #else
         #error Invalid ROBOT_MODEL value
     #endif

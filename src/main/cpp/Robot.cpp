@@ -34,12 +34,16 @@ void Robot::RobotPeriodic() {
 void Robot::DriverStationConnected() {}
 
 void Robot::AutonomousInit() {
+  //TODO : set pose
   m_container.drivetrain.SetWantedDrive(DriveMode::AUTO_PATH_FOLLOWER);
 }
 void Robot::AutonomousPeriodic() {}
 void Robot::AutonomousExit() {}
 
-void Robot::TeleopInit() {}
+void Robot::TeleopInit() {
+  //TODO : set pose
+  m_container.drivetrain.SetWantedDrive(DriveMode::ARCADE_DRIVE);
+}
 void Robot::TeleopPeriodic() {}
 void Robot::TeleopExit() {}
 
