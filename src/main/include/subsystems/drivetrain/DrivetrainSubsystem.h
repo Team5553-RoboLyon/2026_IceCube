@@ -19,8 +19,8 @@
 #include "LyonLib/control/PidRBL.h"
 #include "LyonLib/utils/TimerRBL.h"
 
-// #include "choreo/trajectory/DifferentialSample.h"
-// #include "choreo/trajectory/Trajectory.h"
+#include "choreo/trajectory/DifferentialSample.h"
+#include "choreo/trajectory/Trajectory.h"
 
 class DrivetrainSubsystem : public frc2::SubsystemBase 
 {
@@ -49,7 +49,7 @@ class DrivetrainSubsystem : public frc2::SubsystemBase
   
   void SetAlliance(frc::DriverStation::Alliance alliance);
 
-  // void SetDesiredAutoTrajectory(choreo::Trajectory<choreo::DifferentialSample> trajectory);
+  void SetDesiredAutoTrajectory(choreo::Trajectory<choreo::DifferentialSample> trajectory);
   void ResetOdometryPose(const frc::Pose2d pose);
   
   void Periodic() override;
@@ -99,9 +99,12 @@ class DrivetrainSubsystem : public frc2::SubsystemBase
   const frc::ChassisSpeeds restSpeeds;
 
   //AUTO
-  // choreo::Trajectory<choreo::DifferentialSample> m_desiredAutoTrajectory;
+  choreo::Trajectory<choreo::DifferentialSample> m_desiredAutoTrajectory;
   TimerRBL m_autoTimer;
-  // std::optional<choreo::DifferentialSample> m_autoSampleToBeApplied;
+  std::optional<choreo::DifferentialSample> m_autoSampleToBeApplied;
+  PidRBL m_pidAutoX{};
+  PidRBL m_pidAutoTheta{};
+  
 
 
   frc::DriverStation::Alliance m_alliance;

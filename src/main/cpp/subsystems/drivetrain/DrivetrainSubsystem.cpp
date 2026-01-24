@@ -2,6 +2,8 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 
+#include "LyonLib/utils/MacroUtilsRBL.h"
+
 DrivetrainSubsystem::DrivetrainSubsystem(DrivetrainIO *pIO) 
                     : m_pTankDriveIO(pIO), 
                     m_fxForwardAxis([]() { return 0.0; }),
@@ -51,11 +53,11 @@ void DrivetrainSubsystem::SetAlliance(frc::DriverStation::Alliance alliance)
     m_alliance = alliance;
 }
 
-// void DrivetrainSubsystem::SetDesiredAutoTrajectory(choreo::Trajectory<choreo::DifferentialSample> trajectory)
-// {
-//     m_desiredAutoTrajectory = trajectory;
-//     m_autoTimer.Restart();
-// }
+void DrivetrainSubsystem::SetDesiredAutoTrajectory(choreo::Trajectory<choreo::DifferentialSample> trajectory)
+{
+    m_desiredAutoTrajectory = trajectory;
+    m_autoTimer.Restart();
+}
 void DrivetrainSubsystem::ResetOdometryPose(const frc::Pose2d pose)
 {
     m_pTankDriveIO->ResetPosition(pose);
@@ -253,21 +255,76 @@ frc::ChassisSpeeds DrivetrainSubsystem::CurveDrive(const std::pair<double, doubl
 
 frc::ChassisSpeeds DrivetrainSubsystem::FollowPath()
 {
-    frc::ChassisSpeeds output;
-    //     m_autoSampleToBeApplied = m_desiredAutoTrajectory.SampleAt(
-    //                                                             (units::time::second_t)m_autoTimer.GetElapsedTimeSeconds(), 
-    //                                                             IS_RED_ALLIANCE(m_alliance));
+    frc::ChassisSpeeds output{};
+    // Verify if there is a sample to follow
+    if (!m_autoSampleToBeApplied.has_value()) {
+        return output; // Nothing to do
+    }
 
-    // if(m_autoSampleToBeApplied.has_value())
-    // {   
-    //                 // frc::Pose2d pose{}; // from IOInputs
-    //     choreo::DifferentialSample currentSample = m_autoSampleToBeApplied.value();
-    //     frc::Pose2d pose{currentSample.GetPose()}; // from IOInputs
-    //     frc::ChassisSpeeds speed = currentSample.GetChassisSpeeds();
-    //     speed.vx = speed.vx + (units::velocity::meters_per_second_t)m_pidChoreoX.Calculate(currentSample.x.to<double>(), pose.X().to<double>());
-    //     speed.vy = speed.vy + (units::velocity::meters_per_second_t)m_pidChoreoY.Calculate(currentSample.y.to<double>(), pose.Y().to<double>());
-    //     speed.omega = speed.omega + (units::angular_velocity::radians_per_second_t)m_pidChoreoTheta.Calculate(currentSample.heading(), pose.Rotation().Radians().to<double>());
-    // }
+    // Current target sample from the trajectory
+    const choreo::DifferentialSample& currentSample = m_autoSampleToBeApplied.value();
+    const frc::ChassisSpeeds targetSpeeds = currentSample.GetChassisSpeeds();
+    const frc::Pose2d targetPose = currentSample.GetPose();
+    const double targetTheta = WRAP_ANGLE_0_TO_360(targetPose.Rotation().Radians().to<double>());
+
+    // Current robot pose
+    const frc::Pose2d currentPose = inputs.robotPosition;
+    const double robotTheta = WRAP_ANGLE_0_TO_360(currentPose.Rotation().Radians().to<double>());
+    
+    // --- Step 1 : Calcul of position error in field coordinates ---
+    const double dx = targetPose.X().to<double>() - currentPose.X().to<double>();
+    const double dy = targetPose.Y().to<double>() - currentPose.Y().to<double>();
+
+    //Magnetude of the position error
+    const double positionErrorMag = std::sqrt(dx * dx + dy * dy);
+
+    // --- Step 2 : Projection of the position error in robot coordinates ---
+    // Rotation inverse de -θ
+    const double cosTheta = std::cos(robotTheta);
+    const double sinTheta = std::sin(robotTheta);
+
+    // Error in robot coordinates
+    const double errorX =  cosTheta * dx + sinTheta * dy;  // error forward/backward
+    // const double errorY = -sinTheta * dx + cosTheta * dy;  // error left/right -> unused for differential drive
+
+    // --- Step 3 : Orientation error ---
+    // todo : integrate y
+    double angleError = (targetTheta - robotTheta);
+
+    // --- Step 4 : PID corrections ---
+    // linear PID correcting the distance
+    const double linearCorrection = m_pidAutoX.Calculate(positionErrorMag * NSIGN(errorX), 0.0);
+
+    // angular PID correcting the angle error
+    const double angularCorrection = m_pidAutoTheta.Calculate(angleError, 0.0);
+
+    // --- Step 5 : Apply corrections to target speeds ---
+    output.vx = targetSpeeds.vx + units::meters_per_second_t(linearCorrection);
+    output.omega = targetSpeeds.omega + units::radians_per_second_t(angularCorrection);
+
+
+    // frc::SmartDashboard::PutNumber("auto/robotX", currentPose.X().to<double>());
+    // frc::SmartDashboard::PutNumber("auto/robotY", currentPose.Y().to<double>());
+    // frc::SmartDashboard::PutNumber("auto/robotTheta_deg", currentPose.Rotation().Degrees().to<double>());
+
+    // frc::SmartDashboard::PutNumber("auto/targetX", targetPose.X().to<double>());
+    // frc::SmartDashboard::PutNumber("auto/targetY", targetPose.Y().to<double>());
+    // frc::SmartDashboard::PutNumber("auto/targetTheta_deg", targetPose.Rotation().Degrees().to<double>());
+
+    // frc::SmartDashboard::PutNumber("auto/errorX", errorX);
+    // frc::SmartDashboard::PutNumber("auto/errorY", errorY);
+    // frc::SmartDashboard::PutNumber("auto/errorTheta_deg", angleError * 180.0 / M_PI);
+
+    // frc::SmartDashboard::PutNumber("auto/linearCorrection", linearCorrection);
+    // frc::SmartDashboard::PutNumber("auto/angularCorrection", angularCorrection);
+
+    // frc::SmartDashboard::PutNumber("auto/outputVx", output.vx.to<double>());
+    // frc::SmartDashboard::PutNumber("auto/outputVy", output.vy.to<double>());
+    // frc::SmartDashboard::PutNumber("auto/outputOmega", output.omega.to<double>());
+
+    // m_trajectoryField.SetRobotPose(targetPose);
+    // frc::SmartDashboard::PutData("auto/trajctory", &m_trajectoryField);
+
     return output;
 }
 
