@@ -4,6 +4,7 @@
 
 #include "Robot.h"
 
+#include "LyonLib/logging/DebugUtils.h" 
 #include <frc/DataLogManager.h>
 #include <frc/DriverStation.h>
 
@@ -14,8 +15,6 @@ Robot::Robot() {}
 void Robot::RobotInit() {
   //start data logging
   frc::DataLogManager::Start();
-  //link driver station to data logging
-  frc::DriverStation::StartDataLog(frc::DataLogManager::GetLog());
   //
   wpi::WebServer::GetInstance().Start(5800, frc::filesystem::GetDeployDirectory());
 
@@ -29,9 +28,28 @@ void Robot::RobotInit() {
 }
 void Robot::RobotPeriodic() {
   frc2::CommandScheduler::GetInstance().Run();
+  gameData = frc::DriverStation::GetGameSpecificMessage();
+  if(gameData.length() > 0)
+  {
+    switch (gameData[0])
+    {
+      case 'B' :
+        break;
+      case 'R' :
+        break;
+      default :
+        DEBUG_ASSERT(false, "Unexpected first character of game data received");
+        break;
+    }
+  } else {
+    //Code for no data received yet
+  }
 }
 
-void Robot::DriverStationConnected() {}
+void Robot::DriverStationConnected() {
+  //link driver station to data logging
+  frc::DriverStation::StartDataLog(frc::DataLogManager::GetLog());
+}
 
 void Robot::AutonomousInit() {}
 void Robot::AutonomousPeriodic() {}

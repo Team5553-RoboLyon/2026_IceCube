@@ -6,6 +6,8 @@
 #define PROTOTYPE 2
 #define DEMO 3
 #define SIMULATION 4
+#define BRICE 5
+#define T_NOR 6
 
 #define ADAM 0
 #define VICTOR 1
@@ -45,6 +47,8 @@ inline constexpr const char* RobotToString()
         return "Demo";
     #elif ROBOT_MODEL == SIMULATION
         return "Simulation";
+    #elif ROBOT_MODEL == BRICE
+        return "Brice";
     #else
         #error Invalid ROBOT_MODEL value
     #endif
