@@ -97,7 +97,7 @@ public:
      * 
      * This function returns the most recently updated pose of the robot
      * as tracked by the odometry system. The pose includes the robot's
-     * position and orientation on the field.
+     * position and orientation on the field. ]-Pi, Pi].
      * 
      * @return frc::Pose2d The last recorded pose of the robot.
      */
