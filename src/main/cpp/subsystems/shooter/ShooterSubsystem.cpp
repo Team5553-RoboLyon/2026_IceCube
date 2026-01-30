@@ -26,8 +26,8 @@ void ShooterSubsystem::SetControlMode(const ControlMode mode)
     {
     
     case ControlMode::VOLTAGE:
-        m_output = ShooterConstants::Speed::REST;
-        m_targetVelocity = ShooterConstants::Speed::REST;
+        m_upVoltage = ShooterConstants::Speed::REST;
+        m_bottomVoltage = ShooterConstants::Speed::REST;
         m_systemState = SystemState::REST;
         m_wantedState = WantedState::STAND_BY;
 
@@ -35,7 +35,8 @@ void ShooterSubsystem::SetControlMode(const ControlMode mode)
         break; //end of ControlMode::VOLTAGE
     
     case ControlMode::DISABLED :
-        m_output = ShooterConstants::Speed::REST;
+        m_upVoltage = ShooterConstants::Speed::REST;
+        m_bottomVoltage = ShooterConstants::Speed::REST;
 
         m_controlMode = mode;
         break; //end of ControlMode::DISABLED
@@ -87,6 +88,7 @@ void ShooterSubsystem::Periodic()
     m_currentWantedState = m_wantedState;
     m_timestamp = TimerRBL::GetFPGATimestampInSeconds();
 
+    std::cout << "cc"<< std::endl;
     m_pShooterIO->UpdateInputs(inputs);
     m_logger.Log(inputs);
     
@@ -96,53 +98,66 @@ void ShooterSubsystem::Periodic()
     m_RightMotorDisconnected.Set(!inputs.isRightMotorConnected);
     m_RightMotorHot.Set(inputs.RightMotorTemperature > ShooterConstants::RightMotor::HOT_THRESHOLD);
     m_RightMotorOverheating.Set(inputs.RightMotorTemperature > ShooterConstants::RightMotor::OVERHEATING_THRESHOLD);
+    m_BottomMotorDisconnected.Set(!inputs.isRightMotorConnected);
+    m_BottomMotorHot.Set(inputs.RightMotorTemperature > ShooterConstants::RightMotor::HOT_THRESHOLD);
+    m_BottomMotorOverheating.Set(inputs.RightMotorTemperature > ShooterConstants::RightMotor::OVERHEATING_THRESHOLD);
 
-    m_targetVelocity = m_tunableVelocityLogger.Get();
-    DEBUG_ASSERT(m_targetVelocity >= -ShooterConstants::Specifications::LeftMotor_FREE_SPEED && 
-                    m_targetVelocity <= ShooterConstants::Specifications::LeftMotor_FREE_SPEED
-        , "Shooter Target Velocity out of range");
+   
+    // DEBUG_ASSERT(m_targetVelocity >= -ShooterConstants::Specifications::LeftMotor_FREE_SPEED && 
+    //                 m_targetVelocity <= ShooterConstants::Specifications::LeftMotor_FREE_SPEED
+    //     , "Shooter Target Velocity out of range");
 
      // ----------------- State Machine & Motion Control -----------------
     
-    if(!m_isInitialized)
-    {
-    }
-    else 
-    {
-        if(ALLOWS_STATE_MACHINE(m_controlMode))
-        {
-            RunStateMachine();
-        }
+    // if(!m_isInitialized)
+    // {
+    // }
+    // else 
+    // {
+    //     if(ALLOWS_STATE_MACHINE(m_controlMode))
+    //     {
+    //         RunStateMachine();
+    //     }
 
-        switch (m_controlMode) //actualise motion
-        {
-        case ControlMode::VOLTAGE :
-            switch (m_systemState)
-            {
-            case SystemState::SHOOTING :
-                m_output = m_targetVelocity/ShooterConstants::Specifications::LeftMotor_FREE_SPEED*ShooterConstants::LeftMotor::VOLTAGE_COMPENSATION;
-                break; //end of SystemState::SHOOTING
-            default:
-                m_output = ShooterConstants::Speed::REST;
-                break; //end of other States
-            }
-            break; //end of ControlMode::VOLTAGE
+    m_upVoltage = m_tunableUpVoltageLogger.Get();
+    m_bottomVoltage = m_tunableBottomVoltageLogger.Get();
 
-        case ControlMode::DISABLED :
-            m_output = ShooterConstants::Speed::REST;
-            break; //end of ControlMode::DISABLED
-        default:
-            DEBUG_ASSERT(false, "Shooter : impossible state");
-            break; //end of default
-        }
-    }
+        // switch (m_controlMode) //actualise motion
+        // {
+        // case ControlMode::VOLTAGE :
+        //     //  m_upVoltage = m_tunableUpVoltageLogger.Get();
+        //     //  m_bottomVoltage = m_tunableBottomVoltageLogger.Get();
+        //     // switch (m_systemState)
+        //     // {
+        //     // case SystemState::SHOOTING :
+        //     //     m_bottomOutput = 
+        //     //     break; //end of SystemState::SHOOTING
+        //     // default:
+        //     //     m_output = ShooterConstants::Speed::REST;
+        //     //     break; //end of other States
+        //     // }
+        //     // break; //end of ControlMode::VOLTAGE
+
+        // case ControlMode::DISABLED :
+        //     m_upVoltage = 0.0;
+        //     m_bottomVoltage = 0.0;
+        //     // m_output = ShooterConstants::Speed::REST;
+        //     // break; //end of ControlMode::DISABLED
+        // default:
+        //     // DEBUG_ASSERT(false, "Shooter : impossible state");
+        //     break; //end of default
+        // }
+    // }
 
 
      // ----------------- Limits -----------------
     
 
     // Apply output
-    m_pShooterIO->SetVoltage(m_output);
+    if (m_controlMode == ControlMode::VOLTAGE)
+        m_pShooterIO->SetVoltage(m_upVoltage,m_bottomVoltage);
+    else
+        m_pShooterIO->SetVoltage(0.0,0.0);
 
 
         //LOG

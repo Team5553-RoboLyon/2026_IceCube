@@ -58,11 +58,12 @@ class ShooterSubsystem : public frc2::SubsystemBase {
     // === Motion Control (PID / Filters) ===
       PidRBL m_ShooterPIDController;
     // === Control Inputs / Outputs ===
-      double m_output{0.0};
       double m_manualControlInput{0.0};
       double m_timestamp{0.0};
-      double m_targetVelocity{0.0}; //RPM
-      TunableValueLogger m_tunableVelocityLogger{"/Shooter", ShooterConstants::Specifications::LeftMotor_FREE_SPEED}; //RPM
+      double m_upVoltage{0.0}; //RPM
+      double m_bottomVoltage{0.0};
+      TunableValueLogger m_tunableUpVoltageLogger{"/Shooter/UpVoltage", 0.0};
+      TunableValueLogger m_tunableBottomVoltageLogger{"/Shooter/BottomVoltage", 0.0};
     // === Status Flags ===
       bool m_isInitialized = true;
     // === System Alerts ===
@@ -72,6 +73,9 @@ class ShooterSubsystem : public frc2::SubsystemBase {
       Alert m_RightMotorDisconnected{"Shooter RightMotor: Disconnected", Alert::AlertType::ERROR};
       Alert m_RightMotorHot{"Shooter RightMotor: Temperature exceeds 60°C", Alert::AlertType::WARNING};
       Alert m_RightMotorOverheating{"Shooter RightMotor: Temperature exceeds 75°C", Alert::AlertType::ERROR};
+      Alert m_BottomMotorDisconnected{"Shooter BottomMotor: Disconnected", Alert::AlertType::ERROR};
+      Alert m_BottomMotorHot{"Shooter BottomMotor: Temperature exceeds 60°C", Alert::AlertType::WARNING};
+      Alert m_BottomMotorOverheating{"Shooter BottomMotor: Temperature exceeds 75°C", Alert::AlertType::ERROR};
     // === Internal Methods ===
       void RunStateMachine();
 };

@@ -28,6 +28,17 @@ ShooterIOSpark::ShooterIOSpark()
                             rev::ResetMode::kResetSafeParameters,
                             rev::PersistMode::kPersistParameters);
     m_RightMotor.ClearFaults();
+    // Set the motor configs
+    m_bottomMotorConfig.SetIdleMode(ShooterConstants::BottomMotor::IDLE_MODE)
+        .Inverted(ShooterConstants::BottomMotor::INVERTED)
+        .SmartCurrentLimit(ShooterConstants::BottomMotor::CURRENT_LIMIT)
+        .ClosedLoopRampRate(ShooterConstants::BottomMotor::RAMP_RATE)
+        .VoltageCompensation(ShooterConstants::BottomMotor::VOLTAGE_COMPENSATION);
+    // Apply the configs to the motors
+    m_bottomMotor.Configure(  m_bottomMotorConfig, 
+                            rev::ResetMode::kResetSafeParameters,
+                            rev::PersistMode::kPersistParameters);
+    m_bottomMotor.ClearFaults();
         m_WheelEncoder.Reset();
     m_WheelEncoder.SetDistancePerPulse(ShooterConstants::WheelEncoder::DISTANCE_PER_PULSE);
 
@@ -54,20 +65,47 @@ void ShooterIOSpark::UpdateInputs(ShooterIOInputs& inputs)
     inputs.ShooterVelocity = m_WheelEncoder.GetRate() * 60.0; // Convert from RPS to RPM
     inputs.rotation = m_WheelEncoder.GetDistance();
     inputs.FuelLaunched = m_IRBreakerOutput.Get() == ShooterConstants::IRBreakerOutput::IS_TRIGGERED;
+
+    inputs.isBottomMotorConnected = (m_bottomMotor.GetBusVoltage() !=0.0) && !m_bottomMotor.GetFaults().can;
+
+    inputs.BottomMotorAppliedVoltage = m_bottomMotor.GetAppliedOutput() * ShooterConstants::BottomMotor::VOLTAGE_COMPENSATION;
+    inputs.BottomMotorBusVoltage = m_bottomMotor.GetBusVoltage();
+    inputs.BottomMotorCurrent = m_bottomMotor.GetOutputCurrent();
+    inputs.BottomMotorTemperature = m_bottomMotor.GetMotorTemperature();
+    inputs.BottomMotorEncoderVelocity = m_bottomMotor.GetEncoder().GetVelocity();
+
+    frc::SmartDashboard::PutNumber("leftV",inputs.LeftMotorEncoderVelocity);
+    frc::SmartDashboard::PutNumber("voltageL", inputs.LeftMotorAppliedVoltage);
+    frc::SmartDashboard::PutNumber("CurrentL", inputs.LeftMotorCurrent);
+    frc::SmartDashboard::PutNumber("temperatureL", inputs.LeftMotorTemperature);
+    frc::SmartDashboard::PutNumber("rightV",inputs.RightMotorEncoderVelocity);
+    frc::SmartDashboard::PutNumber("voltageR", inputs.RightMotorAppliedVoltage);
+    frc::SmartDashboard::PutNumber("CurrentR", inputs.RightMotorCurrent);
+    frc::SmartDashboard::PutNumber("temperatureR", inputs.RightMotorTemperature);
+    frc::SmartDashboard::PutNumber("bottomV",inputs.BottomMotorEncoderVelocity);
+    frc::SmartDashboard::PutNumber("voltageB", inputs.BottomMotorAppliedVoltage);
+    frc::SmartDashboard::PutNumber("CurrentB", inputs.BottomMotorCurrent);
+    frc::SmartDashboard::PutNumber("temperatureB", inputs.BottomMotorTemperature);
 }
 
-void ShooterIOSpark::SetVoltage(double voltage)
+void ShooterIOSpark::SetVoltage(double upVoltage, double bottomVoltage)
 {
-        DEBUG_ASSERT((voltage <= ShooterConstants::LeftMotor::VOLTAGE_COMPENSATION) 
-        && (voltage >= -ShooterConstants::LeftMotor::VOLTAGE_COMPENSATION) 
-        ,"Shooter Voltage out of range");
+        DEBUG_ASSERT((upVoltage <= ShooterConstants::LeftMotor::VOLTAGE_COMPENSATION) 
+        && (upVoltage >= -ShooterConstants::LeftMotor::VOLTAGE_COMPENSATION) 
+        ,"Shooter upVoltage out of range");
     
-    m_LeftMotor.SetVoltage(units::volt_t(voltage));
-    DEBUG_ASSERT((voltage <= ShooterConstants::RightMotor::VOLTAGE_COMPENSATION) 
-        && (voltage >= -ShooterConstants::RightMotor::VOLTAGE_COMPENSATION) 
-        ,"Shooter Voltage out of range");
+    m_LeftMotor.SetVoltage(units::volt_t(upVoltage));
+    DEBUG_ASSERT((upVoltage <= ShooterConstants::RightMotor::VOLTAGE_COMPENSATION) 
+        && (upVoltage >= -ShooterConstants::RightMotor::VOLTAGE_COMPENSATION) 
+        ,"Shooter upVoltage out of range");
     
-    m_RightMotor.SetVoltage(units::volt_t(voltage));
+    m_RightMotor.SetVoltage(units::volt_t(upVoltage));
+
+    DEBUG_ASSERT((bottomVoltage <= ShooterConstants::BottomMotor::VOLTAGE_COMPENSATION) 
+        && (bottomVoltage >= -ShooterConstants::BottomMotor::VOLTAGE_COMPENSATION) 
+        ,"Shooter bottomVoltage out of range");
+    
+    m_bottomMotor.SetVoltage(units::volt_t(bottomVoltage));
 }
 
 void ShooterIOSpark::SetDutyCycle(double dutyCycle)
@@ -76,6 +114,7 @@ void ShooterIOSpark::SetDutyCycle(double dutyCycle)
         ,"Shooter Duty Cycle out of range");
         m_LeftMotor.Set(dutyCycle);
     m_RightMotor.Set(dutyCycle);
+    m_bottomMotor.Set(dutyCycle);
 }
 
 void ShooterIOSpark::ResetRotation() 
