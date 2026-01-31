@@ -6,6 +6,8 @@
 
 #include "subsystems/Operator.h"
 #include "Constants.h"
+#include "subsystems/climber/ClimberSubsystem.h"
+#include "subsystems/climber/ClimberIOSpark.h"
 
 #include <frc/Joystick.h>
 
@@ -16,6 +18,8 @@ class RobotContainer {
   Operator operatorGamepad{ControlPanelConstants::OPERATOR_GAMEPAD_PORT, ControlPanelConstants::OPERATOR_GAMEPAD_THRESHOLD};
   frc::Joystick forwardJoystick{ControlPanelConstants::JOYSTICK_FORWARD_ID};
   frc::Joystick rotationJoystick{ControlPanelConstants::JOYSTICK_ROTATION_ID};
+  ClimberSubsystem climber{new ClimberIOSpark};
+
  private:
   void ConfigureBindings();
 };
