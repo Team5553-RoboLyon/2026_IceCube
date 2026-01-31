@@ -36,6 +36,7 @@ class IntakeSubsystem : public frc2::SubsystemBase {
 
     bool IsResting();
     bool IsInitialized() { return m_isInitialized; }
+    void ResetEncoder();
     // void SetManualControlInput(const double value);
     // void SetManualControlInput(const std::function<double()> Axis); //temporary
 
@@ -54,22 +55,22 @@ class IntakeSubsystem : public frc2::SubsystemBase {
     // === Motion Control (PID / Filters) ===
       PidRBL m_IntakePIDController;
     // === Control Inputs / Outputs ===
-      double m_leftOutput{0.0};
-      double m_rightOutput{0.0};
+      double m_intakeOutput{0.0};
+      double m_pivotOutput{0.0};
       double m_manualControlInput{0.0};
       double m_timestamp{0.0};
       // std::function<double()> m_fxAxis; //temporary
-      TunableValueLogger m_tunableLeftVelocityLogger{"Intake/Left", 0.0}; //RPM
-      TunableValueLogger m_tunableRightVelocityLogger{"Intake/Right", 0.0}; //RPM
+      TunableValueLogger m_tunablePivotVoltageLogger{"Intake/PivotVoltage", 0.0}; //RPM
+      TunableValueLogger m_tunableIntakeVoltageLogger{"Intake/IntakeVoltage", 0.0}; //RPM
     // === Status Flags ===
       bool m_isInitialized = true;
     // === System Alerts ===
-            Alert m_leftMotorDisconnected{"Intake leftMotor: Disconnected", Alert::AlertType::ERROR};
-      Alert m_leftMotorHot{"Intake leftMotor: Temperature exceeds 60°C", Alert::AlertType::WARNING};
-      Alert m_leftMotorOverheating{"Intake leftMotor: Temperature exceeds 75°C", Alert::AlertType::ERROR};
-      Alert m_rightMotorDisconnected{"Intake rightMotor: Disconnected", Alert::AlertType::ERROR};
-      Alert m_rightMotorHot{"Intake rightMotor: Temperature exceeds 60°C", Alert::AlertType::WARNING};
-      Alert m_rightMotorOverheating{"Intake rightMotor: Temperature exceeds 75°C", Alert::AlertType::ERROR};
+      Alert m_intakeMotorDisconnected{"Intake motor: Disconnected", Alert::AlertType::ERROR};
+      Alert m_intakeMotorHot{"Intake motor: Temperature exceeds 60°C", Alert::AlertType::WARNING};
+      Alert m_intakeMotorOverheating{"Intake motor: Temperature exceeds 75°C", Alert::AlertType::ERROR};
+      Alert m_pivotMotorDisconnected{"Pivot motor: Disconnected", Alert::AlertType::ERROR};
+      Alert m_pivotMotorHot{"Pivot motor: Temperature exceeds 60°C", Alert::AlertType::WARNING};
+      Alert m_pivotMotorOverheating{"Pivot motor: Temperature exceeds 75°C", Alert::AlertType::ERROR};
     // === Internal Methods ===
       void RunStateMachine();
 };

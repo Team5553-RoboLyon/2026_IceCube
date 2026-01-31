@@ -2,19 +2,20 @@
 
 struct IntakeIOInputs
 {
-    bool isleftMotorConnected = true;
+    bool isIntakeMotorConnected = true;
     
-    double leftMotorAppliedVoltage = 0.0;
-    double leftMotorBusVoltage = 0.0;
-    double leftMotorCurrent = 0.0;
-    double leftMotorTemperature = 0.0;
-    bool isrightMotorConnected = true;
+    double intakeMotorAppliedVoltage = 0.0;
+    double intakeMotorBusVoltage = 0.0;
+    double intakeMotorCurrent = 0.0;
+    double intakeMotorTemperature = 0.0;
+    bool isPivotMotorConnected = true;
     
-    double rightMotorAppliedVoltage = 0.0;
-    double rightMotorBusVoltage = 0.0;
-    double rightMotorCurrent = 0.0;
-    double rightMotorTemperature = 0.0;
+    double pivotMotorAppliedVoltage = 0.0;
+    double pivotMotorBusVoltage = 0.0;
+    double pivotMotorCurrent = 0.0;
+    double pivotMotorTemperature = 0.0;
     
+    double pivotPos = 0.0;
 };
 
 
@@ -24,8 +25,8 @@ public:
 
     virtual void UpdateInputs(IntakeIOInputs& inputs) = 0;
 
-    virtual void SetVoltage(double leftVoltage, double rightVoltage) = 0; 
-    virtual void SetDutyCycle(double leftDutyCycle, double rightDutyCycle) = 0;
+    virtual void SetVoltage(double intakeVoltage, double pivotVoltage) = 0; 
+    virtual void SetDutyCycle(double intakeDutyCycle, double pivotDutyCycle) = 0;
 
-    
+    virtual void ResetEncoder() = 0;
 };

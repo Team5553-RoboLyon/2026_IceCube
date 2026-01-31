@@ -7,70 +7,79 @@
 IntakeIOSpark::IntakeIOSpark()
 {
         // Set the motor configs
-    m_leftMotorConfig.SetIdleMode(IntakeConstants::leftMotor::IDLE_MODE)
-        .Inverted(IntakeConstants::leftMotor::INVERTED)
-        .SmartCurrentLimit(IntakeConstants::leftMotor::CURRENT_LIMIT)
-        .ClosedLoopRampRate(IntakeConstants::leftMotor::RAMP_RATE)
-        .VoltageCompensation(IntakeConstants::leftMotor::VOLTAGE_COMPENSATION);
+    m_intakeMotorConfig.SetIdleMode(IntakeConstants::intakeMotor::IDLE_MODE)
+        .Inverted(IntakeConstants::intakeMotor::INVERTED)
+        .SmartCurrentLimit(IntakeConstants::intakeMotor::CURRENT_LIMIT)
+        .ClosedLoopRampRate(IntakeConstants::intakeMotor::RAMP_RATE)
+        .VoltageCompensation(IntakeConstants::intakeMotor::VOLTAGE_COMPENSATION);
     // Apply the configs to the motors
-    m_leftMotor.Configure(  m_leftMotorConfig, 
+    m_intakeMotor.Configure(  m_intakeMotorConfig, 
                             rev::ResetMode::kResetSafeParameters,
                             rev::PersistMode::kPersistParameters);
-    m_leftMotor.ClearFaults();
+    m_intakeMotor.ClearFaults();
     // Set the motor configs
-    m_rightMotorConfig.SetIdleMode(IntakeConstants::rightMotor::IDLE_MODE)
-        .Inverted(IntakeConstants::rightMotor::INVERTED)
-        .SmartCurrentLimit(IntakeConstants::rightMotor::CURRENT_LIMIT)
-        .ClosedLoopRampRate(IntakeConstants::rightMotor::RAMP_RATE)
-        .VoltageCompensation(IntakeConstants::rightMotor::VOLTAGE_COMPENSATION);
+    m_pivotMotorConfig.SetIdleMode(IntakeConstants::pivotMotor::IDLE_MODE)
+        .Inverted(IntakeConstants::pivotMotor::INVERTED)
+        .SmartCurrentLimit(IntakeConstants::pivotMotor::CURRENT_LIMIT)
+        .ClosedLoopRampRate(IntakeConstants::pivotMotor::RAMP_RATE)
+        .VoltageCompensation(IntakeConstants::pivotMotor::VOLTAGE_COMPENSATION);
     // Apply the configs to the motors
-    m_rightMotor.Configure(  m_rightMotorConfig, 
+    m_pivotMotor.Configure(  m_pivotMotorConfig, 
                             rev::ResetMode::kResetSafeParameters,
                             rev::PersistMode::kPersistParameters);
-    m_rightMotor.ClearFaults();
-    
+    m_pivotMotor.ClearFaults();
+
+    m_pivotEncoder.SetDistancePerPulse(IntakeConstants::Encoder::DISTANCE_PER_PULSE);
+    m_pivotEncoder.Reset();
 }
 
 void IntakeIOSpark::UpdateInputs(IntakeIOInputs& inputs) 
 {
-        inputs.isleftMotorConnected = (m_leftMotor.GetBusVoltage() !=0.0) && !m_leftMotor.GetFaults().can;
+    inputs.isIntakeMotorConnected = (m_intakeMotor.GetBusVoltage() !=0.0) && !m_intakeMotor.GetFaults().can;
 
-    inputs.leftMotorAppliedVoltage = m_leftMotor.GetAppliedOutput() * IntakeConstants::leftMotor::VOLTAGE_COMPENSATION;
-    inputs.leftMotorBusVoltage = m_leftMotor.GetBusVoltage();
-    inputs.leftMotorCurrent = m_leftMotor.GetOutputCurrent();
-    inputs.leftMotorTemperature = m_leftMotor.GetMotorTemperature();
+    inputs.intakeMotorAppliedVoltage = m_intakeMotor.GetAppliedOutput() * IntakeConstants::intakeMotor::VOLTAGE_COMPENSATION;
+    inputs.intakeMotorBusVoltage = m_intakeMotor.GetBusVoltage();
+    inputs.intakeMotorCurrent = m_intakeMotor.GetOutputCurrent();
+    inputs.intakeMotorTemperature = m_intakeMotor.GetMotorTemperature();
     
-    inputs.isrightMotorConnected = (m_rightMotor.GetBusVoltage() !=0.0) && !m_rightMotor.GetFaults().can;
+    inputs.isPivotMotorConnected = (m_pivotMotor.GetBusVoltage() !=0.0) && !m_pivotMotor.GetFaults().can;
 
-    inputs.rightMotorAppliedVoltage = m_rightMotor.GetAppliedOutput() * IntakeConstants::rightMotor::VOLTAGE_COMPENSATION;
-    inputs.rightMotorBusVoltage = m_rightMotor.GetBusVoltage();
-    inputs.rightMotorCurrent = m_rightMotor.GetOutputCurrent();
-    inputs.rightMotorTemperature = m_rightMotor.GetMotorTemperature();
+    inputs.pivotMotorAppliedVoltage = m_pivotMotor.GetAppliedOutput() * IntakeConstants::pivotMotor::VOLTAGE_COMPENSATION;
+    inputs.pivotMotorBusVoltage = m_pivotMotor.GetBusVoltage();
+    inputs.pivotMotorCurrent = m_pivotMotor.GetOutputCurrent();
+    inputs.pivotMotorTemperature = m_pivotMotor.GetMotorTemperature();
 
-    frc::SmartDashboard::PutNumber("intake/LeftMotorVelocity", m_leftMotor.GetEncoder().GetVelocity());
-    frc::SmartDashboard::PutNumber("intake/RightMotorVelocity", m_rightMotor.GetEncoder().GetVelocity());   
+    inputs.pivotPos = IntakeConstants::Specifications::STARTING_POS+m_pivotEncoder.GetDistance();
+
+    frc::SmartDashboard::PutNumber("intake/IntakeMotorVelocity", m_intakeMotor.GetEncoder().GetVelocity());
+    frc::SmartDashboard::PutNumber("intake/PivotPos", inputs.pivotPos);   
 }
 
-void IntakeIOSpark::SetVoltage(double leftVoltage, double rightVoltage)
+void IntakeIOSpark::SetVoltage(double intakeVoltage, double pivotVoltage)
 {
-    DEBUG_ASSERT((leftVoltage <= IntakeConstants::leftMotor::VOLTAGE_COMPENSATION) 
-        && (leftVoltage >= -IntakeConstants::leftMotor::VOLTAGE_COMPENSATION) 
+    DEBUG_ASSERT((intakeVoltage <= IntakeConstants::intakeMotor::VOLTAGE_COMPENSATION) 
+        && (intakeVoltage >= -IntakeConstants::intakeMotor::VOLTAGE_COMPENSATION) 
         ,"Intake Voltage out of range");
-    DEBUG_ASSERT((rightVoltage <= IntakeConstants::rightMotor::VOLTAGE_COMPENSATION) 
-        && (rightVoltage >= -IntakeConstants::rightMotor::VOLTAGE_COMPENSATION) 
+    DEBUG_ASSERT((pivotVoltage <= IntakeConstants::pivotMotor::VOLTAGE_COMPENSATION) 
+        && (pivotVoltage >= -IntakeConstants::pivotMotor::VOLTAGE_COMPENSATION) 
         ,"Intake Voltage out of range");
 
-    m_leftMotor.SetVoltage(units::volt_t(leftVoltage));
-    m_rightMotor.SetVoltage(units::volt_t(rightVoltage));
+    m_intakeMotor.SetVoltage(units::volt_t(intakeVoltage));
+    m_pivotMotor.SetVoltage(units::volt_t(pivotVoltage));
 }
 
-void IntakeIOSpark::SetDutyCycle(double leftDutyCycle, double rightDutyCycle)
+void IntakeIOSpark::SetDutyCycle(double intakeDutyCycle, double pivotDutyCycle)
 {
-    DEBUG_ASSERT((leftDutyCycle <= 1.0) && (leftDutyCycle >= -1.0) 
+    DEBUG_ASSERT((intakeDutyCycle <= 1.0) && (intakeDutyCycle >= -1.0) 
         ,"Intake Duty Cycle out of range");
-    DEBUG_ASSERT((rightDutyCycle <= 1.0) && (rightDutyCycle >= -1.0) 
+    DEBUG_ASSERT((pivotDutyCycle <= 1.0) && (pivotDutyCycle >= -1.0) 
         ,"Intake Duty Cycle out of range");
-    m_leftMotor.Set(leftDutyCycle);
-    m_rightMotor.Set(rightDutyCycle);
+    m_intakeMotor.Set(pivotDutyCycle);
+    m_pivotMotor.Set(pivotDutyCycle);
+}
+
+void IntakeIOSpark::ResetEncoder()
+{
+    m_pivotEncoder.Reset();
 }
 

@@ -65,6 +65,8 @@ void Robot::DisabledInit() {
 void Robot::DisabledPeriodic() {}
 void Robot::DisabledExit() {
   m_container.intakeSubsystem.SetControlMode(IntakeConstants::MainControlMode);
+  if (m_container.operatorGamepad.GetTriangleButton())
+    m_container.intakeSubsystem.ResetEncoder();
 }
 
 void Robot::TestInit() {}

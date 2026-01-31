@@ -24,18 +24,25 @@ void IntakeSubsystem::SetControlMode(const ControlMode mode)
 {
     switch (mode)
     {
-    
+    case ControlMode::MANUAL_VOLTAGE:
+        m_intakeOutput = 0.0;
+        m_pivotOutput = 0.0;
+        m_manualControlInput = 0.0;
+
+        m_controlMode = mode;
+        break; //end of ControlMode::MANUAL_VOLTAGE
+        
     case ControlMode::MANUAL_VELOCITY:
-        m_leftOutput = IntakeConstants::Speed::REST;
-        m_rightOutput = IntakeConstants::Speed::REST;
+        m_intakeOutput = IntakeConstants::Speed::REST;
+        m_pivotOutput = IntakeConstants::Speed::REST;
         m_manualControlInput = IntakeConstants::Speed::REST;
 
         m_controlMode = mode;
         break; //end of ControlMode::MANUAL_VELOCITY
     
     case ControlMode::DISABLED :
-        m_leftOutput = IntakeConstants::Speed::REST;
-        m_rightOutput = IntakeConstants::Speed::REST;
+        m_intakeOutput = IntakeConstants::Speed::REST;
+        m_pivotOutput = IntakeConstants::Speed::REST;
 
         m_controlMode = mode;
         break; //end of ControlMode::DISABLED
@@ -97,12 +104,12 @@ void IntakeSubsystem::Periodic()
 
     // m_manualControlInput = m_fxAxis();
     
-        m_leftMotorDisconnected.Set(!inputs.isleftMotorConnected);
-    m_leftMotorHot.Set(inputs.leftMotorTemperature > IntakeConstants::leftMotor::HOT_THRESHOLD);
-    m_leftMotorOverheating.Set(inputs.leftMotorTemperature > IntakeConstants::leftMotor::OVERHEATING_THRESHOLD);
-    m_rightMotorDisconnected.Set(!inputs.isrightMotorConnected);
-    m_rightMotorHot.Set(inputs.rightMotorTemperature > IntakeConstants::rightMotor::HOT_THRESHOLD);
-    m_rightMotorOverheating.Set(inputs.rightMotorTemperature > IntakeConstants::rightMotor::OVERHEATING_THRESHOLD);
+    m_intakeMotorDisconnected.Set(!inputs.isIntakeMotorConnected);
+    m_intakeMotorHot.Set(inputs.intakeMotorTemperature > IntakeConstants::intakeMotor::HOT_THRESHOLD);
+    m_intakeMotorOverheating.Set(inputs.intakeMotorTemperature > IntakeConstants::intakeMotor::OVERHEATING_THRESHOLD);
+    m_pivotMotorDisconnected.Set(!inputs.isPivotMotorConnected);
+    m_pivotMotorHot.Set(inputs.pivotMotorTemperature > IntakeConstants::pivotMotor::HOT_THRESHOLD);
+    m_pivotMotorOverheating.Set(inputs.pivotMotorTemperature > IntakeConstants::pivotMotor::OVERHEATING_THRESHOLD);
     
     if(!m_isInitialized)
     {
@@ -117,14 +124,18 @@ void IntakeSubsystem::Periodic()
         switch (m_controlMode) //actualise motion
         {
         case ControlMode::MANUAL_VELOCITY:
-            m_leftOutput = m_tunableLeftVelocityLogger.Get()/IntakeConstants::Specifications::leftMotor_FREE_SPEED * IntakeConstants::leftMotor::VOLTAGE_COMPENSATION;
-            m_rightOutput = m_tunableRightVelocityLogger.Get()/IntakeConstants::Specifications::rightMotor_FREE_SPEED * IntakeConstants::rightMotor::VOLTAGE_COMPENSATION;
+            m_intakeOutput = m_tunableIntakeVoltageLogger.Get()/IntakeConstants::Specifications::intakeMotor_FREE_SPEED * IntakeConstants::intakeMotor::VOLTAGE_COMPENSATION;
+            m_pivotOutput = m_tunablePivotVoltageLogger.Get()/IntakeConstants::Specifications::pivotMotor_FREE_SPEED * IntakeConstants::pivotMotor::VOLTAGE_COMPENSATION;
             break; //end of ControlMode::MANUAL_VELOCITY
 
         case ControlMode::DISABLED :
-            m_leftOutput = IntakeConstants::Speed::REST;
-            m_rightOutput = IntakeConstants::Speed::REST;
+            m_intakeOutput = IntakeConstants::Speed::REST;
+            m_pivotOutput = IntakeConstants::Speed::REST;
             break; //end of ControlMode::DISABLED
+        case ControlMode::MANUAL_VOLTAGE:
+            m_intakeOutput = m_tunableIntakeVoltageLogger.Get();
+            m_pivotOutput = m_tunablePivotVoltageLogger.Get();
+            break;
         default:
             DEBUG_ASSERT(false, "Intake : impossible state");
             break; //end of default
@@ -133,20 +144,25 @@ void IntakeSubsystem::Periodic()
 
 
      // ----------------- Limits -----------------
-    
+    if (m_pivotOutput > 0.0 && inputs.pivotPos <= IntakeConstants::Specifications::PIVOT_MIN_EXTENSION)
+    {
+        m_pivotOutput = 0.0;
+    }
+    else if (m_pivotOutput < 0.0 && inputs.pivotPos >= IntakeConstants::Specifications::PIVOT_MAX_EXTENSION)
+    {
+        m_pivotOutput = 0.0;
+    }
 
     // Apply output
-    m_pIntakeIO->SetVoltage(m_leftOutput, m_rightOutput);
-
-
+    m_pIntakeIO->SetVoltage(m_intakeOutput, m_pivotOutput);
 
         //LOG
     frc::SmartDashboard::PutNumber("intake/WantedState", (int)m_currentWantedState);
     frc::SmartDashboard::PutNumber("intake/SystemState", (int)m_systemState);
     frc::SmartDashboard::PutNumber("intake/ControlMode", (int)m_controlMode);
     frc::SmartDashboard::PutBoolean("intake/isInit", m_isInitialized);
-    frc::SmartDashboard::PutNumber("intake/LeftOutput", m_leftOutput);
-    frc::SmartDashboard::PutNumber("intake/RightOutput", m_rightOutput);
+    frc::SmartDashboard::PutNumber("intake/intakeOutput", m_intakeOutput);
+    frc::SmartDashboard::PutNumber("intake/pivotVoltage", inputs.pivotMotorAppliedVoltage);
 }
 
 void IntakeSubsystem::RunStateMachine()
@@ -168,4 +184,9 @@ void IntakeSubsystem::RunStateMachine()
         DEBUG_ASSERT(false, "intake : impossible state");
         break; //end of default
     }
+}
+
+void IntakeSubsystem::ResetEncoder()
+{
+    m_pIntakeIO->ResetEncoder();
 }

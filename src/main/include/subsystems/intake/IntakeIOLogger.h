@@ -11,16 +11,16 @@ public:
     void Log(const IntakeIOInputs& inputs);
 
 private:
-    wpi::log::BooleanLogEntry isleftMotorConnected;
-    wpi::log::DoubleLogEntry leftMotorCurrent;
-    wpi::log::DoubleLogEntry leftMotorAppliedVoltage;
-    wpi::log::DoubleLogEntry leftMotorBusVoltage;
-    wpi::log::DoubleLogEntry leftMotorTemperature;
-    wpi::log::BooleanLogEntry isrightMotorConnected;
-    wpi::log::DoubleLogEntry rightMotorCurrent;
-    wpi::log::DoubleLogEntry rightMotorAppliedVoltage;
-    wpi::log::DoubleLogEntry rightMotorBusVoltage;
-    wpi::log::DoubleLogEntry rightMotorTemperature;
+    wpi::log::BooleanLogEntry isintakeMotorConnected;
+    wpi::log::DoubleLogEntry intakeMotorCurrent;
+    wpi::log::DoubleLogEntry intakeMotorAppliedVoltage;
+    wpi::log::DoubleLogEntry intakeMotorBusVoltage;
+    wpi::log::DoubleLogEntry intakeMotorTemperature;
+    wpi::log::BooleanLogEntry ispivotMotorConnected;
+    wpi::log::DoubleLogEntry pivotMotorCurrent;
+    wpi::log::DoubleLogEntry pivotMotorAppliedVoltage;
+    wpi::log::DoubleLogEntry pivotMotorBusVoltage;
+    wpi::log::DoubleLogEntry pivotMotorTemperature;
     
 
     const std::string& m_path;

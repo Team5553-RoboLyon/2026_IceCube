@@ -1,30 +1,30 @@
 #include "subsystems/intake/intakeIOLogger.h"
 
 IntakeIOLogger::IntakeIOLogger(wpi::log::DataLog& log, const std::string& path)
-    :               isleftMotorConnected(log, path + "/leftMotor" + "/isConnected"),
-          leftMotorCurrent(log, path + "/leftMotor" + "/Current"),
-          leftMotorAppliedVoltage(log, path + "/leftMotor" + "/AppliedVoltage"),
-          leftMotorBusVoltage(log, path + "/leftMotor" + "/BusVoltage"),
-          leftMotorTemperature(log, path + "/leftMotor" + "/Temperature"),
-          isrightMotorConnected(log, path + "/rightMotor" + "/isConnected"),
-          rightMotorCurrent(log, path + "/rightMotor" + "/Current"),
-          rightMotorAppliedVoltage(log, path + "/rightMotor" + "/AppliedVoltage"),
-          rightMotorBusVoltage(log, path + "/rightMotor" + "/BusVoltage"),
-          rightMotorTemperature(log, path + "/rightMotor" + "/Temperature"),
+    :               isintakeMotorConnected(log, path + "/intakeMotor" + "/isConnected"),
+          intakeMotorCurrent(log, path + "/intakeMotor" + "/Current"),
+          intakeMotorAppliedVoltage(log, path + "/intakeMotor" + "/AppliedVoltage"),
+          intakeMotorBusVoltage(log, path + "/intakeMotor" + "/BusVoltage"),
+          intakeMotorTemperature(log, path + "/intakeMotor" + "/Temperature"),
+          ispivotMotorConnected(log, path + "/pivotMotor" + "/isConnected"),
+          pivotMotorCurrent(log, path + "/pivotMotor" + "/Current"),
+          pivotMotorAppliedVoltage(log, path + "/pivotMotor" + "/AppliedVoltage"),
+          pivotMotorBusVoltage(log, path + "/pivotMotor" + "/BusVoltage"),
+          pivotMotorTemperature(log, path + "/pivotMotor" + "/Temperature"),
           
           m_path(path)
 {}
 
 void IntakeIOLogger::Log(const IntakeIOInputs& inputs) {
-        isleftMotorConnected.Append(inputs.isleftMotorConnected);
-    leftMotorAppliedVoltage.Append(inputs.leftMotorAppliedVoltage);
-    leftMotorBusVoltage.Append(inputs.leftMotorBusVoltage);
-    leftMotorCurrent.Append(inputs.leftMotorCurrent);
-    leftMotorTemperature.Append(inputs.leftMotorTemperature);
-    isrightMotorConnected.Append(inputs.isrightMotorConnected);
-    rightMotorAppliedVoltage.Append(inputs.rightMotorAppliedVoltage);
-    rightMotorBusVoltage.Append(inputs.rightMotorBusVoltage);
-    rightMotorCurrent.Append(inputs.rightMotorCurrent);
-    rightMotorTemperature.Append(inputs.rightMotorTemperature);
+        isintakeMotorConnected.Append(inputs.isIntakeMotorConnected);
+    intakeMotorAppliedVoltage.Append(inputs.intakeMotorAppliedVoltage);
+    intakeMotorBusVoltage.Append(inputs.intakeMotorBusVoltage);
+    intakeMotorCurrent.Append(inputs.intakeMotorCurrent);
+    intakeMotorTemperature.Append(inputs.intakeMotorTemperature);
+    ispivotMotorConnected.Append(inputs.isPivotMotorConnected);
+    pivotMotorAppliedVoltage.Append(inputs.pivotMotorAppliedVoltage);
+    pivotMotorBusVoltage.Append(inputs.pivotMotorBusVoltage);
+    pivotMotorCurrent.Append(inputs.pivotMotorCurrent);
+    pivotMotorTemperature.Append(inputs.pivotMotorTemperature);
     
 }
