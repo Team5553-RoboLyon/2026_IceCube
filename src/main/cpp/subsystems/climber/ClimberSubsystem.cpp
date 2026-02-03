@@ -131,7 +131,10 @@ void ClimberSubsystem::Periodic()
 
 
      // ----------------- Limits -----------------
-    
+    if (inputs.climberPos > ClimberConstants::Specifications::MAX_POSITION && m_output > 0.0)
+        m_output = 0.0;
+    else if (inputs.climberPos < ClimberConstants::Specifications::MIN_POSITION && m_output < 0.0)
+        m_output = 0.0;
 
     // Apply output
     m_pClimberIO->SetDutyCycle(m_output);
@@ -141,6 +144,7 @@ void ClimberSubsystem::Periodic()
     frc::SmartDashboard::PutNumber("climber/SystemState", (int)m_systemState);
     frc::SmartDashboard::PutNumber("climber/ControlMode", (int)m_controlMode);
     frc::SmartDashboard::PutNumber("climber/AppliedCurrent", inputs.climberMotorCurrent);
+    frc::SmartDashboard::PutNumber("climber/Pos", inputs.climberPos);
     frc::SmartDashboard::PutBoolean("climber/isInit", m_isInitialized);
 }
 
@@ -163,4 +167,9 @@ void ClimberSubsystem::RunStateMachine()
         DEBUG_ASSERT(false, "climber : impossible state");
         break; //end of default
     }
+}
+
+void ClimberSubsystem::ResetEncoder()
+{
+    m_pClimberIO->ResetEncoder();
 }

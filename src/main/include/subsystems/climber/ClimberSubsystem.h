@@ -6,9 +6,9 @@
 
 #include <frc2/command/SubsystemBase.h>
 
-#include "climberConstants.h"
-#include "climberIOLogger.h"
-#include "climberIO.h"
+#include "ClimberConstants.h"
+#include "ClimberIOLogger.h"
+#include "ClimberIO.h"
 #include "Constants.h"
 
 #include "LyonLib/control/RateLimiter.h"
@@ -38,6 +38,7 @@ class ClimberSubsystem : public frc2::SubsystemBase {
     bool IsInitialized() { return m_isInitialized; }
     void SetManualControlInput(const double value);
 
+    void ResetEncoder();
 
     void Periodic() override;
   private:

@@ -9,6 +9,7 @@ struct ClimberIOInputs
     double climberMotorCurrent = 0.0;
     double climberMotorTemperature = 0.0;
     
+    double climberPos = 0.0;
 };
 
 
@@ -20,4 +21,6 @@ public:
 
     virtual void SetVoltage(double voltage) = 0; 
     virtual void SetDutyCycle(double dutyCycle) = 0;    
+
+    virtual void ResetEncoder() = 0;
 };

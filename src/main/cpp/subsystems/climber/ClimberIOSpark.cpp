@@ -17,6 +17,8 @@ ClimberIOSpark::ClimberIOSpark()
                             rev::ResetMode::kResetSafeParameters,
                             rev::PersistMode::kPersistParameters);
     m_climberMotor.ClearFaults();
+
+    m_climberEncoder.SetDistancePerPulse(ClimberConstants::climberEncoder::DISTANCE_PER_PULSE);
     
 }
 
@@ -29,7 +31,7 @@ void ClimberIOSpark::UpdateInputs(ClimberIOInputs& inputs)
     inputs.climberMotorCurrent = m_climberMotor.GetOutputCurrent();
     inputs.climberMotorTemperature = m_climberMotor.GetMotorTemperature();
     
-    
+    inputs.climberPos = m_climberEncoder.GetDistance();
 }
 
 void ClimberIOSpark::SetVoltage(double voltage)
@@ -48,3 +50,7 @@ void ClimberIOSpark::SetDutyCycle(double dutyCycle)
         m_climberMotor.Set(dutyCycle);
 }
 
+void ClimberIOSpark::ResetEncoder()
+{
+    m_climberEncoder.Reset();
+}
