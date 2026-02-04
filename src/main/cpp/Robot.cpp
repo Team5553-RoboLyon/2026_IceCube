@@ -56,17 +56,20 @@ void Robot::AutonomousPeriodic() {}
 void Robot::AutonomousExit() {}
 
 void Robot::TeleopInit() {}
-void Robot::TeleopPeriodic() {}
+void Robot::TeleopPeriodic() {
+  if (m_container.operatorGamepad.GetTriangleButton())
+    m_container.intakeSubsystem.ResetEncoder();
+}
 void Robot::TeleopExit() {}
 
 void Robot::DisabledInit() {
   m_container.intakeSubsystem.SetControlMode(ControlMode::DISABLED);
+  m_container.indexer.SetControlMode(ControlMode::DISABLED);
 }
 void Robot::DisabledPeriodic() {}
 void Robot::DisabledExit() {
   m_container.intakeSubsystem.SetControlMode(IntakeConstants::MainControlMode);
-  if (m_container.operatorGamepad.GetTriangleButton())
-    m_container.intakeSubsystem.ResetEncoder();
+  m_container.indexer.SetControlMode(ControlMode::MANUAL_VOLTAGE);
 }
 
 void Robot::TestInit() {}

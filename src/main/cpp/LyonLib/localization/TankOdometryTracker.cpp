@@ -94,7 +94,7 @@ frc::Pose2d TankOdometryTracker::UpdateUsingICCFromDistances(const double leftDi
 
     m_lastPose = frc::Pose2d{units::length::meter_t(m_generalDeltaX) + m_lastPose.X(), 
                             units::length::meter_t(m_generalDeltaY) + m_lastPose.Y(),
-                            frc::Rotation2d{units::radian_t(WRAP_ANGLE_0_TO_2PI(deltaBaseTheta + double(m_lastPose.Rotation().Radians())))}};
+                            frc::Rotation2d{units::radian_t(WRAP_ANGLE_NEG_PI_TO_PI(deltaBaseTheta + double(m_lastPose.Rotation().Radians())))}};
 
     return m_lastPose;
 }

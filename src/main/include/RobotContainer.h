@@ -11,6 +11,9 @@
 #include "subsystems/intake/IntakeIOSpark.h"
 #include <frc/Joystick.h>
 
+#include "subsystems/indexer/IndexerSubsystem.h"
+#include "subsystems/indexer/IndexerIOSpark.h"
+
 class RobotContainer {
  public:
   RobotContainer();
@@ -20,6 +23,8 @@ class RobotContainer {
   Operator operatorGamepad{ControlPanelConstants::OPERATOR_GAMEPAD_PORT, ControlPanelConstants::OPERATOR_GAMEPAD_THRESHOLD};
   frc::Joystick forwardJoystick{ControlPanelConstants::JOYSTICK_FORWARD_ID};
   frc::Joystick rotationJoystick{ControlPanelConstants::JOYSTICK_ROTATION_ID};
+
+  IndexerSubsystem indexer{new IndexerIOSpark};
  private:
   void ConfigureBindings();
 };
