@@ -313,7 +313,7 @@ frc::ChassisSpeeds DrivetrainSubsystem::FollowPath()
 
     // frc::SmartDashboard::PutNumber("auto/errorX", errorX);
     // frc::SmartDashboard::PutNumber("auto/errorY", errorY);
-    // frc::SmartDashboard::PutNumber("auto/errorTheta_deg", angleError * 180.0 / M_PI);
+    // frc::SmartDashboard::PutNumber("auto/errorTheta_deg", angleError * 180.0 / NF64_PI);
 
     // frc::SmartDashboard::PutNumber("auto/linearCorrection", linearCorrection);
     // frc::SmartDashboard::PutNumber("auto/angularCorrection", angularCorrection);

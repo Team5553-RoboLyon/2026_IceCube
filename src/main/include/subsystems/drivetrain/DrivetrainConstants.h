@@ -51,9 +51,9 @@ namespace driveConstants
         constexpr double TRACKWIDTH = 0.554; //m //TUNEME
         constexpr double BASE_TRACK_RADIUS = TRACKWIDTH/2.0; //m
 
-        constexpr double MAX_LINEAR_SPEED = WHEEL_RADIUS * (2.0 * M_PI) * ((MOTOR_FREE_SPEED / GEAR_RATIO) / 60.0); // m.s-1
+        constexpr double MAX_LINEAR_SPEED = WHEEL_RADIUS * (2.0 * NF64_PI) * ((MOTOR_FREE_SPEED / GEAR_RATIO) / 60.0); // m.s-1
         constexpr double MAX_ROTATION_SPEED = MAX_LINEAR_SPEED / BASE_TRACK_RADIUS;
-        constexpr double LINEAR_TO_MOTOR_SPEED_FACTOR = (30.0 * GEAR_RATIO) / (M_PI * WHEEL_RADIUS); // RPM.s.m-1
+        constexpr double LINEAR_TO_MOTOR_SPEED_FACTOR = (30.0 * GEAR_RATIO) / (NF64_PI * WHEEL_RADIUS); // RPM.s.m-1
     }
     namespace Encoder
     {
@@ -65,7 +65,7 @@ namespace driveConstants
         constexpr int RIGHT_ID_ENCODER_B = 8;
         constexpr bool RIGHT_REVERSE_ENCODER = false;
 
-        constexpr double DISTANCE_PER_PULSE = (2.0 * M_PI * Specifications::WHEEL_RADIUS)/ENCODER_TICKS_PER_REVOLUTION_K2X;
+        constexpr double DISTANCE_PER_PULSE = (2.0 * NF64_PI * Specifications::WHEEL_RADIUS)/ENCODER_TICKS_PER_REVOLUTION_K2X;
     }
 
     namespace ArcadeDrive
@@ -135,9 +135,9 @@ namespace driveConstants
         constexpr double TRACKWIDTH = 0.5722; //m
         constexpr double BASE_TRACK_RADIUS = TRACKWIDTH/2.0; //m
 
-        constexpr double MAX_LINEAR_SPEED = WHEEL_RADIUS * (2.0 * M_PI) * ((MOTOR_FREE_SPEED / GEAR_RATIO) / 60.0); // m.s-1
+        constexpr double MAX_LINEAR_SPEED = WHEEL_RADIUS * (2.0 * NF64_PI) * ((MOTOR_FREE_SPEED / GEAR_RATIO) / 60.0); // m.s-1
         constexpr double MAX_ROTATION_SPEED = MAX_LINEAR_SPEED / BASE_TRACK_RADIUS;
-        constexpr double LINEAR_TO_MOTOR_SPEED_FACTOR = (30.0 * GEAR_RATIO) / (M_PI * WHEEL_RADIUS); // RPM.s.m-1
+        constexpr double LINEAR_TO_MOTOR_SPEED_FACTOR = (30.0 * GEAR_RATIO) / (NF64_PI * WHEEL_RADIUS); // RPM.s.m-1
     }
     namespace Encoder
     {
@@ -149,7 +149,7 @@ namespace driveConstants
         constexpr int RIGHT_ID_ENCODER_B = 3;
         constexpr bool RIGHT_REVERSE_ENCODER = true;
 
-        constexpr double DISTANCE_PER_PULSE = (2.0 * M_PI * Specifications::WHEEL_RADIUS)/ENCODER_TICKS_PER_REVOLUTION_K2X;
+        constexpr double DISTANCE_PER_PULSE = (2.0 * NF64_PI * Specifications::WHEEL_RADIUS)/ENCODER_TICKS_PER_REVOLUTION_K2X;
     }
 
     namespace ArcadeDrive
@@ -219,9 +219,9 @@ namespace driveConstants
         constexpr double TRACKWIDTH = 0.554; //m //TUNEME
         constexpr double BASE_TRACK_RADIUS = TRACKWIDTH/2.0; //m
 
-        constexpr double MAX_LINEAR_SPEED = WHEEL_RADIUS * (2.0 * M_PI) * ((MOTOR_FREE_SPEED / GEAR_RATIO) / 60.0); // m.s-1
+        constexpr double MAX_LINEAR_SPEED = WHEEL_RADIUS * (2.0 * NF64_PI) * ((MOTOR_FREE_SPEED / GEAR_RATIO) / 60.0); // m.s-1
         constexpr double MAX_ROTATION_SPEED = MAX_LINEAR_SPEED / BASE_TRACK_RADIUS;
-        constexpr double LINEAR_TO_MOTOR_SPEED_FACTOR = (30.0 * GEAR_RATIO) / (M_PI * WHEEL_RADIUS); // RPM.s.m-1
+        constexpr double LINEAR_TO_MOTOR_SPEED_FACTOR = (30.0 * GEAR_RATIO) / (NF64_PI * WHEEL_RADIUS); // RPM.s.m-1
     }
     namespace Encoder
     {
@@ -233,7 +233,7 @@ namespace driveConstants
         constexpr int RIGHT_ID_ENCODER_B = 3;
         constexpr bool RIGHT_REVERSE_ENCODER = false;
 
-        constexpr double DISTANCE_PER_PULSE = (2.0 * M_PI * Specifications::WHEEL_RADIUS)/ENCODER_TICKS_PER_REVOLUTION_K2X;
+        constexpr double DISTANCE_PER_PULSE = (2.0 * NF64_PI * Specifications::WHEEL_RADIUS)/ENCODER_TICKS_PER_REVOLUTION_K2X;
     }
 
     namespace ArcadeDrive
@@ -254,7 +254,7 @@ namespace driveConstants
         constexpr double TIME_TO_STOP_FORWARD = 0.6; //TUNEME
 
         constexpr double SINUSOIDAL_CURVATURE_INTENSITY = 0.5; //TUNEME
-        constexpr double DENOMINATOR = 0.7071067812; // Precomputed value of sin(SINUSOIDAL_CURVATURE_INTENSITY{0.5} * M_PI_2)
+        constexpr double DENOMINATOR = 0.7071067812; // Precomputed value of sin(SINUSOIDAL_CURVATURE_INTENSITY{0.5} * NF64_PI_2)
 
         constexpr double QUICK_STOP_ALPHA = 0.1; //TUNEME
         constexpr double NEG_INERTIA_SCALAR = 4.0; //TUNEME

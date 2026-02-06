@@ -82,8 +82,7 @@ void DrivetrainIOFlex::UpdateInputs(DrivetrainIOInputs& inputs)
     inputs.robotPosition = m_odometry.UpdateUsingFusionTwistExp(inputs.leftSideTraveledDistance, inputs.rightSideTraveledDistance, TIME_PER_CYCLE);
     // inputs.robotPosition = m_odometry.UpdateOdometryFromVelocity(0.02);
 
-    // field.SetRobotPose(inputs.robotPosition); //for sim
-    // frc::SmartDashboard::PutData("Field",&field);
+    robotPoseLogger.Log(inputs.robotPosition);
     frc::SmartDashboard::PutBoolean("Drivetrain/LeftSide/Front/Connection", inputs.isFrontLeftMotorConnected);
     frc::SmartDashboard::PutBoolean("Drivetrain/RightSide/Back/Connection", inputs.isBackRightMotorConnected);
     frc::SmartDashboard::PutBoolean("Drivetrain/RightSide/Front/Connection", inputs.isFrontRightMotorConnected);

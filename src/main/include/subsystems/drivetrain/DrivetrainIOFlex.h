@@ -7,6 +7,8 @@
 #include "frc/Encoder.h"
 #include "LyonLib/localization/TankOdometryTracker.h"
 
+#include "LyonLib/logging/ComplexStructLogger.h"
+
 class DrivetrainIOFlex  final : public DrivetrainIO
 {
   private:
@@ -35,6 +37,8 @@ class DrivetrainIOFlex  final : public DrivetrainIO
   double m_realRightSideSpeed{0.0};
 
   TankOdometryTracker m_odometry{&m_realLeftSideSpeed, &m_realRightSideSpeed, driveConstants::Specifications::TRACKWIDTH};
+
+  StructLogger<frc::Pose2d> robotPoseLogger{"Drivetrain/Odometry/Pose2d"};
 
   public:
     DrivetrainIOFlex();
