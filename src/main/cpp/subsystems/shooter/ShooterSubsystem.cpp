@@ -88,7 +88,6 @@ void ShooterSubsystem::Periodic()
     m_currentWantedState = m_wantedState;
     m_timestamp = TimerRBL::GetFPGATimestampInSeconds();
 
-    std::cout << "cc"<< std::endl;
     m_pShooterIO->UpdateInputs(inputs);
     m_logger.Log(inputs);
     

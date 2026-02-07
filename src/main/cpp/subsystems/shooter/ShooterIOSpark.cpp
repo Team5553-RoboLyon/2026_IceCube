@@ -86,6 +86,8 @@ void ShooterIOSpark::UpdateInputs(ShooterIOInputs& inputs)
     frc::SmartDashboard::PutNumber("voltageB", inputs.BottomMotorAppliedVoltage);
     frc::SmartDashboard::PutNumber("CurrentB", inputs.BottomMotorCurrent);
     frc::SmartDashboard::PutNumber("temperatureB", inputs.BottomMotorTemperature);
+
+    frc::SmartDashboard::PutNumber("Rotation", inputs.rotation);
 }
 
 void ShooterIOSpark::SetVoltage(double upVoltage, double bottomVoltage)
