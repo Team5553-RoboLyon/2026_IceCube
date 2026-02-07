@@ -131,9 +131,9 @@ void ClimberSubsystem::Periodic()
 
 
      // ----------------- Limits -----------------
-    if (inputs.climberPos > ClimberConstants::Specifications::MAX_POSITION && m_output > 0.0)
+    if (inputs.climberPos >= ClimberConstants::Specifications::MAX_POSITION && m_output > 0.0)
         m_output = 0.0;
-    else if (inputs.climberPos < ClimberConstants::Specifications::MIN_POSITION && m_output < 0.0)
+    else if (inputs.climberPos <= ClimberConstants::Specifications::MIN_POSITION && m_output < 0.0)
         m_output = 0.0;
 
     // Apply output

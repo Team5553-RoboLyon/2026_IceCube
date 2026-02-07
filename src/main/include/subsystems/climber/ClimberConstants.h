@@ -14,7 +14,7 @@ namespace ClimberConstants
         namespace climberMotor
     {
         constexpr int ID = 13;
-        constexpr bool INVERTED = true;
+        constexpr bool INVERTED = false;
 
         constexpr IdleMode IDLE_MODE = IdleMode::kBrake;
         constexpr double VOLTAGE_COMPENSATION = 12.0;
@@ -29,9 +29,9 @@ namespace ClimberConstants
     {
         constexpr int ID_CHANNEL_A = 8;
         constexpr int ID_CHANNEL_B = 9;
-        constexpr bool INVERTED = true;
+        constexpr bool INVERTED = false;
         
-        constexpr double DISTANCE_PER_PULSE = 2.0*42.0*NF64_PI; //in mm
+        constexpr double DISTANCE_PER_PULSE = 2.0*42.0*NF64_PI/2048.0; //in mm
     }
 
     
@@ -40,7 +40,7 @@ namespace ClimberConstants
     {
         constexpr double GEAR_RATIO = 125.0; //ul
         constexpr double climberMotor_FREE_SPEED = climberMotor::VOLTAGE_COMPENSATION * climberMotor::KV; //RPM
-        constexpr double MAX_POSITION = 8.0; //in mm
+        constexpr double MAX_POSITION = 2.0; //in mm
         constexpr double MIN_POSITION = 0.0; //in mm
     }
 
