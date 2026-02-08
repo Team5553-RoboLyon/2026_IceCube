@@ -11,6 +11,11 @@ IntakeIOLogger::IntakeIOLogger(wpi::log::DataLog& log, const std::string& path)
           pivotMotorAppliedVoltage(log, path + "/pivotMotor" + "/AppliedVoltage"),
           pivotMotorBusVoltage(log, path + "/pivotMotor" + "/BusVoltage"),
           pivotMotorTemperature(log, path + "/pivotMotor" + "/Temperature"),
+          isMichelMotorConnected(log, path + "/pivotMotor" + "/isConnected"),
+          michelMotorCurrent(log, path + "/pivotMotor" + "/Current"),
+          michelMotorAppliedVoltage(log, path + "/michelMotor" + "/AppliedVoltage"),
+          michelMotorBusVoltage(log, path + "/michelMotor" + "/BusVoltage"),
+          michelMotorTemperature(log, path + "/michelMotor" + "/Temperature"),
           
           m_path(path)
 {}
@@ -26,5 +31,9 @@ void IntakeIOLogger::Log(const IntakeIOInputs& inputs) {
     pivotMotorBusVoltage.Append(inputs.pivotMotorBusVoltage);
     pivotMotorCurrent.Append(inputs.pivotMotorCurrent);
     pivotMotorTemperature.Append(inputs.pivotMotorTemperature);
-    
+    isMichelMotorConnected.Append(inputs.isMichelMotorConnected);
+    michelMotorAppliedVoltage.Append(inputs.pivotMotorAppliedVoltage);
+    michelMotorBusVoltage.Append(inputs.pivotMotorBusVoltage);
+    michelMotorCurrent.Append(inputs.pivotMotorCurrent);
+    michelMotorTemperature.Append(inputs.pivotMotorTemperature);
 }

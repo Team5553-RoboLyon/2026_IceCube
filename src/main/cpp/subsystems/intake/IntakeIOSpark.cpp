@@ -49,13 +49,21 @@ void IntakeIOSpark::UpdateInputs(IntakeIOInputs& inputs)
     inputs.pivotMotorCurrent = m_pivotMotor.GetOutputCurrent();
     inputs.pivotMotorTemperature = m_pivotMotor.GetMotorTemperature();
 
+    inputs.isMichelMotorConnected = (m_michelMotor.GetBusVoltage() !=0.0) && !m_michelMotor.GetFaults().can;
+
+    inputs.michelAppliedVoltage = m_pivotMotor.GetAppliedOutput() * IntakeConstants::pivotMotor::VOLTAGE_COMPENSATION;
+    inputs.michelBusVoltage = m_pivotMotor.GetBusVoltage();
+    inputs.michelCurrent = m_pivotMotor.GetOutputCurrent();
+    inputs.michelTemperature = m_pivotMotor.GetMotorTemperature();
+
+
     inputs.pivotPos = IntakeConstants::Specifications::STARTING_POS+m_pivotEncoder.GetDistance();
 
     frc::SmartDashboard::PutNumber("intake/IntakeMotorVelocity", m_intakeMotor.GetEncoder().GetVelocity());
     frc::SmartDashboard::PutNumber("intake/PivotPos", inputs.pivotPos);   
 }
 
-void IntakeIOSpark::SetVoltage(double intakeVoltage, double pivotVoltage)
+void IntakeIOSpark::SetVoltage(double intakeVoltage, double pivotVoltage, double michelVoltage)
 {
     DEBUG_ASSERT((intakeVoltage <= IntakeConstants::intakeMotor::VOLTAGE_COMPENSATION) 
         && (intakeVoltage >= -IntakeConstants::intakeMotor::VOLTAGE_COMPENSATION) 
@@ -63,12 +71,16 @@ void IntakeIOSpark::SetVoltage(double intakeVoltage, double pivotVoltage)
     DEBUG_ASSERT((pivotVoltage <= IntakeConstants::pivotMotor::VOLTAGE_COMPENSATION) 
         && (pivotVoltage >= -IntakeConstants::pivotMotor::VOLTAGE_COMPENSATION) 
         ,"Intake Voltage out of range");
+    DEBUG_ASSERT((michelVoltage <= IntakeConstants::michelMotor::VOLTAGE_COMPENSATION) 
+        && (michelVoltage >= -IntakeConstants::michelMotor::VOLTAGE_COMPENSATION) 
+        ,"Intake Voltage out of range");
 
     m_intakeMotor.SetVoltage(units::volt_t(intakeVoltage));
     m_pivotMotor.SetVoltage(units::volt_t(pivotVoltage));
+    m_michelMotor.SetVoltage(units::volt_t(michelVoltage));
 }
 
-void IntakeIOSpark::SetDutyCycle(double intakeDutyCycle, double pivotDutyCycle)
+void IntakeIOSpark::SetDutyCycle(double intakeDutyCycle, double pivotDutyCycle, double michelDutyCycle)
 {
     DEBUG_ASSERT((intakeDutyCycle <= 1.0) && (intakeDutyCycle >= -1.0) 
         ,"Intake Duty Cycle out of range");
@@ -76,6 +88,7 @@ void IntakeIOSpark::SetDutyCycle(double intakeDutyCycle, double pivotDutyCycle)
         ,"Intake Duty Cycle out of range");
     m_intakeMotor.Set(pivotDutyCycle);
     m_pivotMotor.Set(pivotDutyCycle);
+    m_michelMotor.Set(michelDutyCycle);
 }
 
 void IntakeIOSpark::ResetEncoder()

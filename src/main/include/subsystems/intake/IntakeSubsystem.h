@@ -57,11 +57,13 @@ class IntakeSubsystem : public frc2::SubsystemBase {
     // === Control Inputs / Outputs ===
       double m_intakeOutput{0.0};
       double m_pivotOutput{0.0};
+      double m_michelOutput{0.0};
       double m_manualControlInput{0.0};
       double m_timestamp{0.0};
       // std::function<double()> m_fxAxis; //temporary
       TunableValueLogger m_tunablePivotVoltageLogger{"Intake/PivotVoltage", 0.0}; //RPM
       TunableValueLogger m_tunableIntakeVoltageLogger{"Intake/IntakeVoltage", 0.0}; //RPM
+      TunableValueLogger m_tunableMichelVoltageLogger{"Intake/MichelVoltage", 0.0}; //RPM
     // === Status Flags ===
       bool m_isInitialized = true;
     // === System Alerts ===
@@ -71,6 +73,9 @@ class IntakeSubsystem : public frc2::SubsystemBase {
       Alert m_pivotMotorDisconnected{"Pivot motor: Disconnected", Alert::AlertType::ERROR};
       Alert m_pivotMotorHot{"Pivot motor: Temperature exceeds 60°C", Alert::AlertType::WARNING};
       Alert m_pivotMotorOverheating{"Pivot motor: Temperature exceeds 75°C", Alert::AlertType::ERROR};
+      Alert m_michelMotorDisconnected{"Michel motor: Disconnected", Alert::AlertType::ERROR};
+      Alert m_michelMotorHot{"Michel motor: Temperature exceeds 60°C", Alert::AlertType::WARNING};
+      Alert m_michelMotorOverheating{"Michel motor: Temperature exceeds 75°C", Alert::AlertType::ERROR};
     // === Internal Methods ===
       void RunStateMachine();
 };

@@ -21,6 +21,11 @@ private:
     wpi::log::DoubleLogEntry pivotMotorAppliedVoltage;
     wpi::log::DoubleLogEntry pivotMotorBusVoltage;
     wpi::log::DoubleLogEntry pivotMotorTemperature;
+    wpi::log::BooleanLogEntry isMichelMotorConnected;
+    wpi::log::DoubleLogEntry michelMotorCurrent;
+    wpi::log::DoubleLogEntry michelMotorAppliedVoltage;
+    wpi::log::DoubleLogEntry michelMotorBusVoltage;
+    wpi::log::DoubleLogEntry michelMotorTemperature;
     
 
     const std::string& m_path;
