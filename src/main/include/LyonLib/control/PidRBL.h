@@ -1,14 +1,13 @@
 /*******************************************************************************
  * 
- * File        : PidRBL.h (v3.4)
- * Library     : LyonLib (from 2025_BRICE)
+ * File        : PidRBL.h (v4.1)
+ * Library     : LyonLib (from 2026)
  * Description : Advanced PID controller class implementing 
- *               Proportional-Integral-Derivative control with optional 
- *               Feedforward. Supports real-time update, input/output clamping, 
- *               tolerance checking, and continuous inputs (e.g. angle 
+ *               Proportional-Integral-Derivative control. Supports real-time 
+ *               update, input/output clamping, and continuous inputs (e.g. angle 
  *               wrap-around).
  * 
- * Authors     : Gaspard (2023), last update by AKA (2025) 
+ * Authors     : Gaspard (2023), last update by AKA (2026) 
  *                                and inspired by Team 1678
  * Organization: Robo'Lyon - FRC Team 5553
  *               Lycée Notre-Dame-de-Bellegarde, France
@@ -24,43 +23,24 @@ class PidRBL {
 public :
   PidRBL();
   PidRBL(const double kp, const double ki, const double kd);
-  PidRBL(double kp, double ki, double kd, double ff);
 
 
   /**
-   * @brief Sets the PIDF (Proportional, Integral, Derivative, Feedforward) gains for the controller.
+   * @brief Sets the PID (Proportional, Integral, Derivative) gains for the controller.
    * 
    * @note This function calls Reset() internally to clear the previous state of the controller.
    * 
    * @param kp The proportional gain, which determines the reaction to the current error.
    * @param ki The integral gain, which determines the reaction based on the accumulation of past errors.
    * @param kd The derivative gain, which determines the reaction based on the rate of change of the error.
-   * @param ff The feedforward term, which provides a baseline output independent of the error (default is 0.0).
    */
-  void SetGains(const double kp, const double ki, const double kd, const double ff = 0.0);
-  /**
-   * @brief Sets the feedforward gain for the PID controller.
-   * 
-   * @warning This function must be called before Calculate() to ensure that the 
-   *          feedforward gain is applied correctly.
-   * 
-   * @param kf The feedforward term value to be set. This value is used to 
-   *        directly scale the input to the controller, providing a baseline 
-   *        output that is independent of the error.
-   */
-  void SetFeedforward(const double ff);
+  void SetGains(const double kp, const double ki, const double kd);
   /**
    * @brief Sets the desired setpoint for the PID controller, clamping it within the allowed input range.
    * 
    * @param setpoint The desired setpoint value for the PID controller.
    */
   void SetSetpoint(const double setpoint);
-  /**
-   * @brief Sets the tolerance for the PID controller.
-   * 
-   * @param tolerance The absolute error below which the controller is considered "at setpoint"
-   */
-  void SetTolerance(const double tolerance);
   /**
    * Sets the output limits for the PID controller.
    *
@@ -98,7 +78,6 @@ public :
   double GetKP() const;
   double GetKI() const;
   double GetKD() const;
-  double GetFF() const;
   double GetError() const;
   double GetSetpoint() const;
   /**
@@ -165,33 +144,27 @@ public :
    * controller.
    */
   void ResetIntegrative();
-  /**
-   * @brief Determines if the current error with the setpoint is within the acceptable tolerance.
-   * @return true if the current error is within the tolerance, false otherwise.
-   */
-  bool AtSetpoint() const;
 private:
 
   double m_kp;  // factor for Proportional gain
   double m_ki;  // factor for Integral gain
   double m_kd;  // factor for Derivative gain
-  double m_feedforward;  // Feedforward term
+  double m_kaw{0.0}; // Anti-windup back-calculation gain
 
   double m_outputMin{-1.0};   // Min output value
   double m_outputMax{1.0};    // Max output value
-  double m_inputMin;    // Min setpoint value allowed
-  double m_inputMax;    // Max setpoint value allowed
+  double m_inputMin{0.0};    // Min setpoint value allowed
+  double m_inputMax{0.0};    // Max setpoint value allowed
 
   bool m_isContinuous{false}; // do the endpoints wrap around?
   bool m_isInputLimitsActive{false}; // When set to true, the inputs will be constrained within specified limits.
 
-  double m_previousError{0.0};  // the prior error for derivative calculation
+  double m_previousMeasurement{0.0};  // the prior measurement for derivative calculation
   double m_integrative{0.0};     // Total accumulated error for integral term
   double m_setpoint{0.0};       // Desired setpoint
-  double m_currentError;        // Error between the setpoint and the measurement
+  double m_currentError{0.0};        // Error between the setpoint and the measurement
 
-  double m_output;              // Output of the PID controller.
-  double m_tolerance{0.0};      // Tolerance for considering the measurement at the setpoint.
+  double m_output{0.0};              // Output of the PID controller.
   
   double m_lastTimestamp{0.0};  // Last time the PID controller was updated
   double m_dt{THEORETICAL_DT}; // Time step for the PID controller, default in  FRC is 20ms
