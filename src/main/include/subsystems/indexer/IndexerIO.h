@@ -8,7 +8,13 @@ struct IndexerIOInputs
     double indexerMotorBusVoltage = 0.0;
     double indexerMotorCurrent = 0.0;
     double indexerMotorTemperature = 0.0;
-    
+
+    bool isClodeMotorConnected = true;
+
+    double clodeAppliedVoltage = 0.0;
+    double clodeBusVoltage = 0.0;
+    double clodeCurrent = 0.0;
+    double clodeTemperature = 0.0;
 };
 
 
@@ -18,8 +24,8 @@ public:
 
     virtual void UpdateInputs(IndexerIOInputs& inputs) = 0;
 
-    virtual void SetVoltage(double voltage) = 0; 
-    virtual void SetDutyCycle(double dutyCycle) = 0;
+    virtual void SetVoltage(double voltage, double clodeVoltage) = 0; 
+    virtual void SetDutyCycle(double dutyCycle, double clodeDutyCycle) = 0;
 
     
 };

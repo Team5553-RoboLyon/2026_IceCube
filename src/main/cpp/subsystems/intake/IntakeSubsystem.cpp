@@ -27,7 +27,7 @@ void IntakeSubsystem::SetControlMode(const ControlMode mode)
     case ControlMode::MANUAL_VOLTAGE:
         m_intakeOutput = 0.0;
         m_pivotOutput = 0.0;
-        m_michelOutput = 0.0;
+        
         m_manualControlInput = 0.0;
 
         m_controlMode = mode;
@@ -36,7 +36,7 @@ void IntakeSubsystem::SetControlMode(const ControlMode mode)
     case ControlMode::MANUAL_VELOCITY:
         m_intakeOutput = IntakeConstants::Speed::REST;
         m_pivotOutput = IntakeConstants::Speed::REST;
-        m_michelOutput = IntakeConstants::Speed::REST;
+        
         m_manualControlInput = IntakeConstants::Speed::REST;
 
         m_controlMode = mode;
@@ -45,7 +45,6 @@ void IntakeSubsystem::SetControlMode(const ControlMode mode)
     case ControlMode::DISABLED :
         m_intakeOutput = IntakeConstants::Speed::REST;
         m_pivotOutput = IntakeConstants::Speed::REST;
-        m_michelOutput = IntakeConstants::Speed::REST;
 
         m_controlMode = mode;
         break; //end of ControlMode::DISABLED
@@ -113,9 +112,6 @@ void IntakeSubsystem::Periodic()
     m_pivotMotorDisconnected.Set(!inputs.isPivotMotorConnected);
     m_pivotMotorHot.Set(inputs.pivotMotorTemperature > IntakeConstants::pivotMotor::HOT_THRESHOLD);
     m_pivotMotorOverheating.Set(inputs.pivotMotorTemperature > IntakeConstants::pivotMotor::OVERHEATING_THRESHOLD);
-    m_michelMotorDisconnected.Set(!inputs.isMichelMotorConnected);
-    m_michelMotorHot.Set(inputs.michelTemperature > IntakeConstants::michelMotor::HOT_THRESHOLD);
-    m_michelMotorOverheating.Set(inputs.michelTemperature > IntakeConstants::michelMotor::OVERHEATING_THRESHOLD);
     
     if(!m_isInitialized)
     {
@@ -141,7 +137,6 @@ void IntakeSubsystem::Periodic()
         case ControlMode::MANUAL_VOLTAGE:
             m_intakeOutput = m_tunableIntakeVoltageLogger.Get();
             m_pivotOutput = m_tunablePivotVoltageLogger.Get();
-            m_michelOutput = m_tunableMichelVoltageLogger.Get();
             break;
         default:
             DEBUG_ASSERT(false, "Intake : impossible state");
@@ -161,7 +156,7 @@ void IntakeSubsystem::Periodic()
     }
 
     // Apply output
-    m_pIntakeIO->SetVoltage(m_intakeOutput, m_pivotOutput, m_michelOutput);
+    m_pIntakeIO->SetVoltage(m_intakeOutput, m_pivotOutput);
 
         //LOG
     frc::SmartDashboard::PutNumber("intake/WantedState", (int)m_currentWantedState);

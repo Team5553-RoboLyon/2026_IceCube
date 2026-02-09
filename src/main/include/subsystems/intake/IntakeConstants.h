@@ -38,19 +38,6 @@ namespace IntakeConstants
         constexpr int OVERHEATING_THRESHOLD = 75;
         constexpr int KV = 496.3; // RPM.V-1
     }
-        namespace michelMotor
-    {
-        constexpr int ID = 9;
-        constexpr bool INVERTED = true;
-
-        constexpr IdleMode IDLE_MODE = IdleMode::kCoast;
-        constexpr double VOLTAGE_COMPENSATION = 12.0;
-        constexpr double CURRENT_LIMIT = 20.0;
-        constexpr double RAMP_RATE = 0.5;
-        constexpr int HOT_THRESHOLD = 60;
-        constexpr int OVERHEATING_THRESHOLD = 75;
-        constexpr int KV = 917; // RPM.V-1
-    }
 
     namespace Encoder 
     {
@@ -72,8 +59,7 @@ namespace IntakeConstants
         constexpr double STARTING_POS = PIVOT_MAX_EXTENSION;
         constexpr double intakeMotor_FREE_SPEED = intakeMotor::VOLTAGE_COMPENSATION * intakeMotor::KV; //RPM
         constexpr double pivotMotor_FREE_SPEED = pivotMotor::VOLTAGE_COMPENSATION * pivotMotor::KV; //RPM
-        constexpr double Michel_FREE_SPEED = pivotMotor::VOLTAGE_COMPENSATION * michelMotor::KV; //RPM
-    }
+    } 
 
     namespace Gains
     {

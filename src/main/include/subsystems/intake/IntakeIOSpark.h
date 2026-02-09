@@ -14,8 +14,6 @@ class IntakeIOSpark  final : public IntakeIO
     rev::spark::SparkBaseConfig m_intakeMotorConfig;
     rev::spark::SparkMax m_pivotMotor { IntakeConstants::pivotMotor::ID, rev::spark::SparkMax::MotorType::kBrushless};
     rev::spark::SparkBaseConfig m_pivotMotorConfig;
-    rev::spark::SparkMax m_michelMotor { IntakeConstants::michelMotor::ID, rev::spark::SparkMax::MotorType::kBrushless};
-    rev::spark::SparkBaseConfig m_michelMotorConfig;
 
     frc::Encoder m_pivotEncoder{IntakeConstants::Encoder::ID_CHANNEL_A, IntakeConstants::Encoder::ID_CHANNEL_B, IntakeConstants::Encoder::INVERTED, frc::Encoder::EncodingType::k2X};
     
@@ -24,8 +22,8 @@ class IntakeIOSpark  final : public IntakeIO
     ~IntakeIOSpark() = default;
 
     void UpdateInputs(IntakeIOInputs& inputs) override;
-    void SetVoltage(double intakeVoltage, double pivotVoltage, double michelVoltage) override; //COMMENTME
-    void SetDutyCycle(double intakeDutyCycle, double pivotDutyCycle, double michelVoltage) override; //COMMENTME
+    void SetVoltage(double intakeVoltage, double pivotVoltage) override; //COMMENTME
+    void SetDutyCycle(double intakeDutyCycle, double pivotDutyCycle) override; //COMMENTME
 
     void ResetEncoder() override;
 };
