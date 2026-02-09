@@ -57,17 +57,16 @@ void Robot::AutonomousExit() {}
 
 void Robot::TeleopInit() {}
 void Robot::TeleopPeriodic() {
-  if (m_container.operatorGamepad.GetTriangleButtonPressed())
-    m_container.climber.ResetEncoder();
 }
 void Robot::TeleopExit() {}
 
 void Robot::DisabledInit() {
-  m_container.climber.SetControlMode(ClimberConstants::EmergencyControlMode);
+  m_container.climber.SetControlMode(ControlMode::DISABLED);
 }
 void Robot::DisabledPeriodic() {}
 void Robot::DisabledExit() {
   m_container.climber.SetControlMode(ClimberConstants::MainControlMode);
+  m_container.climber.SetWantedState(ClimberSubsystem::WantedState::INITIALIZATION);
 }
 
 void Robot::TestInit() {}

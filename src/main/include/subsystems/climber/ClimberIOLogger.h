@@ -11,11 +11,15 @@ public:
     void Log(const ClimberIOInputs& inputs);
 
 private:
-        wpi::log::BooleanLogEntry isclimberMotorConnected;
-    wpi::log::DoubleLogEntry climberMotorCurrent;
-    wpi::log::DoubleLogEntry climberMotorAppliedVoltage;
-    wpi::log::DoubleLogEntry climberMotorBusVoltage;
-    wpi::log::DoubleLogEntry climberMotorTemperature;
+    wpi::log::BooleanLogEntry isMotorConnected;
+    wpi::log::DoubleLogEntry motorCurrent;
+    wpi::log::DoubleLogEntry motorAppliedVoltage;
+    wpi::log::DoubleLogEntry motorBusVoltage;
+    wpi::log::DoubleLogEntry motorTemperature;
+
+    wpi::log::DoubleLogEntry climberHeight;
+    wpi::log::DoubleLogEntry hallEffectSensorValue;
+    wpi::log::BooleanLogEntry bottomLimitSwitchValue;
     
 
     const std::string& m_path;

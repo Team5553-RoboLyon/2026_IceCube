@@ -22,11 +22,24 @@ class ClimberSubsystem : public frc2::SubsystemBase {
 
     enum class WantedState 
     {
-      STAND_BY // no wanted state scheduled. (It's all good man, it's all good !)
+      STAND_BY,         // no wanted state scheduled.
+      STOWED,           // Be safe inside frame perimeter (match default)
+      ARMED_TO_CLIMB,   // Ready to climb (extended but not loaded)
+      CLIMBED,          // Robot should be supported by the climber
+      RELEASED_CLIMB,    // Robot should be off the bar (declimbed)
+      INITIALIZATION
     };
     enum class SystemState
     {
-      IDLE
+      IDLE,
+      //Ste ady states
+      STOWED_HOME,      // Fully retracted, safe for match play
+      ARMED,            // Extended to pre-climb height
+      CLIMBED_LOCKED,   // robot hanging
+      //Transition state
+      EXTENDING_TO_ARMED,
+      RETRACTING_TO_HOME,
+      CLIMBING
     };
     void SetWantedState(const WantedState wantedState);
     SystemState GetSystemState();
@@ -37,8 +50,6 @@ class ClimberSubsystem : public frc2::SubsystemBase {
     bool IsResting();
     bool IsInitialized() { return m_isInitialized; }
     void SetManualControlInput(const double value);
-
-    void ResetEncoder();
 
     void Periodic() override;
   private:
@@ -60,10 +71,11 @@ class ClimberSubsystem : public frc2::SubsystemBase {
       TunableValueLogger m_tunableVoltage{"Climber/AppliedVoltage",0.0};
     // === Status Flags ===
       bool m_isInitialized = true;
+      bool m_isEncoderAlreadyReset = false; // Flag to prevent multiple encoder resets when hitting the bottom limit switch
     // === System Alerts ===
-      Alert m_climberMotorDisconnected{"Climber climberMotor: Disconnected", Alert::AlertType::ERROR};
-      Alert m_climberMotorHot{"Climber climberMotor: Temperature exceeds 60°C", Alert::AlertType::WARNING};
-      Alert m_climberMotorOverheating{"Climber climberMotor: Temperature exceeds 75°C", Alert::AlertType::ERROR};
+      Alert m_climberMotorDisconnected{"Climber Motor: Disconnected", Alert::AlertType::ERROR};
+      Alert m_climberMotorHot{"Climber Motor: Temperature exceeds 60°C", Alert::AlertType::WARNING};
+      Alert m_climberMotorOverheating{"Climber Motor: Temperature exceeds 75°C", Alert::AlertType::ERROR};
     // === Internal Methods ===
       void RunStateMachine();
 };

@@ -2,18 +2,22 @@
 
 #include "rev/SparkMax.h"
 
+#include "frc/Encoder.h"
+#include "frc/DigitalInput.h"
+#include "frc/AnalogInput.h"
 
 #include "ClimberIO.h"
 #include "ClimberConstants.h"
-#include <frc/Encoder.h>
 
 class ClimberIOSpark  final : public ClimberIO
 {
   private:
-        rev::spark::SparkMax m_climberMotor { ClimberConstants::climberMotor::ID, rev::spark::SparkMax::MotorType::kBrushless};
+        rev::spark::SparkMax m_climberMotor { ClimberConstants::Motor::ID, rev::spark::SparkMax::MotorType::kBrushless};
     rev::spark::SparkBaseConfig m_climberMotorConfig;
 
-    frc::Encoder m_climberEncoder{ClimberConstants::climberEncoder::ID_CHANNEL_A,ClimberConstants::climberEncoder::ID_CHANNEL_B, ClimberConstants::climberEncoder::INVERTED, frc::Encoder::EncodingType::k2X};
+    frc::Encoder m_climberEncoder{ClimberConstants::Encoder::ID_CHANNEL_A,ClimberConstants::Encoder::ID_CHANNEL_B, ClimberConstants::Encoder::INVERTED, frc::Encoder::EncodingType::k2X};
+    frc::DigitalInput m_bottomLimitSwitch{ClimberConstants::LimitSwitch::BOTTOM_CHANNEL};
+    frc::AnalogInput m_hallEffectSensor{ClimberConstants::HallEffectSensor::CHANNEL};
   public:
     ClimberIOSpark();
     ~ClimberIOSpark() = default;
@@ -22,5 +26,5 @@ class ClimberIOSpark  final : public ClimberIO
     void SetVoltage(double voltage) override; //COMMENTME
     void SetDutyCycle(double dutyCycle) override; //COMMENTME
 
-    void ResetEncoder() override;    
+    void ResetPosition() override;    
 };

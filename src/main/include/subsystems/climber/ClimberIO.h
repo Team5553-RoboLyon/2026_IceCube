@@ -2,14 +2,16 @@
 
 struct ClimberIOInputs
 {
-    bool isclimberMotorConnected = true;
+    bool isMotorConnected = true;
     
-    double climberMotorAppliedVoltage = 0.0;
-    double climberMotorBusVoltage = 0.0;
-    double climberMotorCurrent = 0.0;
-    double climberMotorTemperature = 0.0;
+    double motorAppliedVoltage = 0.0;
+    double motorBusVoltage = 0.0;
+    double motorCurrent = 0.0;
+    double motorTemperature = 0.0;
     
-    double climberPos = 0.0;
+    double climberHeight = 0.0;
+    double hallEffectSensorValue = 0.0;
+    bool bottomLimitSwitchValue = false;
 };
 
 
@@ -22,5 +24,5 @@ public:
     virtual void SetVoltage(double voltage) = 0; 
     virtual void SetDutyCycle(double dutyCycle) = 0;    
 
-    virtual void ResetEncoder() = 0;
+    virtual void ResetPosition() = 0;
 };
