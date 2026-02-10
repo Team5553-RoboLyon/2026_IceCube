@@ -8,7 +8,8 @@
 #include "Constants.h"
 
 #include "subsystems/intake/IntakeSubsystem.h"
-#include "subsystems/intake/IntakeIOSpark.h"
+#include "subsystems/intake/roller/RollerIOSpark.h"
+#include "subsystems/intake/pivot/PivotIOSpark.h"
 #include <frc/Joystick.h>
 
 #include "subsystems/indexer/IndexerSubsystem.h"
@@ -18,13 +19,13 @@ class RobotContainer {
  public:
   RobotContainer();
 
-  IntakeSubsystem intakeSubsystem{new IntakeIOSpark{}};
+  IntakeSubsystem intakeSubsystem{new RollerIOSpark{}, new PivotIOSpark{}};
   
   Operator operatorGamepad{ControlPanelConstants::OPERATOR_GAMEPAD_PORT, ControlPanelConstants::OPERATOR_GAMEPAD_THRESHOLD};
   frc::Joystick forwardJoystick{ControlPanelConstants::JOYSTICK_FORWARD_ID};
   frc::Joystick rotationJoystick{ControlPanelConstants::JOYSTICK_ROTATION_ID};
 
-  IndexerSubsystem indexer{new IndexerIOSpark};
+  IndexerSubsystem indexer{new IndexerIOSpark{}};
  private:
   void ConfigureBindings();
 };
