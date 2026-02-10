@@ -270,17 +270,6 @@ void IntakeSubsystem::Periodic()
         }
     }
 
-
-     // ----------------- Limits -----------------
-    if (m_pivotOutput > 0.0 && pivotInputs.pivotPos <= PivotConstants::Specifications::PIVOT_EXTENDED_POS)
-    {
-        m_pivotOutput = 0.0;
-    }
-    else if (m_pivotOutput < 0.0 && pivotInputs.pivotPos >= PivotConstants::Specifications::PIVOT_HOME_POS)
-    {
-        m_pivotOutput = 0.0;
-    }
-
     // Apply output
     switch(m_pivotControlMode)
     {
