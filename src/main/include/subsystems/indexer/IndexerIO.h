@@ -26,6 +26,5 @@ public:
 
     virtual void SetVoltage(double voltage, double clodeVoltage) = 0; 
     virtual void SetDutyCycle(double dutyCycle, double clodeDutyCycle) = 0;
-
-    
+    virtual void SetVelocity(double velocity, double clodeVoltage) = 0;
 };

@@ -11,7 +11,11 @@ IndexerIOSpark::IndexerIOSpark()
         .Inverted(IndexerConstants::indexerMotor::INVERTED)
         .SmartCurrentLimit(IndexerConstants::indexerMotor::CURRENT_LIMIT)
         .ClosedLoopRampRate(IndexerConstants::indexerMotor::RAMP_RATE)
-        .VoltageCompensation(IndexerConstants::indexerMotor::VOLTAGE_COMPENSATION);
+        .VoltageCompensation(IndexerConstants::indexerMotor::VOLTAGE_COMPENSATION)
+        .closedLoop.P(IndexerConstants::Gains::VELOCITY_DUTYCYCLE_PIDF::KP)
+        .I(IndexerConstants::Gains::VELOCITY_DUTYCYCLE_PIDF::KI)
+        .D(IndexerConstants::Gains::VELOCITY_DUTYCYCLE_PIDF::KD)
+        .VelocityFF(IndexerConstants::Gains::VELOCITY_DUTYCYCLE_PIDF::KF);
     // Apply the configs to the motors
     m_indexerMotor.Configure(  m_indexerMotorConfig, 
                             rev::ResetMode::kResetSafeParameters,
@@ -67,5 +71,10 @@ void IndexerIOSpark::SetDutyCycle(double dutyCycle, double clodeDutyCycle)
         ,"Indexer Duty Cycle out of range");
         m_indexerMotor.Set(dutyCycle);
         m_clodeMotor.Set(clodeDutyCycle);
+}
+
+void IndexerIOSpark::SetVelocity(double targetVelocity, double clodeVoltage)
+{
+    m_indexerPIDFController.SetSetpoint(targetVelocity,rev::spark::SparkLowLevel::ControlType::kVelocity);
 }
 

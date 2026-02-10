@@ -8,7 +8,7 @@ using IdleMode = rev::spark::SparkBaseConfig::IdleMode;
 
 namespace IndexerConstants
 {
-    constexpr ControlMode MainControlMode = ControlMode::MANUAL_VOLTAGE;
+    constexpr ControlMode MainControlMode = ControlMode::VELOCITY_DUTYCYCLE_PID;
     constexpr ControlMode EmergencyControlMode = ControlMode::DISABLED;
 
         namespace indexerMotor
@@ -49,13 +49,12 @@ namespace IndexerConstants
 
     namespace Gains
     {
-        namespace POSITION_DUTYCYCLE_PID
+        namespace VELOCITY_DUTYCYCLE_PIDF
         {
             constexpr double KP = 10.0; //TUNEME
             constexpr double KI = 0.0; //TUNEME
             constexpr double KD = 0.2; //TUNEME
-            constexpr double KG = 0.0; //TUNEME
-            constexpr double TOLERANCE = 0.001;
+            constexpr double KF = 0.2; //TUNEME
         }
         namespace MANUAL_SETPOINT_PID
         {
@@ -68,11 +67,19 @@ namespace IndexerConstants
     }
 
 
-    namespace Speed 
+    namespace Voltage 
     {
-        constexpr double MAX = 1.0; 
-        constexpr double MIN = -1.0;
         constexpr double REST = 0.0;
+        constexpr double MAX = indexerMotor::VOLTAGE_COMPENSATION; 
+        constexpr double MIN = -indexerMotor::VOLTAGE_COMPENSATION;
+        constexpr double CLODE_POWER = 8.0; //TUNEME
+    }
+
+    namespace Speed //in RPM
+    {
+        constexpr double REST = 0.0;
+        constexpr double FEED = 2500.0;
+        constexpr double EVACUATE = -1000.0;
     }
     
     namespace Settings
