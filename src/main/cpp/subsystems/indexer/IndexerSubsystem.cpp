@@ -27,6 +27,7 @@ void IndexerSubsystem::SetControlMode(const ControlMode mode)
     
     case ControlMode::MANUAL_DUTY_CYCLE:
         m_output = IndexerConstants::Speed::REST;
+        m_clodeOutput = 0.0;
         m_manualControlInput = IndexerConstants::Speed::REST;
 
         m_controlMode = mode;
@@ -34,6 +35,7 @@ void IndexerSubsystem::SetControlMode(const ControlMode mode)
     
     case ControlMode::DISABLED :
         m_output = IndexerConstants::Speed::REST;
+        m_clodeOutput = IndexerConstants::Speed::REST;
 
         m_controlMode = mode;
         break; //end of ControlMode::DISABLED
@@ -41,6 +43,7 @@ void IndexerSubsystem::SetControlMode(const ControlMode mode)
     case ControlMode::MANUAL_VOLTAGE:
         m_output = IndexerConstants::Speed::REST;
         m_manualControlInput = IndexerConstants::Speed::REST;
+        m_clodeOutput = IndexerConstants::Speed::REST;
 
         m_controlMode = mode;
         break; //end of ControlMode::MANUAL_VOLTAGE
@@ -98,6 +101,9 @@ void IndexerSubsystem::Periodic()
         m_indexerMotorDisconnected.Set(!inputs.isindexerMotorConnected);
     m_indexerMotorHot.Set(inputs.indexerMotorTemperature > IndexerConstants::indexerMotor::HOT_THRESHOLD);
     m_indexerMotorOverheating.Set(inputs.indexerMotorTemperature > IndexerConstants::indexerMotor::OVERHEATING_THRESHOLD);
+    m_clodeMotorDisconnected.Set(!inputs.isClodeMotorConnected);
+    m_clodeMotorHot.Set(inputs.clodeTemperature > IndexerConstants::clodeMotor::HOT_THRESHOLD);
+    m_clodeMotorOverheating.Set(inputs.clodeTemperature > IndexerConstants::clodeMotor::OVERHEATING_THRESHOLD);
     
     if(!m_isInitialized)
     {
@@ -117,6 +123,7 @@ void IndexerSubsystem::Periodic()
 
         case ControlMode::MANUAL_VOLTAGE:
             m_output = m_tunableVoltageLogger.Get();
+            m_clodeOutput = m_tunableClodeVoltageLogger.Get();
             break; //end of ControlMode::MANUAL_VOLTAGE
 
         case ControlMode::DISABLED :
@@ -133,7 +140,7 @@ void IndexerSubsystem::Periodic()
     
 
     // Apply output
-    m_pIndexerIO->SetDutyCycle(m_output);
+    m_pIndexerIO->SetVoltage(m_output, m_clodeOutput);
 
 
 

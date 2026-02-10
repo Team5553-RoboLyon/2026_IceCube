@@ -13,7 +13,7 @@ namespace IndexerConstants
 
         namespace indexerMotor
     {
-        constexpr int ID = 3;
+        constexpr int ID = 2;
         constexpr bool INVERTED = false;
 
         constexpr IdleMode IDLE_MODE = IdleMode::kCoast;
@@ -24,13 +24,27 @@ namespace IndexerConstants
         constexpr int OVERHEATING_THRESHOLD = 75;
         constexpr int KV = 496.3; // RPM.V-1
     }
+        namespace clodeMotor
+    {
+        constexpr int ID = 9;
+        constexpr bool INVERTED = true;
+
+        constexpr IdleMode IDLE_MODE = IdleMode::kCoast;
+        constexpr double VOLTAGE_COMPENSATION = 12.0;
+        constexpr double CURRENT_LIMIT = 20.0;
+        constexpr double RAMP_RATE = 0.5;
+        constexpr int HOT_THRESHOLD = 60;
+        constexpr int OVERHEATING_THRESHOLD = 75;
+        constexpr int KV = 917; // RPM.V-1
+    }
 
     
     
     namespace Specifications
     {
         constexpr double GEAR_RATIO = 3.0; //ul
-                constexpr double indexerMotor_FREE_SPEED = indexerMotor::VOLTAGE_COMPENSATION * indexerMotor::KV; //RPM
+        constexpr double indexerMotor_FREE_SPEED = indexerMotor::VOLTAGE_COMPENSATION * indexerMotor::KV; //RPM
+        constexpr double Clode_FREE_SPEED = clodeMotor::VOLTAGE_COMPENSATION * clodeMotor::KV; //RPM
     }
 
     namespace Gains
