@@ -282,8 +282,33 @@ void IntakeSubsystem::Periodic()
     }
 
     // Apply output
-    m_pRollerIO->SetVoltage(m_rollerOutput);
-    m_pPivotIO->SetVoltage(m_pivotOutput);
+    switch(m_pivotControlMode)
+    {
+        case ControlMode::DISABLED:
+        case ControlMode::MANUAL_VOLTAGE:
+            m_pPivotIO->SetVoltage(m_pivotOutput);
+            break;
+
+        case ControlMode::POSITION_DUTYCYCLE_PID:
+            m_pPivotIO->SetTargetPos(m_pivotTargetPos);
+            break;
+
+        default:
+            DEBUG_ASSERT(false,"Pivot : unknown conrtol mode");
+            break;
+    }
+    switch(m_rollerControlMode)
+    {
+        case ControlMode::DISABLED:
+        case ControlMode::MANUAL_VOLTAGE:
+        case ControlMode::VOLTAGE:
+            m_pRollerIO->SetVoltage(m_rollerOutput);
+            break;
+
+        default:
+            DEBUG_ASSERT(false,"Roller : unknown conrtol mode");
+            break;
+    }
 
         //LOG
     frc::SmartDashboard::PutNumber("intake/WantedState", (int)m_currentWantedState);
