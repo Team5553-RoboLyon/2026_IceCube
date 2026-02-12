@@ -1,10 +1,10 @@
 /*******************************************************************************
  * 
- * File        : MacroUtilsRBL.h (v1.1)
+ * File        : MacroUtilsRBL.h (v1.2)
  * Library     : LyonLib (from 2025_BRICE)
  * Description : mathematical and bit manipulation macros
  * 
- * Authors     : AKA (2025), last update by AKA (2025)
+ * Authors     : AKA (2025), last update by VTT (2026)
  * Organization: Robo'Lyon - FRC Team 5553
  *               Lycée Notre-Dame-de-Bellegarde, France
  * Github      : https://github.com/Team5553-RoboLyon
@@ -54,6 +54,7 @@
 #define NDEADBAND(a, t) (((a) > -(t) && (a) < (t)) ? 0 : (a))
 #define NCLAMP(mn, a, mx) (((a) < (mn)) ? (mn) : ((a) > (mx)) ? (mx) : (a))
 #define NEPSILON_EQUALS(a, b, epsilon) (((a) - (epsilon)) <= (b)) && (((a) + (epsilon)) >= (b))
+#define IS_IN_RANGE(val, target, tolerance)    ((val <= (target + tolerance)) && (val >= (target - tolerance)))
 
 #define NLERP(a, b, t)  ((a) + ((b) - (a)) * (t))
 
