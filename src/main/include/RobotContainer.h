@@ -16,7 +16,7 @@ class RobotContainer {
  public:
   RobotContainer();
 
-  TurretSubsystem turretSubsystem{new TurretIOSpark()};
+  TurretSubsystem turretSubsystem{new TurretIOSpark, new ShootParameters};
 
   Operator operatorGamepad{ControlPanelConstants::OPERATOR_GAMEPAD_PORT, ControlPanelConstants::OPERATOR_GAMEPAD_THRESHOLD};
   frc::Joystick forwardJoystick{ControlPanelConstants::JOYSTICK_FORWARD_ID};

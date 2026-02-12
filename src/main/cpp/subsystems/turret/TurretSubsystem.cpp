@@ -4,20 +4,18 @@
 
 #include "LyonLib/logging/DebugUtils.h"
 #include "LyonLib/utils/TimerRBL.h"
+#include "LyonLib/Utils/MacroUtilsRBL.h"
 
-TurretSubsystem::TurretSubsystem(TurretIO *pIO) : 
-                                                    m_pTurretIO(pIO)
+
+TurretSubsystem::TurretSubsystem(TurretIO *pIO, ShootParameters *pShootParams) : 
+                                                    m_pTurretIO(pIO), m_pShootParams(pShootParams)
 {
-    if(m_controlMode == ControlMode::MANUAL_POSITION)
-    {
-        m_TurretPIDController.SetGains(TurretConstants::Gains::MANUAL_SETPOINT_PID::KP, 
-                                TurretConstants::Gains::MANUAL_SETPOINT_PID::KI, 
-                                TurretConstants::Gains::MANUAL_SETPOINT_PID::KD);
-        m_TurretPIDController.SetTolerance(TurretConstants::Gains::MANUAL_SETPOINT_PID::TOLERANCE);
-    }
+    m_TurretPIDController.SetGains(TurretConstants::Gains::POSITION_DUTYCYCLE_PID::KP, 
+                                TurretConstants::Gains::POSITION_DUTYCYCLE_PID::KI, 
+                                TurretConstants::Gains::POSITION_DUTYCYCLE_PID::KD);
 
     m_TurretPIDController.Reset(m_timestamp);
-    m_TurretPIDController.SetOutputLimits(TurretConstants::Speed::MIN, TurretConstants::Speed::MAX);
+    m_TurretPIDController.SetOutputLimits(TurretConstants::DutyCycle::MIN, TurretConstants::DutyCycle::MAX);
     m_TurretPIDController.SetInputLimits(true);
     m_TurretPIDController.SetInputLimits( TurretConstants::Settings::BOTTOM_LIMIT, 
                                             TurretConstants::Settings::TOP_LIMIT);
@@ -37,35 +35,30 @@ void TurretSubsystem::SetControlMode(const ControlMode mode)
 {
     switch (mode)
     {
-    
-    case ControlMode::MANUAL_DUTY_CYCLE:
-        m_output = TurretConstants::Speed::REST;
-        m_manualControlInput = TurretConstants::Speed::REST;
+        case ControlMode::POSITION_DUTYCYCLE_PID:
+            m_output = TurretConstants::DutyCycle::REST;
+            m_targetPos = inputs.orientation;
 
-        m_controlMode = mode;
-        break; //end of ControlMode::MANUAL_DUTY_CYCLE
-    case ControlMode::MANUAL_POSITION:
-        m_output = TurretConstants::Speed::REST;
-        m_manualControlInput = inputs.orientation;
+            m_controlMode = mode;
+            break; //end of ControlMode::MANUAL_DUTY_CYCLE
 
-        m_TurretPIDController.Reset(m_timestamp);
-        m_TurretPIDController.SetGains(TurretConstants::Gains::MANUAL_SETPOINT_PID::KP, 
-                                TurretConstants::Gains::MANUAL_SETPOINT_PID::KI, 
-                                TurretConstants::Gains::MANUAL_SETPOINT_PID::KD);
-        m_TurretPIDController.SetTolerance(TurretConstants::Gains::MANUAL_SETPOINT_PID::TOLERANCE);
-        m_TurretPIDController.SetFeedforward(TurretConstants::Gains::MANUAL_SETPOINT_PID::KG);
+        case ControlMode::MANUAL_POSITION:
+            m_output = TurretConstants::DutyCycle::REST;
+            m_manualControlInput = TurretConstants::DutyCycle::REST;
+            m_targetPos = inputs.orientation;
 
-        m_controlMode = mode;
-        break; //end of ControlMode::MANUAL_POSITION
-    case ControlMode::DISABLED :
-        m_output = TurretConstants::Speed::REST;
+            m_controlMode = mode;
+            break; //end of ControlMode::MANUAL_POSITION
 
-        m_controlMode = mode;
-        break; //end of ControlMode::DISABLED
+        case ControlMode::DISABLED :
+            m_output = TurretConstants::DutyCycle::REST;
 
-    default:
-        DEBUG_ASSERT(false," Turret : SetControlMode impossible with an unrecognized mode.");
-        break; //end of default
+            m_controlMode = mode;
+            break; //end of ControlMode::DISABLED
+
+        default:
+            DEBUG_ASSERT(false," Turret : SetControlMode impossible with an unrecognized mode.");
+            break; //end of default
     }
 }
 
@@ -78,15 +71,15 @@ void TurretSubsystem::ToggleControlMode()
 {
     switch (m_controlMode)
     {
-    case TurretConstants::MainControlMode :
-        SetControlMode(TurretConstants::EmergencyControlMode);
-        break; //end of TurretConstants::MainControlMode
-    case TurretConstants::EmergencyControlMode : 
-        SetControlMode(TurretConstants::MainControlMode);
-        break; //end of TurretConstants::EmergencyControlMode
-    default:
-        DEBUG_ASSERT(false," Turret : Toggle impossible with an unrecognized mode.");
-        break; //end of default
+        case TurretConstants::MainControlMode :
+            SetControlMode(TurretConstants::EmergencyControlMode);
+            break; //end of TurretConstants::MainControlMode
+        case TurretConstants::EmergencyControlMode : 
+            SetControlMode(TurretConstants::MainControlMode);
+            break; //end of TurretConstants::EmergencyControlMode
+        default:
+            DEBUG_ASSERT(false," Turret : Toggle impossible with an unrecognized mode.");
+            break; //end of default
     }
 }
 
@@ -104,6 +97,16 @@ void TurretSubsystem::SetManualControlInput(const double value)
     }
 }
 
+void TurretSubsystem::SetRobotOrientation(double robotOrientation)
+{
+    m_robotOrientation = robotOrientation;
+}
+
+void TurretSubsystem::SetAlliance(frc::DriverStation::Alliance alliance)
+{
+    m_isInBlueAlliance = (alliance == frc::DriverStation::Alliance::kBlue);
+}
+
 // This method will be called once per scheduler run
 void TurretSubsystem::Periodic()
 {
@@ -111,6 +114,8 @@ void TurretSubsystem::Periodic()
     m_timestamp = TimerRBL::GetFPGATimestampInSeconds();
 
     m_pTurretIO->UpdateInputs(inputs);
+    m_turretCamera.UpdateResults();
+
     m_logger.Log(inputs);
     
     m_motorDisconnected.Set(!inputs.ismotorConnected);
@@ -129,24 +134,51 @@ void TurretSubsystem::Periodic()
 
         switch (m_controlMode) //actualise motion
         {
-        case ControlMode::MANUAL_DUTY_CYCLE :
-            m_output = m_manualControlInput;
-            break; //end of ControlMode::MANUAL_DUTY_CYCLE
+            case ControlMode::POSITION_DUTYCYCLE_PID :
+                if (inputs.orientation >= 0 && m_targetPos - inputs.orientation > M_PI)
+                    m_targetPos -= 2*M_PI;
+                else if (inputs.orientation <= 0 && m_targetPos - (inputs.orientation+2*M_PI) < M_PI)
+                    m_targetPos += 2*M_PI;
+                break; //end of ControlMode::MANUAL_DUTY_CYCLE
 
-        case ControlMode::MANUAL_POSITION :
-            m_manualControlInput = m_TurretPIDController.GetSetpoint() 
-                                + m_manualControlInput * TurretConstants::Settings::MANUAL_SETPOINT_CHANGE_LIMIT;
+                switch (m_systemState)
+                {
+                    case SystemState::IDLE:
+                    case SystemState::INACTIVE:
+                    case SystemState::READY_TO_EJECT:
+                        m_output = 0.0;
+                        break;
 
-            m_output = m_TurretPIDController.CalculateWithRealTime(m_manualControlInput,
-                                                                        inputs.orientation,
-                                                                        m_timestamp);
-            break; //end of ControlMode::MANUAL_POSITION
-        case ControlMode::DISABLED :
-            m_output = TurretConstants::Speed::REST;
-            break; //end of ControlMode::DISABLED
-        default:
-            DEBUG_ASSERT(false, "Turret : impossible state");
-            break; //end of default
+                    case SystemState::ALIGNED_WITH_HUB:
+                    case SystemState::POINTING_AT_ALLIANCE_ZONE:
+                    case SystemState::ALIGNING_WITH_HUB:
+                    case SystemState::ALIGNING_WITH_ALLIANCE_ZONE:
+                    case SystemState::SPINNING_TO_EJECT:
+                        m_output = m_TurretPIDController.CalculateWithRealTime(m_targetPos,inputs.orientation,m_timestamp);
+                        break;
+
+                    default:
+                        //TODO
+                        break;
+                }
+                break;
+
+            case ControlMode::MANUAL_POSITION :
+                m_manualControlInput = m_TurretPIDController.GetSetpoint() 
+                                    + m_manualControlInput * TurretConstants::Settings::MANUAL_SETPOINT_CHANGE_LIMIT;
+
+                m_output = m_TurretPIDController.CalculateWithRealTime(m_manualControlInput,
+                                                                            inputs.orientation,
+                                                                            m_timestamp);
+                break; //end of ControlMode::MANUAL_POSITION
+
+            case ControlMode::DISABLED :
+                m_output = TurretConstants::DutyCycle::REST;
+                break; //end of ControlMode::DISABLED
+
+            default:
+                DEBUG_ASSERT(false, "Turret : impossible state");
+                break; //end of default
         }
     }
 
@@ -165,7 +197,6 @@ void TurretSubsystem::Periodic()
     m_pTurretIO->SetDutyCycle(m_output);
 
 
-
         //LOG
     frc::SmartDashboard::PutNumber("turret/WantedState", (int)m_currentWantedState);
     frc::SmartDashboard::PutNumber("turret/SystemState", (int)m_systemState);
@@ -177,19 +208,98 @@ void TurretSubsystem::RunStateMachine()
 {
     switch (m_currentWantedState) //Handle State transition
     {
-    case WantedState::STAND_BY :
-        break; //end of Others States
-    default:
-        DEBUG_ASSERT(false, "turret : impossible state");
-        break; //end of default
+        case WantedState::STAND_BY :
+            if (m_systemState == SystemState::INACTIVE)
+                m_systemState = SystemState::INACTIVE;
+            break; //end of Others States
+
+        case WantedState::FOLLOW_HUB:
+            if (m_systemState == SystemState::ALIGNED_WITH_HUB)
+                m_systemState = SystemState::ALIGNING_WITH_HUB;
+            break;
+
+        case WantedState::POINT_AT_ALLIANCE_ZONE:
+            if (m_systemState == SystemState::POINTING_AT_ALLIANCE_ZONE)
+                m_systemState = SystemState::ALIGNING_WITH_ALLIANCE_ZONE;
+            break;
+
+        case WantedState::PREPARE_EJECT:
+            if (m_systemState == SystemState::READY_TO_EJECT)
+                m_systemState = SystemState::SPINNING_TO_EJECT;
+            break;
+
+        default:
+            DEBUG_ASSERT(false, "turret : impossible state");
+            break; //end of default
     }
 
     switch (m_systemState) // Change System State
     {
-    case SystemState::IDLE:
-        break; //end of SystemState::IDLE
-    default:
-        DEBUG_ASSERT(false, "turret : impossible state");
-        break; //end of default
+        case SystemState::IDLE:
+        case SystemState::INACTIVE:
+        case SystemState::READY_TO_EJECT:
+            break; //end of SystemState::IDLE 
+                   //   and SystemState::INACTIVE
+
+        case SystemState::ALIGNED_WITH_HUB:
+            if(m_targetPos < 0)
+                m_targetPos = m_pShootParams->lookAheadTargetTurretPos - 2*M_PI;
+            else
+                m_targetPos = m_pShootParams->lookAheadTargetTurretPos;
+
+            if (!IS_IN_RANGE(inputs.orientation, m_targetPos, TurretConstants::Gains::POSITION_DUTYCYCLE_PID::TOLERANCE))
+                m_systemState = SystemState::ALIGNING_WITH_HUB;
+            break;
+
+        case SystemState::POINTING_AT_ALLIANCE_ZONE:
+            if(m_isInBlueAlliance)
+                if (m_targetPos < 0)
+                    m_targetPos = -M_PI - m_robotOrientation;
+                else
+                    m_targetPos = M_PI - m_robotOrientation;
+            else
+                if (m_targetPos < 0)
+                    m_targetPos = -2*M_PI - m_robotOrientation;
+                else
+                    m_targetPos = -m_robotOrientation;
+
+            if(!IS_IN_RANGE(inputs.orientation, m_targetPos, TurretConstants::Gains::POSITION_DUTYCYCLE_PID::TOLERANCE))
+                m_systemState = SystemState::ALIGNING_WITH_ALLIANCE_ZONE;
+            break;
+
+        case SystemState::ALIGNING_WITH_HUB:
+            if(m_targetPos < 0)
+                m_targetPos = m_pShootParams->lookAheadTargetTurretPos - 2*M_PI;
+            else
+                m_targetPos = m_pShootParams->lookAheadTargetTurretPos;
+            if (IS_IN_RANGE(inputs.orientation, m_targetPos, TurretConstants::Gains::POSITION_DUTYCYCLE_PID::TOLERANCE))
+                m_systemState = SystemState::ALIGNED_WITH_HUB;
+            break;
+
+        case SystemState::ALIGNING_WITH_ALLIANCE_ZONE:
+           if(m_isInBlueAlliance)
+                if (m_targetPos < 0)
+                    m_targetPos = -M_PI - m_robotOrientation;
+                else
+                    m_targetPos = M_PI - m_robotOrientation;
+            else
+                if (m_targetPos < 0)
+                    m_targetPos = -2*M_PI - m_robotOrientation;
+                else
+                    m_targetPos = -m_robotOrientation;
+
+            if(IS_IN_RANGE(inputs.orientation, m_targetPos, TurretConstants::Gains::POSITION_DUTYCYCLE_PID::TOLERANCE))
+                m_systemState = SystemState::POINTING_AT_ALLIANCE_ZONE;
+            break;
+
+        case SystemState::SPINNING_TO_EJECT:
+            m_targetPos = TurretConstants::Specifications::EJECT_POS;
+            if(IS_IN_RANGE(inputs.orientation, m_targetPos, TurretConstants::Gains::POSITION_DUTYCYCLE_PID::TOLERANCE))
+                m_systemState = SystemState::READY_TO_EJECT;
+            break;
+        
+        default:
+            DEBUG_ASSERT(false, "turret : impossible state");
+            break; //end of default
     }
 }

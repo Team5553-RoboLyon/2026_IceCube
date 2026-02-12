@@ -1,5 +1,7 @@
 #pragma once
 #include "Lyonlib/utils/MacroUtilsRBL.h"
+#include "units/length.h"
+#include "frc/geometry/Pose2d.h"
 
 #define COMPETITON 0
 #define TRAINING 1
@@ -98,3 +100,22 @@ namespace ControlPanelConstants
     constexpr int OPERATOR_GAMEPAD_PORT = 2;
     constexpr double OPERATOR_GAMEPAD_THRESHOLD = 0.1;
 }  // namespace ControlPanelConstants
+
+namespace FieldConstants
+{
+    constexpr units::meter_t FIELD_LENGTH = 651.2_in;
+    constexpr units::meter_t FIELD_WIDTH = 317.7_in;
+
+    namespace AllianceZone
+    {
+        constexpr units::meter_t LENGTH = 158.6_in;
+        constexpr units::meter_t WIDTH = 317.7_in;
+    }
+
+    namespace Hub
+    {
+        constexpr units::meter_t WIDTH = 47_in;
+        constexpr frc::Pose2d BLUE_PLACEMENT = {AllianceZone::WIDTH + WIDTH/2.0, (FIELD_WIDTH+WIDTH)/2.0,{0.0_deg}}; //placement of the center point of the blue hub
+        constexpr frc::Pose2d RED_PLACEMENT = {FIELD_LENGTH - (AllianceZone::LENGTH + WIDTH), (FIELD_WIDTH+WIDTH)/2.0,{180.0_deg}}; //placement of the center point of the red hub
+    }
+}

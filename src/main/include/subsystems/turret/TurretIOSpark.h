@@ -9,11 +9,10 @@
 class TurretIOSpark  final : public TurretIO
 {
   private:
-        rev::spark::SparkMax m_motor { TurretConstants::motor::ID, rev::spark::SparkMax::MotorType::kBrushless};
+    rev::spark::SparkMax m_motor { TurretConstants::motor::ID, rev::spark::SparkMax::MotorType::kBrushless};
     rev::spark::SparkBaseConfig m_motorConfig;
-
-
-        frc::Encoder m_encoder {TurretConstants::encoder::A_ID, TurretConstants::encoder::B_ID, TurretConstants::encoder::REVERSED};
+    
+    frc::Encoder m_encoder {TurretConstants::encoder::A_ID, TurretConstants::encoder::B_ID, TurretConstants::encoder::REVERSED};
 
   public:
     TurretIOSpark();
