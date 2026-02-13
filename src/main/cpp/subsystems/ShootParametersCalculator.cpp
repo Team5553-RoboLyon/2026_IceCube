@@ -21,12 +21,12 @@ void ShootParametersCalculator::CalculateNewParameters(ShootParameters& params, 
     if (InBlueAlliance)
     {
         params.lookAheadTargetPos = FieldConstants::Hub::BLUE_PLACEMENT + robotDisplacement.Inverse();
-        params.lookAheadTargetTurretPos = WRAP_ANGLE_0_TO_2PI((FieldConstants::Hub::BLUE_PLACEMENT.Rotation().Radians() - robotPos.Rotation().Radians()).value());
+        params.lookAheadTargetTurretPos = WRAP_ANGLE_0_TO_2PI((FieldConstants::Hub::BLUE_PLACEMENT.Rotation().Radians() - newRobotPos.Rotation().Radians()).value());
     }
     else
     {
         params.lookAheadTargetPos = FieldConstants::Hub::RED_PLACEMENT + robotDisplacement.Inverse();
-        params.lookAheadTargetTurretPos = WRAP_ANGLE_0_TO_2PI((FieldConstants::Hub::RED_PLACEMENT.Rotation().Radians() - robotPos.Rotation().Radians()).value());
+        params.lookAheadTargetTurretPos = WRAP_ANGLE_0_TO_2PI((FieldConstants::Hub::RED_PLACEMENT.Rotation().Radians() - newRobotPos.Rotation().Radians()).value());
     }
 
     frc::Transform2d robotToLookAheadPos = (newRobotPos + TurretConstants::Specifications::ROBOT_TO_TURRET)-params.lookAheadTargetPos;
