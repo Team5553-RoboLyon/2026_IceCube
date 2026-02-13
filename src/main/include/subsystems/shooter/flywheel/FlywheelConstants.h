@@ -6,10 +6,10 @@
 
 using IdleMode = rev::spark::SparkBaseConfig::IdleMode;
 
-namespace ShooterConstants
+namespace FlywheelConstants
 {
-    constexpr ControlMode MainControlMode = ControlMode::VOLTAGE;
-    constexpr ControlMode EmergencyControlMode = ControlMode::DISABLED;
+    constexpr ControlMode MainControlMode = ControlMode::VELOCITY_DUTYCYCLE_PID;
+    constexpr ControlMode EmergencyControlMode = ControlMode::VOLTAGE;
 
     namespace LeftMotor
     {
@@ -17,7 +17,7 @@ namespace ShooterConstants
         constexpr bool INVERTED = false;
 
         constexpr IdleMode IDLE_MODE = IdleMode::kCoast;
-        constexpr double VOLTAGE_COMPENSATION = 12.0;
+        constexpr double VOLTAGE_COMPENSATION = 12.0; //TUNEME
         constexpr double CURRENT_LIMIT = 40.0;
         constexpr double RAMP_RATE = 0.5;
         constexpr int HOT_THRESHOLD = 60;
@@ -30,37 +30,12 @@ namespace ShooterConstants
         constexpr bool INVERTED = true;
 
         constexpr IdleMode IDLE_MODE = IdleMode::kCoast;
-        constexpr double VOLTAGE_COMPENSATION = 12.0;
+        constexpr double VOLTAGE_COMPENSATION = 12.0; //TUNEME
         constexpr double CURRENT_LIMIT = 40.0;
         constexpr double RAMP_RATE = 0.5;
         constexpr int HOT_THRESHOLD = 60;
         constexpr int OVERHEATING_THRESHOLD = 75;
         constexpr int KV = 568.8; // RPM.V-1
-    }
-    namespace BottomMotor
-    {
-        constexpr int ID = 3;
-        constexpr bool INVERTED = false;
-
-        constexpr IdleMode IDLE_MODE = IdleMode::kCoast;
-        constexpr double VOLTAGE_COMPENSATION = 12.0;
-        constexpr double CURRENT_LIMIT = 40.0;
-        constexpr double RAMP_RATE = 0.5;
-        constexpr int HOT_THRESHOLD = 60;
-        constexpr int OVERHEATING_THRESHOLD = 75;
-    }
-
-    namespace WheelEncoder 
-    {
-        constexpr int A_ID = 1;
-        constexpr int B_ID = 2;
-        constexpr bool REVERSED = false;
-        constexpr double DISTANCE_PER_PULSE = (1) / ENCODER_TICKS_PER_REVOLUTION_K2X;
-    }
-    namespace IRBreakerOutput 
-    {
-        constexpr int ID = 3;
-        constexpr bool IS_TRIGGERED = false;
     }
     
     namespace Specifications
@@ -72,29 +47,20 @@ namespace ShooterConstants
 
     namespace Gains
     {
-        namespace POSITION_DUTYCYCLE_PID
+        namespace VELOCITY_DUTYCYLE_PID
         {
             constexpr double KP = 10.0; //TUNEME
             constexpr double KI = 0.0; //TUNEME
             constexpr double KD = 0.2; //TUNEME
-            constexpr double KG = 0.0; //TUNEME
-            constexpr double TOLERANCE = 0.001;
-        }
-        namespace MANUAL_SETPOINT_PID
-        {
-            constexpr double KP = 8.0; //TUNEME
-            constexpr double KI = 0.0; //TUNEME
-            constexpr double KD = 0.1; //TUNEME
-            constexpr double KG = 0.0; //TUNEME
             constexpr double TOLERANCE = 0.001;
         }
     }
 
 
-    namespace Speed 
+    namespace Voltage 
     {
-        constexpr double MAX = 1.0; 
-        constexpr double MIN = -1.0;
+        constexpr double MAX = RightMotor::VOLTAGE_COMPENSATION;
+        constexpr double MIN = -RightMotor::VOLTAGE_COMPENSATION;
         constexpr double REST = 0.0;
     }
     

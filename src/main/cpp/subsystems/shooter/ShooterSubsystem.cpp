@@ -5,8 +5,8 @@
 #include "LyonLib/logging/DebugUtils.h"
 #include "LyonLib/utils/TimerRBL.h"
 
-ShooterSubsystem::ShooterSubsystem(ShooterIO *pIO) : 
-                                                    m_pShooterIO(pIO)
+ShooterSubsystem::ShooterSubsystem(FlywheelIO *pFlywheelIO, HoodIO *pHoodIO) : 
+                                                    m_pFlywheelIO(pFlywheelIO), m_pHoodIO(pHoodIO)
 {
 }
 
@@ -20,57 +20,121 @@ ShooterSubsystem::SystemState ShooterSubsystem::GetSystemState()
     return m_systemState;
 }
 
-void ShooterSubsystem::SetControlMode(const ControlMode mode)
+void ShooterSubsystem::SetControlMode(const ControlMode flywheelMode, const ControlMode hoodMode)
+{
+    SetFlywheelControlMode(flywheelMode);
+    SetHoodControlMode(hoodMode);
+}
+
+void ShooterSubsystem::SetFlywheelControlMode(const ControlMode mode)
 {
     switch (mode)
     {
-    
-    case ControlMode::VOLTAGE:
-        m_upVoltage = ShooterConstants::Speed::REST;
-        m_bottomVoltage = ShooterConstants::Speed::REST;
-        m_systemState = SystemState::REST;
-        m_wantedState = WantedState::STAND_BY;
+        case ControlMode::VELOCITY_VOLTAGE_PID:
+            m_flywheelOutput = FlywheelConstants::Voltage::REST;
+            m_systemState = SystemState::REST;
+            m_wantedState = WantedState::STAND_BY;
 
-        m_controlMode = mode;
-        break; //end of ControlMode::VOLTAGE
-    
-    case ControlMode::DISABLED :
-        m_upVoltage = ShooterConstants::Speed::REST;
-        m_bottomVoltage = ShooterConstants::Speed::REST;
+            m_flywheelControlMode = mode;
+            break; //end of ControlMode::VELOCITY_VOLTAGE_PID
 
-        m_controlMode = mode;
-        break; //end of ControlMode::DISABLED
+        case ControlMode::VOLTAGE:
+            m_flywheelOutput = FlywheelConstants::Voltage::REST;
+            m_systemState = SystemState::REST;
+            m_wantedState = WantedState::STAND_BY;
 
-    default:
-        DEBUG_ASSERT(false," Shooter : SetControlMode impossible with an unrecognized mode.");
-        break; //end of default
+            m_flywheelControlMode = mode;
+            break; //end of ControlMode::VOLTAGE
+        
+        case ControlMode::DISABLED:
+            m_flywheelOutput = FlywheelConstants::Voltage::REST;
+
+            m_flywheelControlMode = mode;
+            break; //end of ControlMode::DISABLED
+
+        default:
+            DEBUG_ASSERT(false," Shooter (Flywheel): SetControlMode impossible with an unrecognized mode.");
+            break; //end of default
     }
 }
 
-ControlMode ShooterSubsystem::GetControlMode()
+void ShooterSubsystem::SetHoodControlMode(const ControlMode mode)
 {
-    return m_controlMode;
+    switch(mode)
+    {
+        case ControlMode::POSITION_DUTYCYCLE_PID:
+            m_hoodOutput = HoodConstants::Voltage::REST;
+            m_systemState = SystemState::IDLE;
+            m_wantedState = WantedState::STAND_BY;
+
+            m_hoodControlMode = mode;
+            break;  //end of ControlMode::POSITION_DUTYCYCLE_PID
+
+        case ControlMode::VOLTAGE:
+            m_hoodOutput = HoodConstants::Voltage::REST;
+            m_systemState = SystemState::IDLE;
+            m_wantedState = WantedState::STAND_BY;
+
+            m_hoodControlMode = mode;
+            break;  //end of ControlMode::VOLTAGE
+
+        case ControlMode::DISABLED:
+            m_hoodOutput = HoodConstants::Voltage::REST;
+
+            m_hoodControlMode = mode;
+            break; //end of ControlMode::DISABLED
+
+        default:
+            DEBUG_ASSERT(false," Shooter (Hood): SetControlMode impossible with an unrecognized mode.");
+            break; //end of default
+    }
 }
 
-void ShooterSubsystem::ToggleControlMode()
+ControlMode ShooterSubsystem::GetFlywheelControlMode()
 {
-    switch (m_controlMode)
+    return m_flywheelControlMode;
+}
+
+ControlMode ShooterSubsystem::GetHoodControlMode()
+{
+    return m_hoodControlMode;
+}
+
+void ShooterSubsystem::ToggleFlywheelControlMode()
+{
+    switch (m_flywheelControlMode)
     {
-    case ShooterConstants::MainControlMode :
-        SetControlMode(ShooterConstants::EmergencyControlMode);
-        break; //end of ShooterConstants::MainControlMode
-    case ShooterConstants::EmergencyControlMode : 
-        SetControlMode(ShooterConstants::MainControlMode);
-        break; //end of ShooterConstants::EmergencyControlMode
-    default:
-        DEBUG_ASSERT(false," Shooter : Toggle impossible with an unrecognized mode.");
-        break; //end of default
+        case FlywheelConstants::MainControlMode :
+            SetFlywheelControlMode(FlywheelConstants::EmergencyControlMode);
+            break; //end of FlywheelConstants::MainControlMode
+        case FlywheelConstants::EmergencyControlMode : 
+            SetFlywheelControlMode(FlywheelConstants::MainControlMode);
+            break; //end of FlywheelConstants::EmergencyControlMode
+        default:
+            DEBUG_ASSERT(false," Shooter (Flywheel) : Toggle impossible with an unrecognized mode.");
+            break; //end of default
+    }
+}
+
+void ShooterSubsystem::ToggleHoodControlMode()
+{
+    switch (m_hoodControlMode)
+    {
+        case HoodConstants::MainControlMode :
+            SetHoodControlMode(HoodConstants::EmergencyControlMode);
+            break; //end of HoodConstants::MainControlMode
+        case HoodConstants::EmergencyControlMode : 
+            SetHoodControlMode(HoodConstants::MainControlMode);
+            break; //end of HoodConstants::EmergencyControlMode
+        default:
+            DEBUG_ASSERT(false," Shooter (Hood): Toggle impossible with an unrecognized mode.");
+            break; //end of default
     }
 }
 
 void ShooterSubsystem::SetManualControlInput(const double value)
 {
-    if(BYPASS_STATE_MACHINE(m_controlMode))
+    if(BYPASS_STATE_MACHINE(m_flywheelControlMode) || BYPASS_STATE_MACHINE(m_hoodControlMode))
     {
         DEBUG_ASSERT((value <= 1.0) && (value >= -1.0) 
             , "Shooter Duty Cycle out of range");
@@ -88,18 +152,19 @@ void ShooterSubsystem::Periodic()
     m_currentWantedState = m_wantedState;
     m_timestamp = TimerRBL::GetFPGATimestampInSeconds();
 
-    m_pShooterIO->UpdateInputs(inputs);
-    m_logger.Log(inputs);
+    m_pFlywheelIO->UpdateInputs(flywheelInputs);
+    m_pHoodIO->UpdateInputs(hoodInputs);
+    m_logger.Log(hoodInputs,flywheelInputs);
     
-    m_LeftMotorDisconnected.Set(!inputs.isLeftMotorConnected);
-    m_LeftMotorHot.Set(inputs.LeftMotorTemperature > ShooterConstants::LeftMotor::HOT_THRESHOLD);
-    m_LeftMotorOverheating.Set(inputs.LeftMotorTemperature > ShooterConstants::LeftMotor::OVERHEATING_THRESHOLD);
-    m_RightMotorDisconnected.Set(!inputs.isRightMotorConnected);
-    m_RightMotorHot.Set(inputs.RightMotorTemperature > ShooterConstants::RightMotor::HOT_THRESHOLD);
-    m_RightMotorOverheating.Set(inputs.RightMotorTemperature > ShooterConstants::RightMotor::OVERHEATING_THRESHOLD);
-    m_BottomMotorDisconnected.Set(!inputs.isRightMotorConnected);
-    m_BottomMotorHot.Set(inputs.RightMotorTemperature > ShooterConstants::RightMotor::HOT_THRESHOLD);
-    m_BottomMotorOverheating.Set(inputs.RightMotorTemperature > ShooterConstants::RightMotor::OVERHEATING_THRESHOLD);
+    m_leftMotorDisconnected.Set(!flywheelInputs.isLeftMotorConnected);
+    m_leftMotorHot.Set(flywheelInputs.leftMotorTemperature > FlywheelConstants::LeftMotor::HOT_THRESHOLD);
+    m_leftMotorOverheating.Set(flywheelInputs.leftMotorTemperature > FlywheelConstants::LeftMotor::OVERHEATING_THRESHOLD);
+    m_rightMotorDisconnected.Set(!flywheelInputs.isRightMotorConnected);
+    m_rightMotorHot.Set(flywheelInputs.rightMotorTemperature > FlywheelConstants::RightMotor::HOT_THRESHOLD);
+    m_rightMotorOverheating.Set(flywheelInputs.rightMotorTemperature > FlywheelConstants::RightMotor::OVERHEATING_THRESHOLD);
+    m_hoodMotorDisconnected.Set(!hoodInputs.isHoodMotorConnected);
+    m_hoodMotorHot.Set(hoodInputs.hoodMotorTemperature > HoodConstants::HoodMotor::HOT_THRESHOLD);
+    m_hoodMotorOverheating.Set(hoodInputs.hoodMotorTemperature > HoodConstants::HoodMotor::OVERHEATING_THRESHOLD);
 
    
     // DEBUG_ASSERT(m_targetVelocity >= -ShooterConstants::Specifications::LeftMotor_FREE_SPEED && 
@@ -117,9 +182,6 @@ void ShooterSubsystem::Periodic()
     //     {
     //         RunStateMachine();
     //     }
-
-    m_upVoltage = m_tunableUpVoltageLogger.Get();
-    m_bottomVoltage = m_tunableBottomVoltageLogger.Get();
 
         // switch (m_controlMode) //actualise motion
         // {
@@ -153,16 +215,13 @@ void ShooterSubsystem::Periodic()
     
 
     // Apply output
-    if (m_controlMode == ControlMode::VOLTAGE)
-        m_pShooterIO->SetVoltage(m_upVoltage,m_bottomVoltage);
-    else
-        m_pShooterIO->SetVoltage(0.0,0.0);
 
 
         //LOG
     frc::SmartDashboard::PutNumber("shooter/WantedState", (int)m_currentWantedState);
     frc::SmartDashboard::PutNumber("shooter/SystemState", (int)m_systemState);
-    frc::SmartDashboard::PutNumber("shooter/ControlMode", (int)m_controlMode);
+    frc::SmartDashboard::PutNumber("shooter/Flywheel/ControlMode", (int)m_flywheelControlMode);
+    frc::SmartDashboard::PutNumber("shooter/Hood/ControlMode", (int)m_hoodControlMode);
     frc::SmartDashboard::PutBoolean("shooter/isInit", m_isInitialized);
 }
 

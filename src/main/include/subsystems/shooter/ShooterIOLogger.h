@@ -3,15 +3,16 @@
 #include <frc/DataLogManager.h>
 #include <frc/DriverStation.h>
 #include <wpi/DataLog.h>
-#include "shooterIO.h"
+#include "hood/HoodIO.h"
+#include "flywheel/FlywheelIO.h"
 
 class ShooterIOLogger {
 public:
     ShooterIOLogger(wpi::log::DataLog& log, const std::string& path);
-    void Log(const ShooterIOInputs& inputs);
+    void Log(const HoodIOInputs& hoodInputs, const FlywheelIOInputs& flywheelInputs);
 
 private:
-        wpi::log::BooleanLogEntry isLeftMotorConnected;
+    wpi::log::BooleanLogEntry isLeftMotorConnected;
     wpi::log::DoubleLogEntry LeftMotorCurrent;
     wpi::log::DoubleLogEntry LeftMotorAppliedVoltage;
     wpi::log::DoubleLogEntry LeftMotorBusVoltage;
@@ -23,8 +24,13 @@ private:
     wpi::log::DoubleLogEntry RightMotorBusVoltage;
     wpi::log::DoubleLogEntry RightMotorTemperature;
     wpi::log::DoubleLogEntry RightMotorEncoderVelocity;
-           wpi::log::DoubleLogEntry rotation;
-       wpi::log::BooleanLogEntry FuelLaunched;
+    wpi::log::DoubleLogEntry ShooterVelocity;
+    wpi::log::BooleanLogEntry isHoodMotorConnected;
+    wpi::log::DoubleLogEntry HoodMotorCurrent;
+    wpi::log::DoubleLogEntry HoodMotorAppliedVoltage;
+    wpi::log::DoubleLogEntry HoodMotorBusVoltage;
+    wpi::log::DoubleLogEntry HoodMotorTemperature;
+    wpi::log::DoubleLogEntry HoodPos;
 
     const std::string& m_path;
 };

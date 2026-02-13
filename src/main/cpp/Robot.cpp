@@ -24,7 +24,7 @@ void Robot::RobotInit() {
   m_operator.SetText(std::string("Operator currently operatoring : ") + OperatorToString());
   m_robot.Set(true);
   m_robot.SetText(std::string("Robot used : ") + RobotToString());
-  m_container.shooterSubsystem.SetControlMode(ControlMode::DISABLED);
+  m_container.shooterSubsystem.SetControlMode(ControlMode::DISABLED, ControlMode::DISABLED);
   m_isNotCompetitionRobot.Set(ROBOT_MODEL != COMPETITON);
 }
 void Robot::RobotPeriodic() {
@@ -60,19 +60,20 @@ void Robot::TeleopInit() {}
 void Robot::TeleopPeriodic() {
   if (m_container.operatorGamepad.GetTriangleButtonPressed())
   {
-    m_container.shooterSubsystem.ToggleControlMode();
+    m_container.shooterSubsystem.ToggleFlywheelControlMode();
+    m_container.shooterSubsystem.ToggleHoodControlMode();
   }
 }
 void Robot::TeleopExit() {}
 
 void Robot::DisabledInit() 
 {
-  m_container.shooterSubsystem.SetControlMode(ControlMode::DISABLED);
+  m_container.shooterSubsystem.SetControlMode(ControlMode::DISABLED, ControlMode::DISABLED);
 }
 void Robot::DisabledPeriodic() {
 }
 void Robot::DisabledExit() {
-  m_container.shooterSubsystem.SetControlMode(ShooterConstants::MainControlMode);
+  m_container.shooterSubsystem.SetControlMode(FlywheelConstants::MainControlMode, HoodConstants::MainControlMode);
 }
 
 void Robot::TestInit() {}

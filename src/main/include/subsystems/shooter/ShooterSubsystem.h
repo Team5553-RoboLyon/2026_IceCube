@@ -6,9 +6,11 @@
 
 #include <frc2/command/SubsystemBase.h>
 
-#include "shooterConstants.h"
+#include "hood/HoodConstants.h"
+#include "flywheel/FlywheelConstants.h"
 #include "shooterIOLogger.h"
-#include "shooterIO.h"
+#include "hood/HoodIO.h"
+#include "flywheel/FlywheelIO.h"
 #include "Constants.h"
 
 #include "LyonLib/control/RateLimiter.h"
@@ -18,7 +20,7 @@
 
 class ShooterSubsystem : public frc2::SubsystemBase {
   public:
-    ShooterSubsystem(ShooterIO *pIO);
+    ShooterSubsystem(FlywheelIO *pFlywheelIO, HoodIO *pHoodIO);
 
     enum class WantedState 
     {
@@ -33,11 +35,17 @@ class ShooterSubsystem : public frc2::SubsystemBase {
       SHOOTING,
       REST,
     };
+
     void SetWantedState(const WantedState wantedState);
     SystemState GetSystemState();
-    void SetControlMode(const ControlMode mode);
-    ControlMode GetControlMode();
-    void ToggleControlMode();
+    
+    void SetControlMode(const ControlMode flywheelMode, const ControlMode hoodMode);
+    void SetFlywheelControlMode(const ControlMode mode);
+    void SetHoodControlMode(const ControlMode mode);
+    ControlMode GetFlywheelControlMode();
+    ControlMode GetHoodControlMode();
+    void ToggleFlywheelControlMode();
+    void ToggleHoodControlMode();
 
     bool IsResting();
     bool IsInitialized() { return m_isInitialized; }
@@ -47,35 +55,38 @@ class ShooterSubsystem : public frc2::SubsystemBase {
     void Periodic() override;
   private:
     // === Hardware & IO Interfaces ===
-      ShooterIO *m_pShooterIO;
-      ShooterIOInputs inputs;
+      FlywheelIO *m_pFlywheelIO;
+      HoodIO *m_pHoodIO;
+      FlywheelIOInputs flywheelInputs;
+      HoodIOInputs hoodInputs;
       ShooterIOLogger m_logger{frc::DataLogManager::GetLog(), "/Shooter"};
     // === System States & Control Modes ===
       WantedState m_wantedState = WantedState::STAND_BY;
       WantedState m_currentWantedState = m_wantedState; //Local discrete snapshot of m_wantedState for each cycle
       SystemState m_systemState = SystemState::IDLE;
-      ControlMode m_controlMode = ShooterConstants::MainControlMode;
+      ControlMode m_flywheelControlMode = FlywheelConstants::MainControlMode;
+      ControlMode m_hoodControlMode = HoodConstants::MainControlMode;
     // === Motion Control (PID / Filters) ===
       PidRBL m_ShooterPIDController;
     // === Control Inputs / Outputs ===
       double m_manualControlInput{0.0};
       double m_timestamp{0.0};
-      double m_upVoltage{0.0}; //RPM
-      double m_bottomVoltage{0.0};
-      TunableValueLogger m_tunableUpVoltageLogger{"/Shooter/UpVoltage", 0.0};
-      TunableValueLogger m_tunableBottomVoltageLogger{"/Shooter/BottomVoltage", 0.0};
+      double m_flywheelOutput{0.0};
+      double m_hoodOutput{0.0};
+      TunableValueLogger m_tunableFlywheelVoltageLogger{"/Shooter/FlywheelVoltage", 0.0};
+      TunableValueLogger m_tunableHoodVoltageLogger{"/Shooter/HoodVoltage", 0.0};
     // === Status Flags ===
       bool m_isInitialized = true;
     // === System Alerts ===
-      Alert m_LeftMotorDisconnected{"Shooter LeftMotor: Disconnected", Alert::AlertType::ERROR};
-      Alert m_LeftMotorHot{"Shooter LeftMotor: Temperature exceeds 60°C", Alert::AlertType::WARNING};
-      Alert m_LeftMotorOverheating{"Shooter LeftMotor: Temperature exceeds 75°C", Alert::AlertType::ERROR};
-      Alert m_RightMotorDisconnected{"Shooter RightMotor: Disconnected", Alert::AlertType::ERROR};
-      Alert m_RightMotorHot{"Shooter RightMotor: Temperature exceeds 60°C", Alert::AlertType::WARNING};
-      Alert m_RightMotorOverheating{"Shooter RightMotor: Temperature exceeds 75°C", Alert::AlertType::ERROR};
-      Alert m_BottomMotorDisconnected{"Shooter BottomMotor: Disconnected", Alert::AlertType::ERROR};
-      Alert m_BottomMotorHot{"Shooter BottomMotor: Temperature exceeds 60°C", Alert::AlertType::WARNING};
-      Alert m_BottomMotorOverheating{"Shooter BottomMotor: Temperature exceeds 75°C", Alert::AlertType::ERROR};
+      Alert m_leftMotorDisconnected{"Shooter LeftMotor: Disconnected", Alert::AlertType::ERROR};
+      Alert m_leftMotorHot{"Shooter LeftMotor: Temperature exceeds 60°C", Alert::AlertType::WARNING};
+      Alert m_leftMotorOverheating{"Shooter LeftMotor: Temperature exceeds 75°C", Alert::AlertType::ERROR};
+      Alert m_rightMotorDisconnected{"Shooter RightMotor: Disconnected", Alert::AlertType::ERROR};
+      Alert m_rightMotorHot{"Shooter RightMotor: Temperature exceeds 60°C", Alert::AlertType::WARNING};
+      Alert m_rightMotorOverheating{"Shooter RightMotor: Temperature exceeds 75°C", Alert::AlertType::ERROR};
+      Alert m_hoodMotorDisconnected{"Shooter HoodMotor: Disconnected", Alert::AlertType::ERROR};
+      Alert m_hoodMotorHot{"Shooter HoodMotor: Temperature exceeds 60°C", Alert::AlertType::WARNING};
+      Alert m_hoodMotorOverheating{"Shooter HoodMotor: Temperature exceeds 75°C", Alert::AlertType::ERROR};
     // === Internal Methods ===
       void RunStateMachine();
 };
