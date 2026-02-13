@@ -139,7 +139,6 @@ void TurretSubsystem::Periodic()
                     m_targetPos -= 2*M_PI;
                 else if (inputs.orientation <= 0 && m_targetPos - (inputs.orientation+2*M_PI) < M_PI)
                     m_targetPos += 2*M_PI;
-                break; //end of ControlMode::MANUAL_DUTY_CYCLE
 
                 switch (m_systemState)
                 {
@@ -259,9 +258,9 @@ void TurretSubsystem::RunStateMachine()
                     m_targetPos = M_PI - m_robotOrientation;
             else
                 if (m_targetPos < 0)
-                    m_targetPos = -2*M_PI - m_robotOrientation;
-                else
                     m_targetPos = -m_robotOrientation;
+                else
+                    m_targetPos = 2*M_PI-m_robotOrientation;
 
             if(!IS_IN_RANGE(inputs.orientation, m_targetPos, TurretConstants::Gains::POSITION_DUTYCYCLE_PID::TOLERANCE))
                 m_systemState = SystemState::ALIGNING_WITH_ALLIANCE_ZONE;
@@ -284,9 +283,9 @@ void TurretSubsystem::RunStateMachine()
                     m_targetPos = M_PI - m_robotOrientation;
             else
                 if (m_targetPos < 0)
-                    m_targetPos = -2*M_PI - m_robotOrientation;
-                else
                     m_targetPos = -m_robotOrientation;
+                else
+                    m_targetPos = 2*M_PI-m_robotOrientation;
 
             if(IS_IN_RANGE(inputs.orientation, m_targetPos, TurretConstants::Gains::POSITION_DUTYCYCLE_PID::TOLERANCE))
                 m_systemState = SystemState::POINTING_AT_ALLIANCE_ZONE;
