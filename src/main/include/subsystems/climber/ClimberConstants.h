@@ -13,7 +13,7 @@ namespace ClimberConstants
 
     namespace Motor
     {
-        constexpr int ID = 13;
+        constexpr int ID = 1;
         constexpr bool INVERTED = false;
 
         constexpr IdleMode IDLE_MODE = IdleMode::kBrake;
