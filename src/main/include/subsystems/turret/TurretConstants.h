@@ -14,7 +14,7 @@ namespace TurretConstants
 
     namespace motor
     {
-        constexpr int ID = 8;
+        constexpr int ID = 3;
         constexpr bool INVERTED = false;
 
         constexpr IdleMode IDLE_MODE = IdleMode::kBrake;
