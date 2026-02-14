@@ -5,9 +5,22 @@
 #include "LyonLib/logging/DebugUtils.h"
 #include "LyonLib/utils/TimerRBL.h"
 
-ShooterSubsystem::ShooterSubsystem(FlywheelIO *pFlywheelIO, HoodIO *pHoodIO) : 
-                                                    m_pFlywheelIO(pFlywheelIO), m_pHoodIO(pHoodIO)
+ShooterSubsystem::ShooterSubsystem(FlywheelIO *pFlywheelIO, HoodIO *pHoodIO, ShootParameters* pShootParams) : 
+                                                    m_pFlywheelIO(pFlywheelIO), m_pHoodIO(pHoodIO), m_pShootParameters(pShootParams) 
 {
+    m_flywheelPIDController.SetGains(FlywheelConstants::Gains::VELOCITY_VOLTAGE_PID::KP,
+                                     FlywheelConstants::Gains::VELOCITY_VOLTAGE_PID::KI,
+                                     FlywheelConstants::Gains::VELOCITY_VOLTAGE_PID::KD);
+
+    m_flywheelPIDController.SetOutputLimits(FlywheelConstants::Voltage::MIN, FlywheelConstants::Voltage::MAX);
+    m_flywheelPIDController.SetInputLimits(FlywheelConstants::Speed::MIN,FlywheelConstants::Speed::MAX);
+
+    m_hoodPIDController.SetGains(HoodConstants::Gains::POSITION_VOLTAGE_PID::KP,
+                                 HoodConstants::Gains::POSITION_VOLTAGE_PID::KI,
+                                 HoodConstants::Gains::POSITION_VOLTAGE_PID::KD);
+
+    m_hoodPIDController.SetOutputLimits(HoodConstants::Voltage::MIN, HoodConstants::Voltage::MAX);
+    m_hoodPIDController.SetInputLimits(HoodConstants::Position::MIN, HoodConstants::Position::MAX);
 }
 
 void ShooterSubsystem::SetWantedState(const WantedState wantedState)
@@ -32,7 +45,7 @@ void ShooterSubsystem::SetFlywheelControlMode(const ControlMode mode)
     {
         case ControlMode::VELOCITY_VOLTAGE_PID:
             m_flywheelOutput = FlywheelConstants::Voltage::REST;
-            m_systemState = SystemState::REST;
+            m_systemState = SystemState::RESTING;
             m_wantedState = WantedState::STAND_BY;
 
             m_flywheelControlMode = mode;
@@ -40,7 +53,7 @@ void ShooterSubsystem::SetFlywheelControlMode(const ControlMode mode)
 
         case ControlMode::VOLTAGE:
             m_flywheelOutput = FlywheelConstants::Voltage::REST;
-            m_systemState = SystemState::REST;
+            m_systemState = SystemState::RESTING;
             m_wantedState = WantedState::STAND_BY;
 
             m_flywheelControlMode = mode;
@@ -62,13 +75,13 @@ void ShooterSubsystem::SetHoodControlMode(const ControlMode mode)
 {
     switch(mode)
     {
-        case ControlMode::POSITION_DUTYCYCLE_PID:
+        case ControlMode::POSITION_VOLTAGE_PID:
             m_hoodOutput = HoodConstants::Voltage::REST;
             m_systemState = SystemState::IDLE;
             m_wantedState = WantedState::STAND_BY;
 
             m_hoodControlMode = mode;
-            break;  //end of ControlMode::POSITION_DUTYCYCLE_PID
+            break;  //end of ControlMode::POSITION_VOLTAGE_PID
 
         case ControlMode::VOLTAGE:
             m_hoodOutput = HoodConstants::Voltage::REST;
@@ -166,57 +179,94 @@ void ShooterSubsystem::Periodic()
     m_hoodMotorHot.Set(hoodInputs.hoodMotorTemperature > HoodConstants::HoodMotor::HOT_THRESHOLD);
     m_hoodMotorOverheating.Set(hoodInputs.hoodMotorTemperature > HoodConstants::HoodMotor::OVERHEATING_THRESHOLD);
 
-   
-    // DEBUG_ASSERT(m_targetVelocity >= -ShooterConstants::Specifications::LeftMotor_FREE_SPEED && 
-    //                 m_targetVelocity <= ShooterConstants::Specifications::LeftMotor_FREE_SPEED
-    //     , "Shooter Target Velocity out of range");
-
-     // ----------------- State Machine & Motion Control -----------------
+     //----------------- State Machine & Motion Control -----------------
     
-    // if(!m_isInitialized)
-    // {
-    // }
-    // else 
-    // {
-    //     if(ALLOWS_STATE_MACHINE(m_controlMode))
-    //     {
-    //         RunStateMachine();
-    //     }
+    if(!m_isInitialized)
+    {
+    }
+    else 
+    {
+        
+        if(ALLOWS_STATE_MACHINE(m_flywheelControlMode) || ALLOWS_STATE_MACHINE(m_hoodControlMode))
+        {
+            RunStateMachine();
+        }
 
-        // switch (m_controlMode) //actualise motion
-        // {
-        // case ControlMode::VOLTAGE :
-        //     //  m_upVoltage = m_tunableUpVoltageLogger.Get();
-        //     //  m_bottomVoltage = m_tunableBottomVoltageLogger.Get();
-        //     // switch (m_systemState)
-        //     // {
-        //     // case SystemState::SHOOTING :
-        //     //     m_bottomOutput = 
-        //     //     break; //end of SystemState::SHOOTING
-        //     // default:
-        //     //     m_output = ShooterConstants::Speed::REST;
-        //     //     break; //end of other States
-        //     // }
-        //     // break; //end of ControlMode::VOLTAGE
+        switch (m_flywheelControlMode) //actualise flywheel motion
+        {
+            case ControlMode::VOLTAGE:
+            case ControlMode::VELOCITY_VOLTAGE_PID:
+                switch(m_systemState)
+                {
+                    case SystemState::AT_SHOOT_SPEED:
+                    case SystemState::READY_TO_FEED:
+                    case SystemState::SHOOTING_BACKWARD:
+                    case SystemState::THATS_ALL_MINE:
+                    case SystemState::RAMPING_TO_SHOOT:
+                    case SystemState::RAMPING_TO_FEED:
+                    case SystemState::RAMPING_BACKWARD:
+                    case SystemState::SOON_MINE:
+                        m_flywheelOutput += m_flywheelPIDController.CalculateWithRealTime(m_flywheelTargetSpeed, 
+                                                                                        flywheelInputs.ShooterVelocity, 
+                                                                                        m_timestamp);
+                        break;
 
-        // case ControlMode::DISABLED :
-        //     m_upVoltage = 0.0;
-        //     m_bottomVoltage = 0.0;
-        //     // m_output = ShooterConstants::Speed::REST;
-        //     // break; //end of ControlMode::DISABLED
-        // default:
-        //     // DEBUG_ASSERT(false, "Shooter : impossible state");
-        //     break; //end of default
-        // }
-    // }
+                    case SystemState::IDLE:
+                    case SystemState::RESTING:
+                        m_flywheelOutput = FlywheelConstants::Voltage::REST;
+                        break;
+
+                    default:
+                            DEBUG_ASSERT(false, "Shooter (Flywheel) : unknown system state used");
+                            m_flywheelOutput = FlywheelConstants::Voltage::REST;
+                            break;
+                }
+                break;
+
+            case ControlMode::DISABLED:
+                m_flywheelOutput = FlywheelConstants::Voltage::REST;
+                break;
+
+            default: 
+                DEBUG_ASSERT(false, "Shooter (Flywheel) : unknown control mode used");
+                m_flywheelOutput = FlywheelConstants::Voltage::REST;
+                break;
+        }
+
+        switch (m_hoodControlMode)
+        {
+            case ControlMode::VOLTAGE:
+            case ControlMode::POSITION_VOLTAGE_PID:
+                m_hoodOutput = m_hoodPIDController.CalculateWithRealTime(m_hoodTargetPos, hoodInputs.hoodPos, m_timestamp);
+                break;
+
+            case ControlMode::DISABLED:
+                m_hoodOutput = HoodConstants::Voltage::REST;
+                break;
+
+            default:
+                m_hoodOutput = HoodConstants::Voltage::REST;
+                DEBUG_ASSERT(false, "Shooter (Hood) : unknown control mode used");
+                break;
+        }
+    }
 
 
      // ----------------- Limits -----------------
     
+     if (hoodInputs.hoodPos <= HoodConstants::Position::MIN && m_hoodOutput < 0.0)
+     {
+        m_hoodOutput = HoodConstants::Voltage::REST;
+     }
+     else if (hoodInputs.hoodPos >= HoodConstants::Position::MAX && m_hoodOutput > 0.0)
+     {
+        m_hoodOutput = HoodConstants::Voltage::REST;
+     }
 
     // Apply output
 
-
+     m_pFlywheelIO->SetVoltage(m_flywheelOutput);
+     m_pHoodIO->SetVoltage(m_hoodOutput);
         //LOG
     frc::SmartDashboard::PutNumber("shooter/WantedState", (int)m_currentWantedState);
     frc::SmartDashboard::PutNumber("shooter/SystemState", (int)m_systemState);
@@ -229,29 +279,94 @@ void ShooterSubsystem::RunStateMachine()
 {
     switch (m_currentWantedState) //Handle State transition
     {
-    case WantedState::STAND_BY :
-        break; //end of Others States
-    case WantedState::SHOOT :
-        m_systemState = SystemState::SHOOTING;
-        break; //end of WantedState::SHOOT
-    case WantedState::STOP :
-        m_systemState = SystemState::REST;
-        break; //end of WantedState::STOP
-    default:
-        DEBUG_ASSERT(false, "shooter : impossible state");
-        break; //end of default
+        case WantedState::STAND_BY :
+        case WantedState::STOP:
+            m_systemState = SystemState::RESTING;
+            break;
+
+        case WantedState::SHOOT_TO_HUB:
+            if (m_systemState == SystemState::AT_SHOOT_SPEED)
+                m_systemState = SystemState::RAMPING_TO_SHOOT;
+            break;
+
+        case WantedState::FEED_ALLY:
+            if (m_systemState != SystemState::READY_TO_FEED)
+                m_systemState = SystemState::RAMPING_TO_FEED;
+            break;
+
+        case WantedState::REVERSE:
+            if (m_systemState != SystemState::SHOOTING_BACKWARD)
+                m_systemState = SystemState::RAMPING_BACKWARD;
+            break;
+
+        case WantedState::KEEP_ALL_FOR_YOU:
+            if (m_systemState != SystemState::THATS_ALL_MINE)
+                m_systemState = SystemState::SOON_MINE;
+            break;
+
+        default:
+            DEBUG_ASSERT(false,"Shooter : unknown wanted state used");
+            break;
     }
 
     switch (m_systemState) // Change System State
     {
-    case SystemState::IDLE:
-        break; //end of SystemState::IDLE
-    case SystemState::SHOOTING:
-        break; //end of SystemState::SHOOTING
-    case SystemState::REST:
-        break; //end of SystemState::REST
-    default:
-        DEBUG_ASSERT(false, "shooter : impossible state");
-        break; //end of default
+        case SystemState::IDLE:
+        case SystemState::READY_TO_FEED:
+        case SystemState::RESTING:
+        case SystemState::SHOOTING_BACKWARD:
+        case SystemState::THATS_ALL_MINE:
+            break;
+
+        case SystemState::RAMPING_TO_SHOOT:
+        case SystemState::AT_SHOOT_SPEED:
+            if(m_flywheelControlMode == FlywheelConstants::MainControlMode || m_hoodControlMode == HoodConstants::MainControlMode)
+            {
+                m_hoodTargetPos = m_pShootParameters->hoodPos;
+                m_flywheelTargetSpeed = m_pShootParameters->flywheelSpeed;
+            }
+            else
+            {
+                m_hoodTargetPos = HoodConstants::Position::MIN;
+                m_flywheelTargetSpeed = FlywheelConstants::Speed::AGAINST_HUB;
+            }
+
+            if (IS_IN_RANGE(flywheelInputs.ShooterVelocity,m_flywheelTargetSpeed,FlywheelConstants::Speed::TOLERANCE)
+                && IS_IN_RANGE(hoodInputs.hoodPos, m_hoodTargetPos, HoodConstants::Position::TOLERANCE))
+                m_systemState = SystemState::AT_SHOOT_SPEED;
+            else
+                m_systemState = SystemState::RAMPING_TO_SHOOT;
+            break; 
+            
+        case SystemState::RAMPING_TO_FEED:
+            m_flywheelTargetSpeed = FlywheelConstants::Speed::FEED;
+            m_hoodTargetPos = HoodConstants::Position::FEED;
+
+            if (IS_IN_RANGE(flywheelInputs.ShooterVelocity,m_flywheelTargetSpeed,FlywheelConstants::Speed::TOLERANCE)
+                && IS_IN_RANGE(hoodInputs.hoodPos, m_hoodTargetPos, HoodConstants::Position::TOLERANCE))
+                    m_systemState = SystemState::READY_TO_FEED;
+            break;
+
+        case SystemState::RAMPING_BACKWARD:
+            m_flywheelTargetSpeed = FlywheelConstants::Speed::FEED;
+            m_hoodTargetPos = HoodConstants::Position::FEED;
+
+            if (IS_IN_RANGE(flywheelInputs.ShooterVelocity,m_flywheelTargetSpeed,FlywheelConstants::Speed::TOLERANCE)
+                && IS_IN_RANGE(hoodInputs.hoodPos, m_hoodTargetPos, HoodConstants::Position::TOLERANCE))
+                    m_systemState = SystemState::READY_TO_FEED;
+            break;
+
+        case SystemState::SOON_MINE:
+            m_flywheelTargetSpeed = FlywheelConstants::Speed::TO_ALLIANCE_ZONE;
+            m_hoodTargetPos = HoodConstants::Position::TO_ALLIANCE_ZONE;
+
+            if (IS_IN_RANGE(flywheelInputs.ShooterVelocity,m_flywheelTargetSpeed,FlywheelConstants::Speed::TOLERANCE)
+                && IS_IN_RANGE(hoodInputs.hoodPos, m_hoodTargetPos, HoodConstants::Position::TOLERANCE))
+                    m_systemState = SystemState::THATS_ALL_MINE;
+            break;
+
+        default:
+            DEBUG_ASSERT(false, "shooter : impossible state");
+            break; //end of default
     }
 }

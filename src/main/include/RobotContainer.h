@@ -17,7 +17,7 @@ class RobotContainer {
  public:
   RobotContainer();
 
-  ShooterSubsystem shooterSubsystem{new FlywheelIOSpark(), new HoodIOSpark()};
+  ShooterSubsystem shooterSubsystem{new FlywheelIOSpark{}, new HoodIOSpark{}, new ShootParameters{}};
   Operator operatorGamepad{ControlPanelConstants::OPERATOR_GAMEPAD_PORT, ControlPanelConstants::OPERATOR_GAMEPAD_THRESHOLD};
   frc::Joystick forwardJoystick{ControlPanelConstants::JOYSTICK_FORWARD_ID};
   frc::Joystick rotationJoystick{ControlPanelConstants::JOYSTICK_ROTATION_ID};

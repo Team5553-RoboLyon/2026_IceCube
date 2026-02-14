@@ -12,6 +12,7 @@
 #include "hood/HoodIO.h"
 #include "flywheel/FlywheelIO.h"
 #include "Constants.h"
+#include "subsystems/ShootParametersCalculator.h"
 
 #include "LyonLib/control/RateLimiter.h"
 #include "LyonLib/control/pidRBL.h"
@@ -20,25 +21,37 @@
 
 class ShooterSubsystem : public frc2::SubsystemBase {
   public:
-    ShooterSubsystem(FlywheelIO *pFlywheelIO, HoodIO *pHoodIO);
+    ShooterSubsystem(FlywheelIO *pFlywheelIO, HoodIO *pHoodIO, ShootParameters* pShootParams);
 
     enum class WantedState 
     {
       STAND_BY, // no wanted state scheduled. (It's all good man, it's all good !)
-      SHOOT,
+      SHOOT_TO_HUB,
+      FEED_ALLY,
       STOP,
-      REVERSE
+      REVERSE,
+      KEEP_ALL_FOR_YOU
     };
+
     enum class SystemState
     {
       IDLE,
-      SHOOTING,
-      REST,
+      //Steady states
+      AT_SHOOT_SPEED,
+      READY_TO_FEED,
+      RESTING,
+      SHOOTING_BACKWARD,
+      THATS_ALL_MINE,
+      //Transition states
+      RAMPING_TO_SHOOT,
+      RAMPING_TO_FEED,
+      RAMPING_BACKWARD,
+      SOON_MINE
     };
 
     void SetWantedState(const WantedState wantedState);
     SystemState GetSystemState();
-    
+
     void SetControlMode(const ControlMode flywheelMode, const ControlMode hoodMode);
     void SetFlywheelControlMode(const ControlMode mode);
     void SetHoodControlMode(const ControlMode mode);
@@ -60,6 +73,7 @@ class ShooterSubsystem : public frc2::SubsystemBase {
       FlywheelIOInputs flywheelInputs;
       HoodIOInputs hoodInputs;
       ShooterIOLogger m_logger{frc::DataLogManager::GetLog(), "/Shooter"};
+      ShootParameters *m_pShootParameters;
     // === System States & Control Modes ===
       WantedState m_wantedState = WantedState::STAND_BY;
       WantedState m_currentWantedState = m_wantedState; //Local discrete snapshot of m_wantedState for each cycle
@@ -67,7 +81,8 @@ class ShooterSubsystem : public frc2::SubsystemBase {
       ControlMode m_flywheelControlMode = FlywheelConstants::MainControlMode;
       ControlMode m_hoodControlMode = HoodConstants::MainControlMode;
     // === Motion Control (PID / Filters) ===
-      PidRBL m_ShooterPIDController;
+      PidRBL m_flywheelPIDController;
+      PidRBL m_hoodPIDController;
     // === Control Inputs / Outputs ===
       double m_manualControlInput{0.0};
       double m_timestamp{0.0};
@@ -75,6 +90,9 @@ class ShooterSubsystem : public frc2::SubsystemBase {
       double m_hoodOutput{0.0};
       TunableValueLogger m_tunableFlywheelVoltageLogger{"/Shooter/FlywheelVoltage", 0.0};
       TunableValueLogger m_tunableHoodVoltageLogger{"/Shooter/HoodVoltage", 0.0};
+      double m_flywheelTargetSpeed{0.0};
+      double m_hoodTargetPos{0.0};
+
     // === Status Flags ===
       bool m_isInitialized = true;
     // === System Alerts ===

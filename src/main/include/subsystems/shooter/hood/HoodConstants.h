@@ -38,21 +38,35 @@ namespace HoodConstants
 
     namespace Gains
     {
-        namespace POSITION_DUTYCYCLE_PID
+        namespace POSITION_VOLTAGE_PID
         {
             constexpr double KP = 10.0; //TUNEME
             constexpr double KI = 0.0; //TUNEME
             constexpr double KD = 0.2; //TUNEME
-            constexpr double TOLERANCE = 0.001;
         }
     }
 
+    namespace DutyCycle 
+    {
+        constexpr double MAX = 1.0; 
+        constexpr double MIN = -1.0;
+        constexpr double REST = 0.0;
+    }
 
     namespace Voltage 
     {
         constexpr double MAX = HoodMotor::VOLTAGE_COMPENSATION; 
         constexpr double MIN = -HoodMotor::VOLTAGE_COMPENSATION;
         constexpr double REST = 0.0;
+    }
+
+    namespace Position //in rad
+    { 
+        constexpr double MAX = NDEGtoRAD(17.0); //TUNEME
+        constexpr double MIN = 0.0; //TUNEME
+        constexpr double TOLERANCE = NDEGtoRAD(0.1); //TUNEME
+        constexpr double FEED = MAX;  //TUNEME
+        constexpr double TO_ALLIANCE_ZONE = NDEGtoRAD(8.5); //TUNEME
     }
     
     namespace Settings

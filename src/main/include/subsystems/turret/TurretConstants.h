@@ -3,7 +3,6 @@
 #include "LyonLib/control/ControlMode.h"
 #include "LyonLib/logging/DebugUtils.h"
 #include "rev/SparkMax.h"   
-#include "camera/AprilTagPhotonCamera.h"
 
 using IdleMode = rev::spark::SparkBaseConfig::IdleMode;
 

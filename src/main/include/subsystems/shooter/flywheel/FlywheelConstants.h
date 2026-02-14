@@ -8,7 +8,7 @@ using IdleMode = rev::spark::SparkBaseConfig::IdleMode;
 
 namespace FlywheelConstants
 {
-    constexpr ControlMode MainControlMode = ControlMode::VELOCITY_DUTYCYCLE_PID;
+    constexpr ControlMode MainControlMode = ControlMode::VELOCITY_VOLTAGE_PID;
     constexpr ControlMode EmergencyControlMode = ControlMode::VOLTAGE;
 
     namespace LeftMotor
@@ -47,13 +47,19 @@ namespace FlywheelConstants
 
     namespace Gains
     {
-        namespace VELOCITY_DUTYCYLE_PID
+        namespace VELOCITY_VOLTAGE_PID
         {
             constexpr double KP = 10.0; //TUNEME
             constexpr double KI = 0.0; //TUNEME
             constexpr double KD = 0.2; //TUNEME
-            constexpr double TOLERANCE = 0.001;
         }
+    }
+
+    namespace DutyCycle
+    {
+        constexpr double MAX = 1.0;
+        constexpr double MIN = -1.0;
+        constexpr double REST = 0.0;
     }
 
 
@@ -62,6 +68,19 @@ namespace FlywheelConstants
         constexpr double MAX = RightMotor::VOLTAGE_COMPENSATION;
         constexpr double MIN = -RightMotor::VOLTAGE_COMPENSATION;
         constexpr double REST = 0.0;
+    }
+
+    namespace Speed //in RPM
+    {
+        constexpr double REST = 0.0;
+        constexpr double MAX = Specifications::LeftMotor_FREE_SPEED; //TUNEME
+        constexpr double MIN = -Specifications::LeftMotor_FREE_SPEED; //TUNEME
+        constexpr double TOLERANCE = 0.1; //TUNEME
+        constexpr double FEED = 1200.0; //TUNEME
+        constexpr double BACKWARD = -1000.0; //TUNEME
+        constexpr double TO_ALLIANCE_ZONE = 5000.0; //TUNEME
+        constexpr double AGAINST_HUB = 2000.0; //TUNEME
+        constexpr double MAX_FOR_SHOOT = 4500.0; //TUNEME
     }
     
     namespace Settings

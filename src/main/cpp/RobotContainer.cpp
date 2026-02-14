@@ -8,14 +8,9 @@
 #include <frc2/command/InstantCommand.h>
 #include <frc2/command/Commands.h>
 
-#include "commands/ActivateShooterCmd.h"
-
-
 RobotContainer::RobotContainer()
 {
     ConfigureBindings();
-    operatorGamepad.startShooter.OnTrue(ActivateShooterCmd(&shooterSubsystem, ShooterSubsystem::WantedState::SHOOT).WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
-    operatorGamepad.stopShooter.OnTrue(ActivateShooterCmd(&shooterSubsystem, ShooterSubsystem::WantedState::STOP).WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
 }
 
 void RobotContainer::ConfigureBindings() {
