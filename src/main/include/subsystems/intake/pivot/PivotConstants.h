@@ -15,7 +15,7 @@ namespace PivotConstants
 
     namespace pivotMotor
     {
-        constexpr int ID = 4;
+        constexpr int ID = 8;
         constexpr bool INVERTED = true;
 
         constexpr IdleMode IDLE_MODE = IdleMode::kBrake;

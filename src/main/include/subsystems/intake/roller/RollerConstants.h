@@ -16,7 +16,7 @@ namespace RollerConstants
 
     namespace rollerMotor
     {
-        constexpr int ID = 3;
+        constexpr int ID = 13;
         constexpr bool INVERTED = true;
 
         constexpr IdleMode IDLE_MODE = IdleMode::kCoast;
