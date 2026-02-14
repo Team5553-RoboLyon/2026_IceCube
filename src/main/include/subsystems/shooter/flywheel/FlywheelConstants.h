@@ -13,7 +13,7 @@ namespace FlywheelConstants
 
     namespace LeftMotor
     {
-        constexpr int ID = 1;
+        constexpr int ID = 5;
         constexpr bool INVERTED = false;
 
         constexpr IdleMode IDLE_MODE = IdleMode::kCoast;
@@ -26,7 +26,7 @@ namespace FlywheelConstants
     }
     namespace RightMotor
     {
-        constexpr int ID = 2;
+        constexpr int ID = 4;
         constexpr bool INVERTED = true;
 
         constexpr IdleMode IDLE_MODE = IdleMode::kCoast;

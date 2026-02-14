@@ -18,7 +18,7 @@ namespace HoodConstants
 
     namespace HoodMotor
     {
-        constexpr int ID = 1;
+        constexpr int ID = 3;
         constexpr bool INVERTED = false;
 
         constexpr IdleMode IDLE_MODE = IdleMode::kBrake;
