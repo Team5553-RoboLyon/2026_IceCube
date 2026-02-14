@@ -23,13 +23,13 @@ namespace driveConstants
     namespace Motors
     {
         //LEFT GEARBOX
-        constexpr int LEFT_FRONT_MOTOR_ID = 5;
-        constexpr int LEFT_BACK_MOTOR_ID = 6;
+        constexpr int LEFT_FRONT_MOTOR_ID = 11;
+        constexpr int LEFT_BACK_MOTOR_ID = 12;
         constexpr bool LEFT_MOTOR_INVERTED = true;
 
         //RIGHT GEARBOX
-        constexpr int RIGHT_FRONT_MOTOR_ID = 7;
-        constexpr int RIGHT_BACK_MOTOR_ID = 8;
+        constexpr int RIGHT_FRONT_MOTOR_ID = 9;
+        constexpr int RIGHT_BACK_MOTOR_ID = 10;
         constexpr bool RIGHT_MOTORS_INVERTED = false;
 
         //BOTH
