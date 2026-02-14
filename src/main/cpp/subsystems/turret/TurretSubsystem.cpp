@@ -124,6 +124,18 @@ void TurretSubsystem::Periodic()
     
     if(!m_isInitialized)
     {
+        m_output = TurretConstants::DutyCycle::INIT;
+        if(inputs.hallEffectSensorValue > m_highestHallEffectSensorValue)
+        {
+            m_highestHallEffectSensorValue = inputs.hallEffectSensorValue;
+            m_pTurretIO->ResetOrientation();
+        }
+        else if (inputs.hallEffectSensorValue < TurretConstants::HallEffectSensor::MIN_VALUE_WHEN_MAGNET &&
+                 m_highestHallEffectSensorValue >= TurretConstants::HallEffectSensor::MIN_VALUE_WHEN_MAGNET)
+        {
+            m_isInitialized = true;
+            m_output = TurretConstants::DutyCycle::REST;
+        }
     }
     else 
     {
@@ -135,10 +147,6 @@ void TurretSubsystem::Periodic()
         switch (m_controlMode) //actualise motion
         {
             case ControlMode::POSITION_DUTYCYCLE_PID :
-                if (inputs.orientation >= 0 && m_targetPos - inputs.orientation > M_PI)
-                    m_targetPos -= 2*M_PI;
-                else if (inputs.orientation <= 0 && m_targetPos - (inputs.orientation+2*M_PI) < M_PI)
-                    m_targetPos += 2*M_PI;
 
                 switch (m_systemState)
                 {
@@ -157,7 +165,8 @@ void TurretSubsystem::Periodic()
                         break;
 
                     default:
-                        //TODO
+                        DEBUG_ASSERT(false, "Turret : unknown system state used");
+                        m_output = 0.0;
                         break;
                 }
                 break;
@@ -208,22 +217,22 @@ void TurretSubsystem::RunStateMachine()
     switch (m_currentWantedState) //Handle State transition
     {
         case WantedState::STAND_BY :
-            if (m_systemState == SystemState::INACTIVE)
+            if (m_systemState != SystemState::INACTIVE)
                 m_systemState = SystemState::INACTIVE;
             break; //end of Others States
 
         case WantedState::FOLLOW_HUB:
-            if (m_systemState == SystemState::ALIGNED_WITH_HUB)
+            if (m_systemState != SystemState::ALIGNED_WITH_HUB)
                 m_systemState = SystemState::ALIGNING_WITH_HUB;
             break;
 
         case WantedState::POINT_AT_ALLIANCE_ZONE:
-            if (m_systemState == SystemState::POINTING_AT_ALLIANCE_ZONE)
+            if (m_systemState != SystemState::POINTING_AT_ALLIANCE_ZONE)
                 m_systemState = SystemState::ALIGNING_WITH_ALLIANCE_ZONE;
             break;
 
         case WantedState::PREPARE_EJECT:
-            if (m_systemState == SystemState::READY_TO_EJECT)
+            if (m_systemState != SystemState::READY_TO_EJECT)
                 m_systemState = SystemState::SPINNING_TO_EJECT;
             break;
 
@@ -240,55 +249,61 @@ void TurretSubsystem::RunStateMachine()
             break; //end of SystemState::IDLE 
                    //   and SystemState::INACTIVE
 
+        case SystemState::ALIGNING_WITH_HUB:
         case SystemState::ALIGNED_WITH_HUB:
-            if(m_targetPos < 0)
+            if(inputs.orientation < 0)
+            {
                 m_targetPos = m_pShootParams->lookAheadTargetTurretPos - 2*M_PI;
+            }
             else
+            {
                 m_targetPos = m_pShootParams->lookAheadTargetTurretPos;
+            }
 
-            if (!IS_IN_RANGE(inputs.orientation, m_targetPos, TurretConstants::Gains::POSITION_DUTYCYCLE_PID::TOLERANCE))
+            if (inputs.orientation >= 0 && m_targetPos - inputs.orientation > M_PI)
+            {
+                m_targetPos -= 2*M_PI;
+            }
+            else if (inputs.orientation <= 0 && m_targetPos - (inputs.orientation+2*M_PI) < M_PI)
+            {
+                m_targetPos += 2*M_PI;
+            }
+
+            if (IS_IN_RANGE(inputs.orientation, m_targetPos, TurretConstants::Gains::POSITION_DUTYCYCLE_PID::TOLERANCE))
+                m_systemState = SystemState::ALIGNED_WITH_HUB;
+            else
                 m_systemState = SystemState::ALIGNING_WITH_HUB;
             break;
 
+        case SystemState::ALIGNING_WITH_ALLIANCE_ZONE:
         case SystemState::POINTING_AT_ALLIANCE_ZONE:
             if(m_isInBlueAlliance)
-                if (m_targetPos < 0)
+            {
+                if (inputs.orientation < 0)
                     m_targetPos = -M_PI - m_robotOrientation;
                 else
                     m_targetPos = M_PI - m_robotOrientation;
+            }
             else
-                if (m_targetPos < 0)
-                    m_targetPos = -m_robotOrientation;
-                else
-                    m_targetPos = 2*M_PI-m_robotOrientation;
+            {
+                m_targetPos = -m_robotOrientation;
+            }
 
-            if(!IS_IN_RANGE(inputs.orientation, m_targetPos, TurretConstants::Gains::POSITION_DUTYCYCLE_PID::TOLERANCE))
-                m_systemState = SystemState::ALIGNING_WITH_ALLIANCE_ZONE;
-            break;
-
-        case SystemState::ALIGNING_WITH_HUB:
-            if(m_targetPos < 0)
-                m_targetPos = m_pShootParams->lookAheadTargetTurretPos - 2*M_PI;
-            else
-                m_targetPos = m_pShootParams->lookAheadTargetTurretPos;
-            if (IS_IN_RANGE(inputs.orientation, m_targetPos, TurretConstants::Gains::POSITION_DUTYCYCLE_PID::TOLERANCE))
-                m_systemState = SystemState::ALIGNED_WITH_HUB;
-            break;
-
-        case SystemState::ALIGNING_WITH_ALLIANCE_ZONE:
-           if(m_isInBlueAlliance)
-                if (m_targetPos < 0)
-                    m_targetPos = -M_PI - m_robotOrientation;
-                else
-                    m_targetPos = M_PI - m_robotOrientation;
-            else
-                if (m_targetPos < 0)
-                    m_targetPos = -m_robotOrientation;
-                else
-                    m_targetPos = 2*M_PI-m_robotOrientation;
+            if (inputs.orientation >= 0 && m_targetPos - inputs.orientation > M_PI)
+            {
+                m_targetPos -= 2*M_PI;
+            }
+            else if (inputs.orientation <= 0 && m_targetPos - (inputs.orientation+2*M_PI) < M_PI)
+            {
+                m_targetPos += 2*M_PI;
+            }
 
             if(IS_IN_RANGE(inputs.orientation, m_targetPos, TurretConstants::Gains::POSITION_DUTYCYCLE_PID::TOLERANCE))
                 m_systemState = SystemState::POINTING_AT_ALLIANCE_ZONE;
+            else
+            {
+                m_systemState = SystemState::ALIGNING_WITH_ALLIANCE_ZONE;
+            }
             break;
 
         case SystemState::SPINNING_TO_EJECT:

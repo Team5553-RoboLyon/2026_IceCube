@@ -17,6 +17,7 @@ private:
     wpi::log::DoubleLogEntry motorBusVoltage;
     wpi::log::DoubleLogEntry motorTemperature;
     wpi::log::DoubleLogEntry orientation;
+    wpi::log::DoubleLogEntry hallEffectSensorValue;
 
     const std::string& m_path;
 };

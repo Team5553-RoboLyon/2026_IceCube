@@ -77,8 +77,9 @@ class TurretSubsystem : public frc2::SubsystemBase {
       double m_manualControlInput{0.0};
       double m_timestamp{0.0};
       double m_targetPos{0.0};
+      double m_highestHallEffectSensorValue{0.0};
     // === Status Flags ===
-      bool m_isInitialized = true;
+      bool m_isInitialized = false;
       bool m_isInBlueAlliance = true;
     // === System Alerts ===
             Alert m_motorDisconnected{"Turret motor: Disconnected", Alert::AlertType::ERROR};

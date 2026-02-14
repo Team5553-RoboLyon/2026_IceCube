@@ -9,6 +9,8 @@ struct TurretIOInputs
     double motorCurrent = 0.0;
     double motorTemperature = 0.0;
     double orientation = 0.0;
+
+    double hallEffectSensorValue = 0.0;
 };
 
 
@@ -21,5 +23,5 @@ public:
     virtual void SetVoltage(double voltage) = 0; 
     virtual void SetDutyCycle(double dutyCycle) = 0;
 
-        virtual void ResetOrientation() = 0;
+    virtual void ResetOrientation() = 0;
 };

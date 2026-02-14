@@ -23,14 +23,15 @@ TurretIOSpark::TurretIOSpark()
 
 void TurretIOSpark::UpdateInputs(TurretIOInputs& inputs) 
 {
-        inputs.ismotorConnected = (m_motor.GetBusVoltage() !=0.0) && !m_motor.GetFaults().can;
+    inputs.ismotorConnected = (m_motor.GetBusVoltage() !=0.0) && !m_motor.GetFaults().can;
 
     inputs.motorAppliedVoltage = m_motor.GetAppliedOutput() * TurretConstants::motor::VOLTAGE_COMPENSATION;
     inputs.motorBusVoltage = m_motor.GetBusVoltage();
     inputs.motorCurrent = m_motor.GetOutputCurrent();
     inputs.motorTemperature = m_motor.GetMotorTemperature();
     
-        inputs.orientation = m_encoder.GetDistance();
+    inputs.orientation = m_encoder.GetDistance();
+    inputs.hallEffectSensorValue = m_hallEffectSensor.GetVoltage();
 }
 
 void TurretIOSpark::SetVoltage(double voltage)

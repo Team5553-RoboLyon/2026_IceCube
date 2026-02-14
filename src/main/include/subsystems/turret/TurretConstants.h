@@ -29,8 +29,8 @@ namespace TurretConstants
     {
         constexpr double GEAR_RATIO = 130.0/24.0; //ul
         constexpr double motor_FREE_SPEED = motor::VOLTAGE_COMPENSATION * motor::KV; //RPM
-        constexpr frc::Transform2d ROBOT_TO_TURRET {162.5_m, 162.5_m,{}};
-        constexpr double EJECT_POS = 0.0; //TUNEME
+        constexpr frc::Transform2d ROBOT_TO_TURRET {155.0_m, 155.0_m,{}};
+        constexpr double EJECT_POS = M_PI; //TUNEME
     }
 
     namespace encoder 
@@ -39,6 +39,12 @@ namespace TurretConstants
         constexpr int B_ID = 24;
         constexpr bool REVERSED = false;
         constexpr double DISTANCE_PER_PULSE = 2*M_PI/Specifications::GEAR_RATIO/ENCODER_TICKS_PER_REVOLUTION_K2X;
+    }
+
+    namespace HallEffectSensor
+    {
+        constexpr int ID = 22;
+        constexpr double MIN_VALUE_WHEN_MAGNET = 2.5; //TUNEME
     }
 
     namespace TurretCamera
@@ -63,6 +69,7 @@ namespace TurretConstants
         constexpr double MAX = 1.0; 
         constexpr double MIN = -1.0;
         constexpr double REST = 0.0;
+        constexpr double INIT = 0.1;
     }
     
      namespace Settings

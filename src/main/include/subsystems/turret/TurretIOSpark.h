@@ -5,6 +5,7 @@
 
 #include "turretIO.h"
 #include "turretConstants.h"
+#include "frc/AnalogInput.h"
 
 class TurretIOSpark  final : public TurretIO
 {
@@ -13,6 +14,8 @@ class TurretIOSpark  final : public TurretIO
     rev::spark::SparkBaseConfig m_motorConfig;
     
     frc::Encoder m_encoder {TurretConstants::encoder::A_ID, TurretConstants::encoder::B_ID, TurretConstants::encoder::REVERSED};
+
+    frc::AnalogInput m_hallEffectSensor {TurretConstants::HallEffectSensor::ID};
 
   public:
     TurretIOSpark();
