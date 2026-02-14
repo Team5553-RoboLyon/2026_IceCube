@@ -11,9 +11,9 @@ namespace IndexerConstants
     constexpr ControlMode MainControlMode = ControlMode::VELOCITY_DUTYCYCLE_PID;
     constexpr ControlMode EmergencyControlMode = ControlMode::DISABLED;
 
-        namespace indexerMotor
+    namespace indexerMotor
     {
-        constexpr int ID = 2;
+        constexpr int ID = 7;
         constexpr bool INVERTED = false;
 
         constexpr IdleMode IDLE_MODE = IdleMode::kCoast;
@@ -24,9 +24,10 @@ namespace IndexerConstants
         constexpr int OVERHEATING_THRESHOLD = 75;
         constexpr int KV = 496.3; // RPM.V-1
     }
-        namespace clodeMotor
+
+    namespace clodeMotor
     {
-        constexpr int ID = 9;
+        constexpr int ID = 6;
         constexpr bool INVERTED = true;
 
         constexpr IdleMode IDLE_MODE = IdleMode::kCoast;
@@ -36,6 +37,12 @@ namespace IndexerConstants
         constexpr int HOT_THRESHOLD = 60;
         constexpr int OVERHEATING_THRESHOLD = 75;
         constexpr int KV = 917; // RPM.V-1
+    }
+
+    namespace theMostImportantSensorOfTheRobot //IndexerIRbreaker
+    {
+        constexpr int ID = 16;
+        constexpr bool IS_TRIGERED = true; //TUNEME
     }
 
     

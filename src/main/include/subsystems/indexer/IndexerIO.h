@@ -15,6 +15,9 @@ struct IndexerIOInputs
     double clodeBusVoltage = 0.0;
     double clodeCurrent = 0.0;
     double clodeTemperature = 0.0;
+
+    bool wasTriggered = false;
+    int nbrOfBallShot = 0.0;
 };
 
 

@@ -5,6 +5,7 @@
 
 #include "indexerIO.h"
 #include "indexerConstants.h"
+#include "frc/DigitalInput.h"
 
 class IndexerIOSpark  final : public IndexerIO
 {
@@ -15,6 +16,8 @@ class IndexerIOSpark  final : public IndexerIO
     rev::spark::SparkBaseConfig m_clodeMotorConfig;
 
     rev::spark::SparkClosedLoopController m_indexerPIDFController{m_indexerMotor.GetClosedLoopController()};
+
+    frc::DigitalInput m_bestSensor{IndexerConstants::theMostImportantSensorOfTheRobot::ID}; //Indexer IRBreaker
 
   public:
     IndexerIOSpark();

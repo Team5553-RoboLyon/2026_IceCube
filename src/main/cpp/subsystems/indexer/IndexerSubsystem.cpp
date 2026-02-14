@@ -145,6 +145,7 @@ void IndexerSubsystem::Periodic()
                         m_clodeOutput = IndexerConstants::Voltage::CLODE_POWER;
                         break;
                 }
+                break;
                 
             default:
                 DEBUG_ASSERT(false, "Indexer : impossible state");
@@ -167,16 +168,18 @@ void IndexerSubsystem::Periodic()
         case ControlMode::VELOCITY_DUTYCYCLE_PID:
             m_pIndexerIO->SetVelocity(m_targetVelocity, m_clodeOutput);
             break;
+
+        default:
+            DEBUG_ASSERT(false, "Indexer : unknown control mode used");
+            break;
     }
-    
-
-
 
     //LOG
     frc::SmartDashboard::PutNumber("indexer/WantedState", (int)m_currentWantedState);
     frc::SmartDashboard::PutNumber("indexer/SystemState", (int)m_systemState);
     frc::SmartDashboard::PutNumber("indexer/ControlMode", (int)m_controlMode);
     frc::SmartDashboard::PutBoolean("indexer/isInit", m_isInitialized);
+    frc::SmartDashboard::PutNumber("You have shot ", inputs.nbrOfBallShot);
 }
 
 void IndexerSubsystem::RunStateMachine()
@@ -198,6 +201,7 @@ void IndexerSubsystem::RunStateMachine()
         case WantedState::FEED_SHOOTER:
             if (m_systemState != SystemState::FEEDING_SHOOTER)
                 m_systemState = SystemState::FEEDING_SHOOTER;
+            break;
 
         default:
             DEBUG_ASSERT(false, "indexer : impossible wanted state");

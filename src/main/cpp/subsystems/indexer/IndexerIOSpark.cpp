@@ -51,6 +51,13 @@ void IndexerIOSpark::UpdateInputs(IndexerIOInputs& inputs)
     inputs.clodeCurrent = m_clodeMotor.GetOutputCurrent();
     inputs.clodeTemperature = m_clodeMotor.GetMotorTemperature();
 
+    if(m_bestSensor.Get() == IndexerConstants::theMostImportantSensorOfTheRobot::IS_TRIGERED && !inputs.wasTriggered)
+    {
+        inputs.nbrOfBallShot++;
+    }
+
+    inputs.wasTriggered = m_bestSensor.Get();
+
 
     frc::SmartDashboard::PutNumber("indexer/IndexerVelocity", m_indexerMotor.GetEncoder().GetVelocity()/3);
 }
