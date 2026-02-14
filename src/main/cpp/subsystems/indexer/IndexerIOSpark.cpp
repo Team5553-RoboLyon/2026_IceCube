@@ -15,7 +15,8 @@ IndexerIOSpark::IndexerIOSpark()
         .closedLoop.P(IndexerConstants::Gains::VELOCITY_DUTYCYCLE_PIDF::KP)
         .I(IndexerConstants::Gains::VELOCITY_DUTYCYCLE_PIDF::KI)
         .D(IndexerConstants::Gains::VELOCITY_DUTYCYCLE_PIDF::KD)
-        .VelocityFF(IndexerConstants::Gains::VELOCITY_DUTYCYCLE_PIDF::KF);
+        .feedForward.kV(IndexerConstants::Gains::VELOCITY_DUTYCYCLE_PIDF::KF);
+
     // Apply the configs to the motors
     m_indexerMotor.Configure(  m_indexerMotorConfig, 
                             rev::ResetMode::kResetSafeParameters,
