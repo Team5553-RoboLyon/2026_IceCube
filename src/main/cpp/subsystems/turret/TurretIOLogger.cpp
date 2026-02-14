@@ -6,7 +6,9 @@ TurretIOLogger::TurretIOLogger(wpi::log::DataLog& log, const std::string& path)
           motorAppliedVoltage(log, path + "/motor" + "/AppliedVoltage"),
           motorBusVoltage(log, path + "/motor" + "/BusVoltage"),
           motorTemperature(log, path + "/motor" + "/Temperature"),
-                  orientation(log, path + "/encoder" + "/orientation"),
+          orientation(log, path + "/encoder" + "/orientation"),
+          hallEffectSensorValue(log, path + "/HallEffectSensor" + "/value"),
+
           m_path(path)
 {}
 
@@ -16,5 +18,6 @@ void TurretIOLogger::Log(const TurretIOInputs& inputs) {
     motorBusVoltage.Append(inputs.motorBusVoltage);
     motorCurrent.Append(inputs.motorCurrent);
     motorTemperature.Append(inputs.motorTemperature);
-        orientation.Append(inputs.orientation);
+    orientation.Append(inputs.orientation);
+    hallEffectSensorValue.Append(inputs.hallEffectSensorValue);
 }
