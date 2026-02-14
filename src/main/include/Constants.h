@@ -74,15 +74,15 @@ inline constexpr const char* PilotToString()
 }
 inline constexpr const char* OperatorToString()
 {
-    #if CURRENT_OPERATOR == ADAM
+    #if OPERATOR == ADAM
         return "Adam";
-    #elif CURRENT_OPERATOR == VICTOR
+    #elif OPERATOR == VICTOR
         return "Victor";
-    #elif CURRENT_OPERATOR == ALEXIS
+    #elif OPERATOR == ALEXIS
         return "Alexis";
-    #elif CURRENT_OPERATOR == LENA
+    #elif OPERATOR == LENA
         return "Lena";
-    #elif CURRENT_OPERATOR == TEST
+    #elif OPERATOR == TEST
         return "Test";
     #else
         return "Unknown";
