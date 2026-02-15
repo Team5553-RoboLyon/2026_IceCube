@@ -38,7 +38,7 @@ void FlywheelIOSpark::UpdateInputs(FlywheelIOInputs& inputs)
     inputs.leftMotorBusVoltage = m_leftMotor.GetBusVoltage();
     inputs.leftMotorCurrent = m_leftMotor.GetOutputCurrent();
     inputs.leftMotorTemperature = m_leftMotor.GetMotorTemperature();
-    inputs.leftMotorEncoderVelocity = m_leftMotor.GetEncoder().GetVelocity();
+    inputs.leftMotorInternalEncoderVelocity = m_leftMotor.GetEncoder().GetVelocity();
 
     inputs.isRightMotorConnected = (m_rightMotor.GetBusVoltage() !=0.0) && !m_rightMotor.GetFaults().can;
 
@@ -46,30 +46,34 @@ void FlywheelIOSpark::UpdateInputs(FlywheelIOInputs& inputs)
     inputs.rightMotorBusVoltage = m_rightMotor.GetBusVoltage();
     inputs.rightMotorCurrent = m_rightMotor.GetOutputCurrent();
     inputs.rightMotorTemperature = m_rightMotor.GetMotorTemperature();
-    inputs.rightMotorEncoderVelocity = m_rightMotor.GetEncoder().GetVelocity();
+    inputs.rightMotorInternalEncoderVelocity = m_rightMotor.GetEncoder().GetVelocity();
 
-    inputs.ShooterVelocity = (inputs.leftMotorEncoderVelocity-inputs.rightMotorEncoderVelocity)/2; // Convert from RPS to RPM
+    inputs.shooterVelocity = (inputs.leftMotorInternalEncoderVelocity + inputs.rightMotorInternalEncoderVelocity) / 2; // Convert from RPS to RPM
 
-    frc::SmartDashboard::PutNumber("LeftFlywheelAppliedVoltage",inputs.leftMotorEncoderVelocity);
-    frc::SmartDashboard::PutNumber("LeftFlywheelVoltage", inputs.leftMotorAppliedVoltage);
-    frc::SmartDashboard::PutNumber("LeftFlywheelCurrent", inputs.leftMotorCurrent);
-    frc::SmartDashboard::PutNumber("LeftFlywheelTemperature", inputs.leftMotorTemperature);
-    frc::SmartDashboard::PutNumber("RightFlywheelAppliedVoltage",inputs.rightMotorEncoderVelocity);
-    frc::SmartDashboard::PutNumber("RightFlywheelVoltage", inputs.rightMotorAppliedVoltage);
-    frc::SmartDashboard::PutNumber("RightFlywheelCurrent", inputs.rightMotorCurrent);
-    frc::SmartDashboard::PutNumber("RightFlywheelTemperature", inputs.rightMotorTemperature);
+    #ifdef FLYWHEEL_SMARTDASHBOARD_LOG
+    frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Left/AppliedVoltage",inputs.leftMotorInternalEncoderVelocity);
+    frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Left/Voltage", inputs.leftMotorAppliedVoltage);
+    frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Left/Current", inputs.leftMotorCurrent);
+    frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Left/Temperature", inputs.leftMotorTemperature);
+    frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Right/AppliedVoltage",inputs.rightMotorInternalEncoderVelocity);
+    frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Right/Voltage", inputs.rightMotorAppliedVoltage);
+    frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Right/Current", inputs.rightMotorCurrent);
+    frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Right/Temperature", inputs.rightMotorTemperature);
 
-    frc::SmartDashboard::PutNumber("FlywheelSpeed", inputs.ShooterVelocity);
+    frc::SmartDashboard::PutNumber("shooter/flywheel/FlywheelVelocity", inputs.shooterVelocity);
+    #else
+    m_logger.Log(inputs);
+    #endif
 }
 
-void FlywheelIOSpark::SetVoltage(double voltage)
+void FlywheelIOSpark::SetVoltage(units::volt_t voltage)
 {
-    DEBUG_ASSERT((voltage <= FlywheelConstants::RightMotor::VOLTAGE_COMPENSATION) 
-        && (voltage >= -FlywheelConstants::RightMotor::VOLTAGE_COMPENSATION) 
+    DEBUG_ASSERT((double(voltage) <= FlywheelConstants::RightMotor::VOLTAGE_COMPENSATION) 
+        && (double(voltage) >= -FlywheelConstants::RightMotor::VOLTAGE_COMPENSATION) 
         ,"Flywheel voltage out of range");
     
-    m_leftMotor.SetVoltage(units::volt_t(voltage));
-    m_rightMotor.SetVoltage(units::volt_t(voltage));
+    m_leftMotor.SetVoltage(voltage);
+    m_rightMotor.SetVoltage(voltage);
 }
 
 void FlywheelIOSpark::SetDutyCycle(double dutyCycle)
@@ -78,4 +82,13 @@ void FlywheelIOSpark::SetDutyCycle(double dutyCycle)
         ,"Flywheel duty Cycle out of range");
     m_leftMotor.Set(dutyCycle);
     m_rightMotor.Set(dutyCycle);
+}
+
+void FlywheelIOSpark::SetVelocity(units::angular_velocity::revolutions_per_minute_t velocity)
+{
+    DEBUG_ASSERT((double(velocity) <= FlywheelConstants::Speed::MAX) 
+        && (double(velocity) >= FlywheelConstants::Speed::MIN) 
+        ,"Flywheel velocity out of range");
+
+    DEBUG_ASSERT(false, "I think you're not patient enough to wait for the velocity control to be implemented. Don't worry, it'll be there soon :)");
 }

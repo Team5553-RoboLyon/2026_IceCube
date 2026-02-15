@@ -6,16 +6,15 @@
 
 using IdleMode = rev::spark::SparkBaseConfig::IdleMode;
 
+
+#if ROBOT_MODEL != COMPETITON
+    #define HOOD_SMARTDASHBOARD_LOG
+#endif
+
 namespace HoodConstants
 {
     constexpr ControlMode MainControlMode = ControlMode::POSITION_VOLTAGE_PID;
     constexpr ControlMode EmergencyControlMode = ControlMode::VOLTAGE;
-
-    namespace Specifications
-    {
-        constexpr double GEAR_RATIO = 1; //ul TUNEME
-    }
-
     namespace HoodMotor
     {
         constexpr int ID = 3;
@@ -27,7 +26,7 @@ namespace HoodConstants
         constexpr double RAMP_RATE = 0.5;
         constexpr int HOT_THRESHOLD = 60;
         constexpr int OVERHEATING_THRESHOLD = 75;
-        constexpr int KV = 568.8; // RPM.V-1
+        constexpr int KV = 985.6; // RPM.V-1
     }
 
     namespace HoodEncoder
@@ -35,13 +34,21 @@ namespace HoodConstants
         constexpr int ID_CHANNEL_A = 20;
         constexpr int ID_CHANNEL_B = 21;
         constexpr bool INVERTED = false;
-        constexpr double GEAR_RATIO = 14.0/215.0;
-        constexpr double DISTANCE_PER_PULSE = 2.0*M_PI/GEAR_RATIO/ENCODER_TICKS_PER_REVOLUTION_K2X;
+        constexpr double RATIO = 215.0/14.0; 
+        constexpr double DISTANCE_PER_PULSE = 2.0*NF64_PI/RATIO/ENCODER_TICKS_PER_REVOLUTION_K2X;
     }
 
     namespace Specifications
     {
-        constexpr double HoodMotor_FREE_SPEED = HoodMotor::VOLTAGE_COMPENSATION * HoodMotor::KV; //RPM
+        constexpr double GEAR_RATIO = HoodEncoder::RATIO * (5.23) * (5.23) * (5.23); //ul 
+        constexpr double HOOD_MOTOR_FREE_SPEED = HoodMotor::VOLTAGE_COMPENSATION * HoodMotor::KV; //RPM
+    }
+
+    namespace Simulation
+    {
+        constexpr double CARRIAGE_MASSE = 65.0; //kg 
+        constexpr double MOI = 1.0; //kg.m^2 //TUNEME
+        constexpr double ARM_LENGTH = 0.33; //m //TUNEME
     }
 
     namespace Gains
@@ -63,9 +70,9 @@ namespace HoodConstants
 
     namespace Voltage 
     {
-        constexpr double MAX = HoodMotor::VOLTAGE_COMPENSATION; 
-        constexpr double MIN = -HoodMotor::VOLTAGE_COMPENSATION;
-        constexpr double REST = 0.0;
+        constexpr units::volt_t MAX = units::volt_t{HoodMotor::VOLTAGE_COMPENSATION}; 
+        constexpr units::volt_t MIN = units::volt_t{-HoodMotor::VOLTAGE_COMPENSATION};
+        constexpr units::volt_t REST = units::volt_t{0.0};
     }
 
     namespace Position //in rad

@@ -38,7 +38,7 @@ namespace TurretConstants
         constexpr int A_ID = 23;
         constexpr int B_ID = 24;
         constexpr bool REVERSED = false;
-        constexpr double DISTANCE_PER_PULSE = 2*M_PI/Specifications::GEAR_RATIO/ENCODER_TICKS_PER_REVOLUTION_K2X;
+        constexpr double DISTANCE_PER_PULSE = 2*NF64_PI/Specifications::GEAR_RATIO/ENCODER_TICKS_PER_REVOLUTION_K2X;
     }
 
     namespace TurretCamera
@@ -67,8 +67,8 @@ namespace TurretConstants
     
      namespace Settings
     {
-        constexpr double BOTTOM_LIMIT = -2*M_PI; //TUNEME
-        constexpr double TOP_LIMIT = 2*M_PI; //TUNEME
+        constexpr double BOTTOM_LIMIT = -2*NF64_PI; //TUNEME
+        constexpr double TOP_LIMIT = 2*NF64_PI; //TUNEME
         constexpr double MANUAL_SETPOINT_CHANGE_LIMIT = (TOP_LIMIT - BOTTOM_LIMIT) / (2.5/TIME_PER_CYCLE); //TUNEME
         constexpr double OPEN_LOOP_REDUC = 10.0;
     }

@@ -1,11 +1,10 @@
 #pragma once
 
 #include "rev/SparkFlex.h"
-#include "frc/Encoder.h"
-#include <frc/DigitalInput.h>
 
 #include "FlywheelIO.h"
 #include "FlywheelConstants.h"
+#include "FlywheelLogger.h"
 
 class FlywheelIOSpark  final : public FlywheelIO
 {
@@ -15,11 +14,15 @@ class FlywheelIOSpark  final : public FlywheelIO
     rev::spark::SparkFlex m_rightMotor {FlywheelConstants::RightMotor::ID, rev::spark::SparkFlex::MotorType::kBrushless};
     rev::spark::SparkBaseConfig m_rightMotorConfig;
 
+    #ifndef FLYWHEEL_SMARTDASHBOARD_LOG
+    FlywheelIOLogger m_logger{frc::DataLogManager::GetLog(), "/shooter/flywheel"};
+    #endif
   public:
     FlywheelIOSpark();
     ~FlywheelIOSpark() = default;
 
     void UpdateInputs(FlywheelIOInputs& inputs) override;
-    void SetVoltage(double voltage) override; //COMMENTME
-    void SetDutyCycle(double dutyCycle) override; //COMMENTME
+    void SetVoltage(units::volt_t voltage) override;
+    void SetDutyCycle(double dutyCycle) override;
+    void SetVelocity(units::angular_velocity::revolutions_per_minute_t velocity) override;
 };

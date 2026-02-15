@@ -12,14 +12,14 @@ ShooterSubsystem::ShooterSubsystem(FlywheelIO *pFlywheelIO, HoodIO *pHoodIO, Sho
                                      FlywheelConstants::Gains::VELOCITY_VOLTAGE_PID::KI,
                                      FlywheelConstants::Gains::VELOCITY_VOLTAGE_PID::KD);
 
-    m_flywheelPIDController.SetOutputLimits(FlywheelConstants::Voltage::MIN, FlywheelConstants::Voltage::MAX);
-    m_flywheelPIDController.SetInputLimits(FlywheelConstants::Speed::MIN,FlywheelConstants::Speed::MAX);
+    m_flywheelPIDController.SetOutputLimits(double(FlywheelConstants::Voltage::MIN), double(FlywheelConstants::Voltage::MAX));
+    m_flywheelPIDController.SetInputLimits(double(FlywheelConstants::Speed::MIN), double(FlywheelConstants::Speed::MAX));
 
     m_hoodPIDController.SetGains(HoodConstants::Gains::POSITION_VOLTAGE_PID::KP,
                                  HoodConstants::Gains::POSITION_VOLTAGE_PID::KI,
                                  HoodConstants::Gains::POSITION_VOLTAGE_PID::KD);
 
-    m_hoodPIDController.SetOutputLimits(HoodConstants::Voltage::MIN, HoodConstants::Voltage::MAX);
+    m_hoodPIDController.SetOutputLimits(double(HoodConstants::Voltage::MIN), double(HoodConstants::Voltage::MAX));
     m_hoodPIDController.SetInputLimits(HoodConstants::Position::MIN, HoodConstants::Position::MAX);
 }
 
@@ -167,7 +167,6 @@ void ShooterSubsystem::Periodic()
 
     m_pFlywheelIO->UpdateInputs(flywheelInputs);
     m_pHoodIO->UpdateInputs(hoodInputs);
-    m_logger.Log(hoodInputs,flywheelInputs);
     
     m_leftMotorDisconnected.Set(!flywheelInputs.isLeftMotorConnected);
     m_leftMotorHot.Set(flywheelInputs.leftMotorTemperature > FlywheelConstants::LeftMotor::HOT_THRESHOLD);
@@ -175,9 +174,9 @@ void ShooterSubsystem::Periodic()
     m_rightMotorDisconnected.Set(!flywheelInputs.isRightMotorConnected);
     m_rightMotorHot.Set(flywheelInputs.rightMotorTemperature > FlywheelConstants::RightMotor::HOT_THRESHOLD);
     m_rightMotorOverheating.Set(flywheelInputs.rightMotorTemperature > FlywheelConstants::RightMotor::OVERHEATING_THRESHOLD);
-    m_hoodMotorDisconnected.Set(!hoodInputs.isHoodMotorConnected);
-    m_hoodMotorHot.Set(hoodInputs.hoodMotorTemperature > HoodConstants::HoodMotor::HOT_THRESHOLD);
-    m_hoodMotorOverheating.Set(hoodInputs.hoodMotorTemperature > HoodConstants::HoodMotor::OVERHEATING_THRESHOLD);
+    m_hoodMotorDisconnected.Set(!hoodInputs.isMotorConnected);
+    m_hoodMotorHot.Set(hoodInputs.motorTemperature > HoodConstants::HoodMotor::HOT_THRESHOLD);
+    m_hoodMotorOverheating.Set(hoodInputs.motorTemperature > HoodConstants::HoodMotor::OVERHEATING_THRESHOLD);
 
      //----------------- State Machine & Motion Control -----------------
     
@@ -207,7 +206,7 @@ void ShooterSubsystem::Periodic()
                     case SystemState::RAMPING_BACKWARD:
                     case SystemState::SOON_MINE:
                         m_flywheelOutput += m_flywheelPIDController.CalculateWithRealTime(m_flywheelTargetSpeed, 
-                                                                                        flywheelInputs.ShooterVelocity, 
+                                                                                        flywheelInputs.shooterVelocity, 
                                                                                         m_timestamp);
                         break;
 
@@ -237,7 +236,7 @@ void ShooterSubsystem::Periodic()
         {
             case ControlMode::VOLTAGE:
             case ControlMode::POSITION_VOLTAGE_PID:
-                m_hoodOutput = m_hoodPIDController.CalculateWithRealTime(m_hoodTargetPos, hoodInputs.hoodPos, m_timestamp);
+                m_hoodOutput = units::volt_t{m_hoodPIDController.CalculateWithRealTime(m_hoodTargetPos, hoodInputs.hoodAngle, m_timestamp)};
                 break;
 
             case ControlMode::DISABLED:
@@ -254,11 +253,11 @@ void ShooterSubsystem::Periodic()
 
      // ----------------- Limits -----------------
     
-     if (hoodInputs.hoodPos <= HoodConstants::Position::MIN && m_hoodOutput < 0.0)
+     if (hoodInputs.hoodAngle <= HoodConstants::Position::MIN && double(m_hoodOutput) < 0.0)
      {
         m_hoodOutput = HoodConstants::Voltage::REST;
      }
-     else if (hoodInputs.hoodPos >= HoodConstants::Position::MAX && m_hoodOutput > 0.0)
+     else if (hoodInputs.hoodAngle   >= HoodConstants::Position::MAX && double(m_hoodOutput) > 0.0)
      {
         m_hoodOutput = HoodConstants::Voltage::REST;
      }
@@ -322,7 +321,7 @@ void ShooterSubsystem::RunStateMachine()
         case SystemState::AT_SHOOT_SPEED:
             if(m_flywheelControlMode == FlywheelConstants::MainControlMode || m_hoodControlMode == HoodConstants::MainControlMode)
             {
-                m_hoodTargetPos = m_pShootParameters->hoodPos;
+                m_hoodTargetPos = m_pShootParameters->hoodAngle;
                 m_flywheelTargetSpeed = m_pShootParameters->flywheelSpeed;
             }
             else
@@ -331,8 +330,8 @@ void ShooterSubsystem::RunStateMachine()
                 m_flywheelTargetSpeed = FlywheelConstants::Speed::AGAINST_HUB;
             }
 
-            if (IS_IN_RANGE(flywheelInputs.ShooterVelocity,m_flywheelTargetSpeed,FlywheelConstants::Speed::TOLERANCE)
-                && IS_IN_RANGE(hoodInputs.hoodPos, m_hoodTargetPos, HoodConstants::Position::TOLERANCE))
+            if (IS_IN_RANGE(flywheelInputs.shooterVelocity,m_flywheelTargetSpeed,FlywheelConstants::Speed::TOLERANCE)
+                && IS_IN_RANGE(hoodInputs.hoodAngle, m_hoodTargetPos, HoodConstants::Position::TOLERANCE))
                 m_systemState = SystemState::AT_SHOOT_SPEED;
             else
                 m_systemState = SystemState::RAMPING_TO_SHOOT;
@@ -342,8 +341,8 @@ void ShooterSubsystem::RunStateMachine()
             m_flywheelTargetSpeed = FlywheelConstants::Speed::FEED;
             m_hoodTargetPos = HoodConstants::Position::FEED;
 
-            if (IS_IN_RANGE(flywheelInputs.ShooterVelocity,m_flywheelTargetSpeed,FlywheelConstants::Speed::TOLERANCE)
-                && IS_IN_RANGE(hoodInputs.hoodPos, m_hoodTargetPos, HoodConstants::Position::TOLERANCE))
+            if (IS_IN_RANGE(flywheelInputs.shooterVelocity,m_flywheelTargetSpeed,FlywheelConstants::Speed::TOLERANCE)
+                && IS_IN_RANGE(hoodInputs.hoodAngle, m_hoodTargetPos, HoodConstants::Position::TOLERANCE))
                     m_systemState = SystemState::READY_TO_FEED;
             break;
 
@@ -351,8 +350,8 @@ void ShooterSubsystem::RunStateMachine()
             m_flywheelTargetSpeed = FlywheelConstants::Speed::FEED;
             m_hoodTargetPos = HoodConstants::Position::FEED;
 
-            if (IS_IN_RANGE(flywheelInputs.ShooterVelocity,m_flywheelTargetSpeed,FlywheelConstants::Speed::TOLERANCE)
-                && IS_IN_RANGE(hoodInputs.hoodPos, m_hoodTargetPos, HoodConstants::Position::TOLERANCE))
+            if (IS_IN_RANGE(flywheelInputs.shooterVelocity,m_flywheelTargetSpeed,FlywheelConstants::Speed::TOLERANCE)
+                && IS_IN_RANGE(hoodInputs.hoodAngle, m_hoodTargetPos, HoodConstants::Position::TOLERANCE))
                     m_systemState = SystemState::READY_TO_FEED;
             break;
 
@@ -360,8 +359,8 @@ void ShooterSubsystem::RunStateMachine()
             m_flywheelTargetSpeed = FlywheelConstants::Speed::TO_ALLIANCE_ZONE;
             m_hoodTargetPos = HoodConstants::Position::TO_ALLIANCE_ZONE;
 
-            if (IS_IN_RANGE(flywheelInputs.ShooterVelocity,m_flywheelTargetSpeed,FlywheelConstants::Speed::TOLERANCE)
-                && IS_IN_RANGE(hoodInputs.hoodPos, m_hoodTargetPos, HoodConstants::Position::TOLERANCE))
+            if (IS_IN_RANGE(flywheelInputs.shooterVelocity,m_flywheelTargetSpeed,FlywheelConstants::Speed::TOLERANCE)
+                && IS_IN_RANGE(hoodInputs.hoodAngle, m_hoodTargetPos, HoodConstants::Position::TOLERANCE))
                     m_systemState = SystemState::THATS_ALL_MINE;
             break;
 

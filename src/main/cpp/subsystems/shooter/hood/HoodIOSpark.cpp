@@ -24,30 +24,34 @@ HoodIOSpark::HoodIOSpark()
 
 void HoodIOSpark::UpdateInputs(HoodIOInputs& inputs) 
 {
-    inputs.isHoodMotorConnected = (m_hoodMotor.GetBusVoltage() !=0.0) && !m_hoodMotor.GetFaults().can;
+    inputs.isMotorConnected = (m_hoodMotor.GetBusVoltage() !=0.0) && !m_hoodMotor.GetFaults().can;
 
-    inputs.hoodMotorAppliedVoltage = m_hoodMotor.GetAppliedOutput() * HoodConstants::HoodMotor::VOLTAGE_COMPENSATION;
-    inputs.hoodMotorBusVoltage = m_hoodMotor.GetBusVoltage();
-    inputs.hoodMotorCurrent = m_hoodMotor.GetOutputCurrent();
-    inputs.hoodMotorTemperature = m_hoodMotor.GetMotorTemperature();
+    inputs.motorAppliedVoltage = m_hoodMotor.GetAppliedOutput() * HoodConstants::HoodMotor::VOLTAGE_COMPENSATION;
+    inputs.motorBusVoltage = m_hoodMotor.GetBusVoltage();
+    inputs.motorCurrent = m_hoodMotor.GetOutputCurrent();
+    inputs.motorTemperature = m_hoodMotor.GetMotorTemperature();
 
-    inputs.hoodPos = m_hoodEncoder.GetDistance();
+    inputs.hoodAngle = m_hoodEncoder.GetDistance();
 
-    frc::SmartDashboard::PutNumber("HoodAppliedVoltage",inputs.hoodMotorAppliedVoltage);
-    frc::SmartDashboard::PutNumber("HoodVoltage", inputs.hoodMotorBusVoltage);
-    frc::SmartDashboard::PutNumber("HoodCurrent", inputs.hoodMotorCurrent);
-    frc::SmartDashboard::PutNumber("HoodTemperature", inputs.hoodMotorTemperature);
+    #ifdef HOOD_SMARTDASHBOARD_LOG
+    frc::SmartDashboard::PutNumber("shooter/hood/Motor/AppliedVoltage",inputs.motorAppliedVoltage);
+    frc::SmartDashboard::PutNumber("shooter/hood/Motor/BusVoltage", inputs.motorBusVoltage);
+    frc::SmartDashboard::PutNumber("shooter/hood/Motor/Current", inputs.motorCurrent);
+    frc::SmartDashboard::PutNumber("shooter/hood/Motor/Temperature", inputs.motorTemperature);
 
-    frc::SmartDashboard::PutNumber("HoodPos", inputs.hoodPos);
+    frc::SmartDashboard::PutNumber("shooter/hood/Position", inputs.hoodAngle);
+    #else 
+    m_logger.Log(inputs);
+    #endif
 }
 
-void HoodIOSpark::SetVoltage(double voltage)
+void HoodIOSpark::SetVoltage(units::volt_t voltage)
 {
-    DEBUG_ASSERT((voltage <= HoodConstants::HoodMotor::VOLTAGE_COMPENSATION) 
-        && (voltage >= -HoodConstants::HoodMotor::VOLTAGE_COMPENSATION) 
-        ,"Hood bottomVoltage out of range");
+    DEBUG_ASSERT((double(voltage) <= HoodConstants::HoodMotor::VOLTAGE_COMPENSATION) 
+        && (double(voltage) >= -HoodConstants::HoodMotor::VOLTAGE_COMPENSATION) 
+        ,"Hood voltage out of range");
     
-    m_hoodMotor.SetVoltage(units::volt_t(voltage));
+    m_hoodMotor.SetVoltage(voltage);
 }
 
 void HoodIOSpark::SetDutyCycle(double dutyCycle)

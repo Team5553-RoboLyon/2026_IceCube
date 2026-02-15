@@ -5,7 +5,7 @@
 struct ShootParameters {
     frc::Pose2d lookAheadTargetPos;
     double lookAheadTargetTurretPos = 0.0;
-    double hoodPos = 0.0;
+    double hoodAngle = 0.0;
     double flywheelSpeed = 0.0;
 };
 

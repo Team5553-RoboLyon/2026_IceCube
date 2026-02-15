@@ -1,5 +1,7 @@
 #pragma once
 
+#include "units/angular_velocity.h"
+#include "units/voltage.h"
 struct FlywheelIOInputs
 {
     bool isLeftMotorConnected = true;
@@ -8,7 +10,7 @@ struct FlywheelIOInputs
     double leftMotorBusVoltage = 0.0;
     double leftMotorCurrent = 0.0;
     double leftMotorTemperature = 0.0;
-    double leftMotorEncoderVelocity = 0.0;
+    double leftMotorInternalEncoderVelocity = 0.0;
 
     bool isRightMotorConnected = true;
     
@@ -16,9 +18,9 @@ struct FlywheelIOInputs
     double rightMotorBusVoltage = 0.0;
     double rightMotorCurrent = 0.0;
     double rightMotorTemperature = 0.0;
-    double rightMotorEncoderVelocity = 0.0;
+    double rightMotorInternalEncoderVelocity = 0.0;
     
-    double ShooterVelocity = 0.0;
+    double shooterVelocity = 0.0;
 };
 
 
@@ -28,6 +30,7 @@ public:
 
     virtual void UpdateInputs(FlywheelIOInputs& inputs) = 0;
 
-    virtual void SetVoltage(double voltage) = 0; 
+    virtual void SetVoltage(units::volt_t voltage) = 0; 
     virtual void SetDutyCycle(double dutyCycle) = 0;
+    virtual void SetVelocity(units::angular_velocity::revolutions_per_minute_t velocity) = 0;
 };

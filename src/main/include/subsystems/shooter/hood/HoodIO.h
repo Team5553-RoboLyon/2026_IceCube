@@ -1,15 +1,16 @@
 #pragma once
 
+#include "units/voltage.h"
 struct HoodIOInputs
 {
-    bool isHoodMotorConnected = true;
+    bool isMotorConnected = true;
     
-    double hoodMotorAppliedVoltage = 0.0;
-    double hoodMotorBusVoltage = 0.0;
-    double hoodMotorCurrent = 0.0;
-    double hoodMotorTemperature = 0.0;
+    double motorAppliedVoltage = 0.0;
+    double motorBusVoltage = 0.0;
+    double motorCurrent = 0.0;
+    double motorTemperature = 0.0;
 
-    double hoodPos = 0.0;
+    double hoodAngle = 0.0;
 };
 
 
@@ -19,7 +20,7 @@ public:
 
     virtual void UpdateInputs(HoodIOInputs& inputs) = 0;
 
-    virtual void SetVoltage(double voltage) = 0; 
+    virtual void SetVoltage(units::volt_t voltage) = 0; 
     virtual void SetDutyCycle(double dutyCycle) = 0;
 
     virtual void ResetEncoder() = 0;

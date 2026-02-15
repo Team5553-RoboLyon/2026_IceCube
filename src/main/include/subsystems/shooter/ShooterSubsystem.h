@@ -8,7 +8,6 @@
 
 #include "hood/HoodConstants.h"
 #include "flywheel/FlywheelConstants.h"
-#include "shooterIOLogger.h"
 #include "hood/HoodIO.h"
 #include "flywheel/FlywheelIO.h"
 #include "Constants.h"
@@ -72,7 +71,6 @@ class ShooterSubsystem : public frc2::SubsystemBase {
       HoodIO *m_pHoodIO;
       FlywheelIOInputs flywheelInputs;
       HoodIOInputs hoodInputs;
-      ShooterIOLogger m_logger{frc::DataLogManager::GetLog(), "/Shooter"};
       ShootParameters *m_pShootParameters;
     // === System States & Control Modes ===
       WantedState m_wantedState = WantedState::STAND_BY;
@@ -86,8 +84,8 @@ class ShooterSubsystem : public frc2::SubsystemBase {
     // === Control Inputs / Outputs ===
       double m_manualControlInput{0.0};
       double m_timestamp{0.0};
-      double m_flywheelOutput{0.0};
-      double m_hoodOutput{0.0};
+      units::volt_t m_flywheelOutput{0.0};
+      units::volt_t m_hoodOutput{0.0};
       TunableValueLogger m_tunableFlywheelVoltageLogger{"/Shooter/FlywheelVoltage", 0.0};
       TunableValueLogger m_tunableHoodVoltageLogger{"/Shooter/HoodVoltage", 0.0};
       double m_flywheelTargetSpeed{0.0};
