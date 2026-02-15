@@ -8,6 +8,7 @@
 #include <frc2/command/InstantCommand.h>
 #include <frc2/command/Commands.h>
 
+#include "commands/SetWantedStateClimberCmd.h"
 
 RobotContainer::RobotContainer()
 {
@@ -15,4 +16,13 @@ RobotContainer::RobotContainer()
 }
 
 void RobotContainer::ConfigureBindings() {
+
+    operatorGamepad.CLIMBED.OnTrue(SetWantedClimberStateCmd(&climber, ClimberSubsystem::WantedState::CLIMBED)
+                                .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
+    operatorGamepad.ARMED_TO_CLIMB.OnTrue(SetWantedClimberStateCmd(&climber, ClimberSubsystem::WantedState::ARMED_TO_CLIMB)
+                                .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
+    operatorGamepad.STOWED.OnTrue(SetWantedClimberStateCmd(&climber, ClimberSubsystem::WantedState::STOWED)
+                                .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
+    operatorGamepad.toggle.OnTrue(frc2::InstantCommand([this](){climber.ToggleControlMode();})
+                                .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
 }

@@ -1,13 +1,6 @@
 #pragma once
 
-#include "rev/SparkMax.h"
-
-#include "frc/Encoder.h"
-#include "frc/DigitalInput.h"
-#include "frc/AnalogInput.h"
-
 #include "frc/simulation/ElevatorSim.h"
-#include "frc/simulation/LinearSystemSim.h"
 #include "frc/system/plant/DCMotor.h"
 
 #include "ClimberIO.h"
@@ -26,9 +19,6 @@ class ClimberIOSim  final : public ClimberIO
                                       units::meter_t{ClimberConstants::Settings::TOP_LIMIT},
                                       true,
                                       units::meter_t{ClimberConstants::Settings::BOTTOM_LIMIT}};
-
-    // frc::DigitalInput m_bottomLimitSwitch{ClimberConstants::LimitSwitch::BOTTOM_CHANNEL};
-    // frc::AnalogInput m_hallEffectSensor{ClimberConstants::HallEffectSensor::CHANNEL};
   public:
     ClimberIOSim();
     ~ClimberIOSim() = default;

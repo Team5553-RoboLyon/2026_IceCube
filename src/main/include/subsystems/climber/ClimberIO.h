@@ -9,8 +9,8 @@ struct ClimberIOInputs
     double motorCurrent = 0.0;
     double motorTemperature = 0.0;
     
-    double climberHeight = 0.0;
-    double hallEffectSensorValue = 0.0;
+    double hammerHeight = 0.0;
+    bool irbreakerValue = false;
     bool bottomLimitSwitchValue = false;
 };
 

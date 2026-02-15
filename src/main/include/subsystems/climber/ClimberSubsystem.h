@@ -5,13 +5,13 @@
 #pragma once
 
 #include <frc2/command/SubsystemBase.h>
+#include <frc/smartdashboard/Mechanism2d.h>
+#include <frc/smartdashboard/MechanismLigament2d.h>
 
 #include "ClimberConstants.h"
-#include "ClimberIOLogger.h"
 #include "ClimberIO.h"
 #include "Constants.h"
 
-#include "LyonLib/control/RateLimiter.h"
 #include "LyonLib/control/pidRBL.h"
 #include "LyonLib/logging/Alert.h"
 #include "LyonLib/logging/TunableValueLogger.h"
@@ -22,24 +22,23 @@ class ClimberSubsystem : public frc2::SubsystemBase {
 
     enum class WantedState 
     {
-      STAND_BY,         // no wanted state scheduled.
-      STOWED,           // Be safe inside frame perimeter (match default)
-      ARMED_TO_CLIMB,   // Ready to climb (extended but not loaded)
-      CLIMBED,          // Robot should be supported by the climber
-      RELEASED_CLIMB,    // Robot should be off the bar (declimbed)
-      INITIALIZATION
+      STAND_BY = 0,         // no wanted state scheduled.
+      STOWED = 1,           // Be safe inside frame perimeter (match default)
+      ARMED_TO_CLIMB = 2,   // Ready to climb
+      CLIMBED = 3,          // Robot should be supported by the climber
+      INITIALIZATION = 4
     };
     enum class SystemState
     {
-      IDLE,
+      IDLE = 0,
       //Ste ady states
-      STOWED_HOME,      // Fully retracted, safe for match play
-      ARMED,            // Extended to pre-climb height
-      CLIMBED_LOCKED,   // robot hanging
+      STOWED_HOME = 1,      // Fully retracted, safe for match play
+      ARMED = 2,            // Extended to pre-climb height
+      CLIMBED_LOCKED = 3,   // robot hanging
       //Transition state
-      EXTENDING_TO_ARMED,
-      RETRACTING_TO_HOME,
-      CLIMBING
+      EXTENDING_TO_ARMED = 4,
+      RETRACTING_TO_HOME = 5,
+      CLIMBING = 6
     };
     void SetWantedState(const WantedState wantedState);
     SystemState GetSystemState();
@@ -56,7 +55,6 @@ class ClimberSubsystem : public frc2::SubsystemBase {
     // === Hardware & IO Interfaces ===
       ClimberIO *m_pClimberIO;
       ClimberIOInputs inputs;
-      ClimberIOLogger m_logger{frc::DataLogManager::GetLog(), "/Climber"};
     // === System States & Control Modes ===
       WantedState m_wantedState = WantedState::STAND_BY;
       WantedState m_currentWantedState = m_wantedState; //Local discrete snapshot of m_wantedState for each cycle
@@ -68,7 +66,11 @@ class ClimberSubsystem : public frc2::SubsystemBase {
       double m_output{0.0};
       double m_manualControlInput{0.0};
       double m_timestamp{0.0};
-      TunableValueLogger m_tunableVoltage{"Climber/AppliedVoltage",0.0};
+      TunableValueLogger m_tunableVoltage{"climber/AppliedVoltage",0.0};
+    // === Visualization ===
+      frc::Mechanism2d m_mechanism{ClimberConstants::Settings::TOP_LIMIT, ClimberConstants::Settings::TOP_LIMIT};
+      frc::MechanismRoot2d* m_root{m_mechanism.GetRoot("climber", ClimberConstants::Settings::TOP_LIMIT/2, ClimberConstants::Settings::BOTTOM_LIMIT)};
+      frc::MechanismLigament2d* m_hammer{m_root->Append<frc::MechanismLigament2d>("Hammer", 1, 90_deg)};
     // === Status Flags ===
       bool m_isInitialized = true;
       bool m_isEncoderAlreadyReset = false; // Flag to prevent multiple encoder resets when hitting the bottom limit switch

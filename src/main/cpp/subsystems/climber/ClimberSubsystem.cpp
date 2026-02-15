@@ -28,6 +28,8 @@ ClimberSubsystem::ClimberSubsystem(ClimberIO *pIO) :
     m_ClimberPIDController.SetInputLimits( ClimberConstants::Settings::BOTTOM_LIMIT, 
                                             ClimberConstants::Settings::TOP_LIMIT);
 
+    frc::SmartDashboard::PutData("climber/Mechanism2d", &m_mechanism);
+    m_hammer->SetLineWeight(15);
 }
 
 void ClimberSubsystem::SetWantedState(const WantedState wantedState)
@@ -67,7 +69,7 @@ void ClimberSubsystem::SetControlMode(const ControlMode mode)
     
     case ControlMode::MANUAL_POSITION :
         m_output = ClimberConstants::Speed::REST;
-        m_manualControlInput = inputs.climberHeight;
+        m_manualControlInput = inputs.hammerHeight;
 
         m_ClimberPIDController.Reset(m_timestamp);
         m_ClimberPIDController.SetGains(ClimberConstants::Gains::MANUAL_SETPOINT_PID::KP, 
@@ -119,15 +121,20 @@ void ClimberSubsystem::ToggleControlMode()
 
 void ClimberSubsystem::SetManualControlInput(const double value)
 {
-    if(BYPASS_STATE_MACHINE(m_controlMode))
+    DEBUG_ASSERT((value <= 1.0) && (value >= -1.0) 
+        , "Climber Duty Cycle out of range");
+
+    switch(m_controlMode)
     {
-        DEBUG_ASSERT((value <= 1.0) && (value >= -1.0) 
-            , "Climber Duty Cycle out of range");
-        m_manualControlInput = value;
-    }
-    else 
-    {
-        DEBUG_ASSERT(false, "Climber : Open Loop Output set while Closed Loop is used");
+        case ControlMode::MANUAL_VOLTAGE:
+            m_manualControlInput = value * ClimberConstants::Motor::VOLTAGE_COMPENSATION;
+            break; //end of ControlMode::MANUAL_VOLTAGE
+        case ControlMode::MANUAL_POSITION:
+            m_manualControlInput = m_ClimberPIDController.GetSetpoint() + value * ClimberConstants::Settings::MANUAL_SETPOINT_CHANGE_LIMIT;
+            break; //end of ControlMode::MANUAL_POSITION
+        default:
+            DEBUG_ASSERT(false, "Climber : SetManualControlInput impossible with an unrecognized mode.");
+            break; //end of default
     }
 }
 
@@ -138,7 +145,6 @@ void ClimberSubsystem::Periodic()
     m_timestamp = TimerRBL::GetFPGATimestampInSeconds();
 
     m_pClimberIO->UpdateInputs(inputs);
-    m_logger.Log(inputs);
     
     m_climberMotorDisconnected.Set(!inputs.isMotorConnected);
     m_climberMotorHot.Set(inputs.motorTemperature > ClimberConstants::Motor::HOT_THRESHOLD);
@@ -152,7 +158,8 @@ void ClimberSubsystem::Periodic()
         }
     }
     else 
-    {
+    {   
+        m_hammer->SetLength(inputs.hammerHeight - ClimberConstants::Settings::BOTTOM_LIMIT);
         if(ALLOWS_STATE_MACHINE(m_controlMode))
         {
             RunStateMachine();
@@ -161,22 +168,26 @@ void ClimberSubsystem::Periodic()
         switch (m_controlMode) //actualise motion
         {
         case ControlMode::MANUAL_VOLTAGE:
-            m_output = m_tunableVoltage.Get();
+            #if ROBOT_MODEL == PROTOTYPE
+                m_output = m_tunableVoltage.Get();
+            #else
+                m_output = m_manualControlInput;
+            #endif
             break; //end of ControlMode::MANUAL_VOLTAGE
         case ControlMode::POSITION_VOLTAGE_PID:
             switch (m_systemState)
             {
                 case SystemState::ARMED:
                 case SystemState::EXTENDING_TO_ARMED:
-                    m_output = m_ClimberPIDController.Calculate(ClimberConstants::Setpoint::ARMED,inputs.climberHeight);
+                    m_output = m_ClimberPIDController.Calculate(ClimberConstants::Setpoint::ARMED,inputs.hammerHeight);
                     break; //end of SystemState::ARMED and SystemState::EXTENDING_TO_ARMED
                 case SystemState::CLIMBED_LOCKED:
                 case SystemState::CLIMBING:
-                    m_output = m_ClimberPIDController.Calculate(ClimberConstants::Setpoint::CLIMBED_LOCKED,inputs.climberHeight);
+                    m_output = m_ClimberPIDController.Calculate(ClimberConstants::Setpoint::CLIMBED_LOCKED,inputs.hammerHeight);
                     break; //end of SystemState::CLIMBED_LOCKED and SystemState::CLIMBING
                 case SystemState::STOWED_HOME:
                 case SystemState::RETRACTING_TO_HOME:
-                    m_output = m_ClimberPIDController.Calculate(ClimberConstants::Setpoint::HOME,inputs.climberHeight);
+                    m_output = m_ClimberPIDController.Calculate(ClimberConstants::Setpoint::HOME,inputs.hammerHeight);
                     break; //end of SystemState::STOWED_HOME and SystemState::RETRACTING_TO_HOME
                 
                 case SystemState::IDLE:
@@ -188,10 +199,8 @@ void ClimberSubsystem::Periodic()
             }
             break; //end of ControlMode::POSITION_VOLTAGE_PID
         case ControlMode::MANUAL_POSITION :
-            m_manualControlInput = m_ClimberPIDController.GetSetpoint() + m_manualControlInput * ClimberConstants::Settings::MANUAL_SETPOINT_CHANGE_LIMIT;
-
             m_output = m_ClimberPIDController.CalculateWithRealTime(m_manualControlInput,
-                                                                        inputs.climberHeight,
+                                                                        inputs.hammerHeight,
                                                                         m_timestamp);
             break; //end of ControlMode::MANUAL_POSITION
         case ControlMode::DISABLED :
@@ -205,9 +214,9 @@ void ClimberSubsystem::Periodic()
 
 
      // ----------------- Limits -----------------
-    if (inputs.climberHeight >= ClimberConstants::Settings::TOP_LIMIT && m_output > 0.0)
+    if (inputs.hammerHeight >= ClimberConstants::Settings::TOP_LIMIT && m_output > 0.0)
         m_output = 0.0;
-    else if (inputs.climberHeight <= ClimberConstants::Settings::BOTTOM_LIMIT && m_output < 0.0)
+    else if (inputs.hammerHeight <= ClimberConstants::Settings::BOTTOM_LIMIT && m_output < 0.0)
         m_output = 0.0;
     
     if(inputs.bottomLimitSwitchValue)
@@ -225,7 +234,7 @@ void ClimberSubsystem::Periodic()
             }
         }
     }
-    else if (inputs.climberHeight > ClimberConstants::Settings::TOP_LIMIT)
+    else if (inputs.hammerHeight > ClimberConstants::Settings::TOP_LIMIT)
     {
         m_output = NMIN(0.0, m_output); // prevent the straffer to go through the right side
     }
@@ -241,7 +250,6 @@ void ClimberSubsystem::Periodic()
     frc::SmartDashboard::PutNumber("climber/WantedState", (int)m_currentWantedState);
     frc::SmartDashboard::PutNumber("climber/SystemState", (int)m_systemState);
     frc::SmartDashboard::PutNumber("climber/ControlMode", (int)m_controlMode);
-    frc::SmartDashboard::PutNumber("climber/Height", inputs.climberHeight);
     frc::SmartDashboard::PutBoolean("climber/isInit", m_isInitialized);
 }
 
@@ -255,6 +263,10 @@ void ClimberSubsystem::RunStateMachine()
         {
             m_systemState = SystemState::RETRACTING_TO_HOME;
         }
+        else 
+        {
+            m_wantedState = WantedState::STAND_BY; // ignoring the command
+        }
         break; //end of WantedState::STOWED
     case WantedState::ARMED_TO_CLIMB :
         if (m_systemState == SystemState::STOWED_HOME || 
@@ -264,19 +276,21 @@ void ClimberSubsystem::RunStateMachine()
         {
             m_systemState = SystemState::EXTENDING_TO_ARMED;
         }
+        else 
+        {
+            m_wantedState = WantedState::STAND_BY; // ignoring the command
+        }
         break; //end of WantedState::ARMED_TO_CLIMB
     case WantedState::CLIMBED:
         if( m_systemState == SystemState::ARMED)
         {
             m_systemState = SystemState::CLIMBING;
         }
-        break; //end of WantedState::CLIMBED
-    case WantedState::RELEASED_CLIMB:
-        if( m_systemState == SystemState::CLIMBED_LOCKED)
+        else 
         {
-            m_systemState = SystemState::EXTENDING_TO_ARMED;
+            m_wantedState = WantedState::STAND_BY; // ignoring the command
         }
-        break; //end of WantedState::RELEASED_CLIMB
+        break; //end of WantedState::CLIMBED
     case WantedState::STAND_BY :
     case WantedState::INITIALIZATION :
         break; //end of Others States
@@ -292,21 +306,24 @@ void ClimberSubsystem::RunStateMachine()
         break; //end of SystemState::IDLE
 
     case SystemState::CLIMBING :
-        if(NABS(inputs.climberHeight - ClimberConstants::Setpoint::CLIMBED_LOCKED) < ClimberConstants::Setpoint::TOLERANCE)
+        if(NABS(inputs.hammerHeight - ClimberConstants::Setpoint::CLIMBED_LOCKED) < ClimberConstants::Setpoint::TOLERANCE)
         {
             m_systemState = SystemState::CLIMBED_LOCKED;
+            m_wantedState = WantedState::STAND_BY; // reset wanted state to prevent unwanted transitions
         }
         break; //end of SystemState::CLIMBED
     case SystemState::RETRACTING_TO_HOME :
-        if(NABS(inputs.climberHeight - ClimberConstants::Setpoint::HOME) < ClimberConstants::Setpoint::TOLERANCE)
+        if(NABS(inputs.hammerHeight - ClimberConstants::Setpoint::HOME) < ClimberConstants::Setpoint::TOLERANCE)
         {
             m_systemState = SystemState::STOWED_HOME;
+            m_wantedState = WantedState::STAND_BY; // reset wanted state to prevent unwanted transitions
         }
         break; //end of SystemState::RETRACTING_TO_HOME
     case SystemState::EXTENDING_TO_ARMED :
-        if(NABS(inputs.climberHeight - ClimberConstants::Setpoint::ARMED) < ClimberConstants::Setpoint::TOLERANCE)
+        if(NABS(inputs.hammerHeight - ClimberConstants::Setpoint::ARMED) < ClimberConstants::Setpoint::TOLERANCE)
         {
             m_systemState = SystemState::ARMED;
+            m_wantedState = WantedState::STAND_BY; // reset wanted state to prevent unwanted transitions
         }
         break; //end of SystemState::EXTENDING_TO_ARMED
     case SystemState::STOWED_HOME:

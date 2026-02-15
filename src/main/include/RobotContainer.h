@@ -25,6 +25,7 @@ class RobotContainer {
   ClimberSubsystem climber{new ClimberIOSim};
   #else
   ClimberSubsystem climber{new ClimberIOSpark};
+  #endif
 
  private:
   void ConfigureBindings();

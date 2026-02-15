@@ -1,15 +1,15 @@
 #include "subsystems/climber/climberIOLogger.h"
 
 ClimberIOLogger::ClimberIOLogger(wpi::log::DataLog& log, const std::string& path)
-    :     isMotorConnected(log, path + "/climberMotor" + "/isConnected"),
-          motorCurrent(log, path + "/climberMotor" + "/Current"),
-          motorAppliedVoltage(log, path + "/climberMotor" + "/AppliedVoltage"),
-          motorBusVoltage(log, path + "/climberMotor" + "/BusVoltage"),
-          motorTemperature(log, path + "/climberMotor" + "/Temperature"),
+    :     isMotorConnected(log, path + "/Motor" + "/IO/isConnected"),
+          motorCurrent(log, path + "/Motor" + "/Current"),
+          motorAppliedVoltage(log, path + "/Motor" + "/AppliedVoltage"),
+          motorBusVoltage(log, path + "/Motor" + "/BusVoltage"),
+          motorTemperature(log, path + "/Motor" + "/Temperature"),
           
-          climberHeight(log, path + "/climber" + "/Height"),
-          hallEffectSensorValue(log, path + "/climber" + "/HallEffectSensorValue"),
-          bottomLimitSwitchValue(log, path + "/climber" + "/BottomLimitSwitchValue"),
+          hammerHeight(log, path + "/Sensors" + "/HammerHeight"),
+          irbreakerValue(log, path + "/Sensors" + "/IRBreakerValue"),
+          bottomLimitSwitchValue(log, path + "/Sensors" + "/BottomLimitSwitchValue"),
           
           m_path(path)
 {}
@@ -21,7 +21,7 @@ void ClimberIOLogger::Log(const ClimberIOInputs& inputs) {
     motorCurrent.Append(inputs.motorCurrent);
     motorTemperature.Append(inputs.motorTemperature);
     
-    climberHeight.Append(inputs.climberHeight);
-    hallEffectSensorValue.Append(inputs.hallEffectSensorValue);
+    hammerHeight.Append(inputs.hammerHeight);
+    irbreakerValue.Append(inputs.irbreakerValue);
     bottomLimitSwitchValue.Append(inputs.bottomLimitSwitchValue);
 }

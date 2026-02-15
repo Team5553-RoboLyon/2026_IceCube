@@ -17,8 +17,8 @@ private:
     wpi::log::DoubleLogEntry motorBusVoltage;
     wpi::log::DoubleLogEntry motorTemperature;
 
-    wpi::log::DoubleLogEntry climberHeight;
-    wpi::log::DoubleLogEntry hallEffectSensorValue;
+    wpi::log::DoubleLogEntry hammerHeight;
+    wpi::log::BooleanLogEntry irbreakerValue;
     wpi::log::BooleanLogEntry bottomLimitSwitchValue;
     
 

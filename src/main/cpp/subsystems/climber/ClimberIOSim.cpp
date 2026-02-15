@@ -16,21 +16,23 @@ void ClimberIOSim::UpdateInputs(ClimberIOInputs& inputs)
     inputs.motorAppliedVoltage = m_climberSim.GetInput(0);
     inputs.motorBusVoltage = 12.0;
     inputs.motorCurrent = m_climberSim.GetCurrentDraw().value();
-    inputs.motorTemperature = 23.00;
+    inputs.motorTemperature = 23.0;
     
-    inputs.climberHeight = m_climberSim.GetPosition().value();
-    // inputs.hallEffectSensorValue = m_hallEffectSensor.GetVoltage();
-    // inputs.bottomLimitSwitchValue = m_bottomLimitSwitch.Get();
+    inputs.hammerHeight = m_climberSim.GetPosition().value();
+    inputs.irbreakerValue = m_climberSim.GetPosition().value() <= ClimberConstants::Settings::IRBREAKER_TRIGGER_HEIGHT;
+    inputs.bottomLimitSwitchValue = m_climberSim.HasHitLowerLimit();
 
-    frc::SmartDashboard::PutBoolean("Climber Motor Connected", inputs.isMotorConnected);
-    frc::SmartDashboard::PutNumber("Climber Motor Applied Voltage", inputs.motorAppliedVoltage);
-    frc::SmartDashboard::PutNumber("Climber Motor Bus Voltage", inputs.motorBusVoltage);
-    frc::SmartDashboard::PutNumber("Climber Motor Current", inputs.motorCurrent);
-    frc::SmartDashboard::PutNumber("Climber Motor Temperature", inputs.motorTemperature);
+    frc::SmartDashboard::PutBoolean("climber/Motor/isMotorConnected", inputs.isMotorConnected);
+    frc::SmartDashboard::PutNumber("climber/Motor/motorAppliedVoltage", inputs.motorAppliedVoltage);
+    frc::SmartDashboard::PutNumber("climber/Motor/motorBusVoltage", inputs.motorBusVoltage);
+    frc::SmartDashboard::PutNumber("climber/Motor/motorCurrent", inputs.motorCurrent);
+    frc::SmartDashboard::PutNumber("climber/Motor/motorTemperature", inputs.motorTemperature);
+    frc::SmartDashboard::PutNumber("climber/Sensors/HammerHeight", inputs.hammerHeight);
+    frc::SmartDashboard::PutBoolean("climber/Sensors/IRbreakerValue", inputs.irbreakerValue);
+    frc::SmartDashboard::PutBoolean("climber/Sensors/bottomLimitSwitchValue", inputs.bottomLimitSwitchValue);
 
-    frc::SmartDashboard::PutNumber("Climber Sim Height", inputs.climberHeight);
-    frc::SmartDashboard::PutBoolean("Has Hit Lower Limit", m_climberSim.HasHitLowerLimit());
-    frc::SmartDashboard::PutBoolean("Has Hit Upper Limit", m_climberSim.HasHitUpperLimit());
+
+    frc::SmartDashboard::PutBoolean("climber/Sim/HasHitUpperLimit", m_climberSim.HasHitUpperLimit());
 }
 
 void ClimberIOSim::SetVoltage(double voltage)
@@ -51,5 +53,5 @@ void ClimberIOSim::SetDutyCycle(double dutyCycle)
 
 void ClimberIOSim::ResetPosition()
 {
-    // m_climberEncoder.Reset();
+    m_climberSim.SetState({units::meter_t{ClimberConstants::Settings::BOTTOM_LIMIT}, 0.0});
 }

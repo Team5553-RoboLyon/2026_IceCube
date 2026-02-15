@@ -57,6 +57,10 @@ void Robot::AutonomousExit() {}
 
 void Robot::TeleopInit() {}
 void Robot::TeleopPeriodic() {
+  if(BYPASS_STATE_MACHINE(m_container.climber.GetControlMode()))
+  {
+    m_container.climber.SetManualControlInput(m_container.operatorGamepad.GetLeftY());
+  }
 }
 void Robot::TeleopExit() {}
 

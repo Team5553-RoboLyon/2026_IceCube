@@ -6,9 +6,12 @@
 
 using IdleMode = rev::spark::SparkBaseConfig::IdleMode;
 
+#if ROBOT_MODEL != COMPETITON
+    #define CLIMBER_SMARTDASHBOARD_LOG
+#endif
 namespace ClimberConstants
 {
-    constexpr ControlMode MainControlMode = ControlMode::POSITION_DUTYCYCLE_PID;
+    constexpr ControlMode MainControlMode = ControlMode::POSITION_VOLTAGE_PID;
     constexpr ControlMode EmergencyControlMode = ControlMode::MANUAL_POSITION;
 
     namespace Motor
@@ -29,8 +32,15 @@ namespace ClimberConstants
     {
         constexpr double GEAR_RATIO = 125.0; //ul
         constexpr double FREE_SPEED = Motor::VOLTAGE_COMPENSATION * Motor::KV; //RPM
-        constexpr double WHEEL_RADIUS = 2.0; //in mm
-        constexpr double NUMBER_OF_TEETH = 42.0;
+        constexpr double DRUM_RADIUS = 0.024; //in m
+    }
+
+    namespace Simulation
+    {
+        constexpr double CARRIAGE_MASSE = 65.0; //kg 
+        constexpr double MOI = 0.002; //kg.m^2 //TUNEME
+        constexpr double MIN_HEIGHT = 0.000; //m //TUNEME
+        constexpr double MAX_HEIGHT = 0.300; //m //TUNEME
     }
 
     namespace Encoder
@@ -39,19 +49,34 @@ namespace ClimberConstants
         constexpr int ID_CHANNEL_B = 9;
         constexpr bool INVERTED = false;
         
-        constexpr double DISTANCE_PER_PULSE = Specifications::WHEEL_RADIUS*Specifications::NUMBER_OF_TEETH*NF64_PI/ENCODER_TICKS_PER_REVOLUTION_K2X; //in mm
+        constexpr double DISTANCE_PER_PULSE = Specifications::DRUM_RADIUS*2.0*NF64_PI/ENCODER_TICKS_PER_REVOLUTION_K2X; //in mm
     }
     namespace LimitSwitch
     {
         constexpr int BOTTOM_CHANNEL = 0;
         constexpr bool IS_TRIGGERED = false;
     }
-    namespace HallEffectSensor
+    namespace IRbreaker
     {
         constexpr int CHANNEL = 0;
+        constexpr bool IS_TRIGGERED = false;
     }
     namespace Gains
     {
+        #if ROBOT_MODEL == SIMULATION
+        namespace POSITION_VOLTAGE_PID
+        {
+            constexpr double KP = 1000.0; //TUNEME
+            constexpr double KI = 0.0; //TUNEME
+            constexpr double KD = 0.0; //TUNEME
+        }
+        namespace MANUAL_SETPOINT_PID
+        {
+            constexpr double KP = 1000.0; //TUNEME
+            constexpr double KI = 0.0; //TUNEME
+            constexpr double KD = 0.0; //TUNEME
+        }
+        #else
         namespace POSITION_VOLTAGE_PID
         {
             constexpr double KP = 5.0; //TUNEME
@@ -63,15 +88,15 @@ namespace ClimberConstants
             constexpr double KP = 5.0; //TUNEME
             constexpr double KI = 0.0; //TUNEME
             constexpr double KD = 0.0; //TUNEME
-            constexpr double TOLERANCE = 0.001; //TUNEME
         }
+        #endif
     }
 
     namespace Setpoint
     {
-        constexpr double HOME = 0.050; //TUNEME
-        constexpr double ARMED = 0.200; //TUNEME
-        constexpr double CLIMBED_LOCKED = 0.050; //TUNEME
+        constexpr double HOME = 0.545; //TUNEME
+        constexpr double ARMED = 0.75; //TUNEME
+        constexpr double CLIMBED_LOCKED = 0.60; //TUNEME
         constexpr double TOLERANCE = 0.001; //TUNEME
     }
 
@@ -85,8 +110,9 @@ namespace ClimberConstants
     
     namespace Settings
     {
-        constexpr double BOTTOM_LIMIT = 0.000; // in m //TUNEME
-        constexpr double TOP_LIMIT = 0.300; // in m //TUNEME 
+        constexpr double BOTTOM_LIMIT = 0.545; // in m //TUNEME
+        constexpr double TOP_LIMIT = 0.76; // in m //TUNEME 
         constexpr double MANUAL_SETPOINT_CHANGE_LIMIT = (TOP_LIMIT - BOTTOM_LIMIT) / (2.5/TIME_PER_CYCLE); //TUNEME
+        constexpr double IRBREAKER_TRIGGER_HEIGHT = 0.56; // in m //TUNEME
     }
 }

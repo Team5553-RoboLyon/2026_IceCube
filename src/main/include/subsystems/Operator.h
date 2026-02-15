@@ -11,6 +11,10 @@ public:
     Operator(int port, double threshold) : RevGamepad(port, threshold){};
     ~Operator() override = default;
 
+    frc2::Trigger STOWED{_crossButton };
+    frc2::Trigger ARMED_TO_CLIMB{_optionsButton };
+    frc2::Trigger CLIMBED{_circleButton };
+    frc2::Trigger toggle{_triangleButton };
 #elif (OPERATOR == (VICTOR))
 private:
 

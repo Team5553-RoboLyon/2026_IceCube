@@ -30,9 +30,24 @@ void ClimberIOSpark::UpdateInputs(ClimberIOInputs& inputs)
     inputs.motorCurrent = m_climberMotor.GetOutputCurrent();
     inputs.motorTemperature = m_climberMotor.GetMotorTemperature();
     
-    inputs.climberHeight = m_climberEncoder.GetDistance();
-    inputs.hallEffectSensorValue = m_hallEffectSensor.GetVoltage();
+    inputs.hammerHeight = m_climberEncoder.GetDistance();
+
+    inputs.irbreakerValue = m_irbreaker.Get();
     inputs.bottomLimitSwitchValue = m_bottomLimitSwitch.Get();
+
+
+    #ifdef CLIMBER_SMARTDASHBOARD_LOG
+    frc::SmartDashboard::PutBoolean("climber/Motor/isMotorConnected", inputs.isMotorConnected);
+    frc::SmartDashboard::PutNumber("climber/Motor/motorAppliedVoltage", inputs.motorAppliedVoltage);
+    frc::SmartDashboard::PutNumber("climber/Motor/motorBusVoltage", inputs.motorBusVoltage);
+    frc::SmartDashboard::PutNumber("climber/Motor/motorCurrent", inputs.motorCurrent);
+    frc::SmartDashboard::PutNumber("climber/Motor/motorTemperature", inputs.motorTemperature);
+    frc::SmartDashboard::PutNumber("climber/Sensors/HammerHeight", inputs.hammerHeight);
+    frc::SmartDashboard::PutBoolean("climber/Sensors/IRbreakerValue", inputs.irbreakerValue);
+    frc::SmartDashboard::PutBoolean("climber/Sensors/bottomLimitSwitchValue", inputs.bottomLimitSwitchValue);
+    #else
+    m_logger.Log(inputs);
+    #endif
 }
 
 void ClimberIOSpark::SetVoltage(double voltage)
