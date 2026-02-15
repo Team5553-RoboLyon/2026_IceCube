@@ -11,10 +11,7 @@ PivotIOSpark::PivotIOSpark()
                       .Inverted(PivotConstants::pivotMotor::INVERTED)
                       .SmartCurrentLimit(PivotConstants::pivotMotor::CURRENT_LIMIT)
                       .ClosedLoopRampRate(PivotConstants::pivotMotor::RAMP_RATE)
-                      .VoltageCompensation(PivotConstants::pivotMotor::VOLTAGE_COMPENSATION)
-                      .closedLoop.P(PivotConstants::Gains::PIVOT_POSITION_DUTYCYCLE_PID::KP)
-                      .I(PivotConstants::Gains::PIVOT_POSITION_DUTYCYCLE_PID::KI)
-                      .D(PivotConstants::Gains::PIVOT_POSITION_DUTYCYCLE_PID::KD);
+                      .VoltageCompensation(PivotConstants::pivotMotor::VOLTAGE_COMPENSATION);
 
     // Apply the configs to the motors
     m_pivotMotor.Configure(  m_pivotMotorConfig, 

@@ -76,14 +76,14 @@ class IntakeSubsystem : public frc2::SubsystemBase {
       ControlMode m_pivotControlMode = PivotConstants::MainControlMode;
       ControlMode m_rollerControlMode = RollerConstants::MainControlMode;
     // === Motion Control (PID / Filters) ===
-      // PidRBL m_IntakePIDController;
+      PidRBL m_pivotPIDController;
     // === Control Inputs / Outputs ===
       double m_rollerOutput{0.0};
       double m_pivotOutput{0.0};
       double m_pivotManualControlInput{0.0};
       double m_rollerManualControlInput{0.0};
       double m_pivotTargetPos{0.0};
-      // double m_timestamp{0.0};
+      double m_timestamp{0.0};
     // std::function<double()> m_fxAxis; //temporary
       TunableValueLogger m_tunablePivotVoltageLogger{"Intake/PivotVoltage", 0.0}; //RPM
       TunableValueLogger m_tunableRollerVoltageLogger{"Intake/RollerVoltage", 0.0}; //RPM

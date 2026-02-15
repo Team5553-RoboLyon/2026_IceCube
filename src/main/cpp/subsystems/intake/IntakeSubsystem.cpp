@@ -8,6 +8,12 @@
 IntakeSubsystem::IntakeSubsystem(RollerIO *pRollerIO, PivotIO *pPivotIO) : 
                                                     m_pRollerIO(pRollerIO), m_pPivotIO(pPivotIO)
 {
+    m_pivotPIDController.SetGains(PivotConstants::Gains::POSITION_DUTYCYCLE_PID::KP,
+                                   PivotConstants::Gains::POSITION_DUTYCYCLE_PID::KI,
+                                   PivotConstants::Gains::POSITION_DUTYCYCLE_PID::KD);
+
+    m_pivotPIDController.SetInputLimits(PivotConstants::Position::MIN, PivotConstants::Position::MAX);
+    m_pivotPIDController.SetOutputLimits(PivotConstants::DutyCycle::MIN, PivotConstants::DutyCycle::MAX);
 }
 
 void IntakeSubsystem::SetWantedState(const WantedState wantedState)
@@ -31,21 +37,21 @@ void IntakeSubsystem::SetPivotControlMode(ControlMode mode)
     switch (mode)
     {
         case ControlMode::POSITION_DUTYCYCLE_PID:
-            m_pivotOutput = 0.0;
+            m_pivotOutput = PivotConstants::DutyCycle::REST;
             m_pivotTargetPos = pivotInputs.pivotPos;
 
             m_pivotControlMode = mode;
             break; //end of ControlMode::POSITION_DUTYCYCLE_PID
 
         case ControlMode::MANUAL_VOLTAGE:
-            m_pivotOutput = 0.0;
+            m_pivotOutput = PivotConstants::DutyCycle::REST;
             m_pivotManualControlInput = 0.0;
 
             m_pivotControlMode = mode;
             break; //end of ControlMode::MANUAL_VOLTAGE
 
         case ControlMode::DISABLED :
-            m_pivotOutput = PivotConstants::Speed::REST;
+            m_pivotOutput = PivotConstants::DutyCycle::REST;
 
             m_pivotControlMode = mode;
             break; //end of ControlMode::DISABLED
@@ -162,7 +168,7 @@ bool IntakeSubsystem::IsOut()
 void IntakeSubsystem::Periodic()
 {
     m_currentWantedState = m_wantedState;
-    // m_timestamp = TimerRBL::GetFPGATimestampInSeconds();
+    m_timestamp = TimerRBL::GetFPGATimestampInSeconds();
 
     m_pRollerIO->UpdateInputs(rollerInputs);
     m_pPivotIO->UpdateInputs(pivotInputs);
@@ -192,7 +198,7 @@ void IntakeSubsystem::Periodic()
         switch (m_pivotControlMode) //actualise pivot motion
         {
             case ControlMode::DISABLED :
-                m_pivotOutput = PivotConstants::Speed::REST;
+                m_pivotOutput = PivotConstants::DutyCycle::REST;
                 break; //end of ControlMode::DISABLED
 
             case ControlMode::MANUAL_VOLTAGE:
@@ -206,14 +212,16 @@ void IntakeSubsystem::Periodic()
                     case SystemState::REFUELING:
                     case SystemState::EJECTING:
                     case SystemState::EXTENDING:
-                        m_pivotTargetPos = PivotConstants::Specifications::PIVOT_EXTENDED_POS;
+                        m_pivotTargetPos = PivotConstants::Position::PIVOT_EXTENDED_POS;
+                        m_pivotOutput = m_pivotPIDController.CalculateWithRealTime(m_pivotTargetPos,pivotInputs.pivotPos, m_timestamp);
                         break;
 
                     case SystemState::IDLE:
                     case SystemState::FEELING_LIKE_AN_INDEXER:
                     case SystemState::STAYING_AT_HOME:
                     case SystemState::COMING_BACK_HOME:
-                        m_pivotTargetPos = PivotConstants::Specifications::PIVOT_HOME_POS;
+                        m_pivotTargetPos = PivotConstants::Position::PIVOT_HOME_POS;
+                        m_pivotOutput = m_pivotPIDController.CalculateWithRealTime(m_pivotTargetPos,pivotInputs.pivotPos, m_timestamp);
                         break;
 
                     default:
@@ -384,8 +392,8 @@ void IntakeSubsystem::RunStateMachine()
                    //    and SystemState::FEELING_LIKE_AN_INDEXER
 
         case SystemState::EXTENDING:
-            if (pivotInputs.pivotPos <= PivotConstants::Specifications::PIVOT_EXTENDED_POS + PivotConstants::Specifications::POS_TOLERANCE
-                && pivotInputs.pivotPos >= PivotConstants::Specifications::PIVOT_EXTENDED_POS - PivotConstants::Specifications::POS_TOLERANCE)
+            if (pivotInputs.pivotPos <= PivotConstants::Position::PIVOT_EXTENDED_POS + PivotConstants::Position::POS_TOLERANCE
+                && pivotInputs.pivotPos >= PivotConstants::Position::PIVOT_EXTENDED_POS - PivotConstants::Position::POS_TOLERANCE)
                 {
                     m_systemState = SystemState::CHILLING_OUT;
                     m_wantedState = WantedState::STAND_BY;
@@ -393,8 +401,8 @@ void IntakeSubsystem::RunStateMachine()
                 break;
 
         case SystemState::COMING_BACK_HOME:
-            if (pivotInputs.pivotPos <= PivotConstants::Specifications::PIVOT_HOME_POS + PivotConstants::Specifications::POS_TOLERANCE
-                && pivotInputs.pivotPos >= PivotConstants::Specifications::PIVOT_HOME_POS - PivotConstants::Specifications::POS_TOLERANCE)
+            if (pivotInputs.pivotPos <= PivotConstants::Position::PIVOT_HOME_POS + PivotConstants::Position::POS_TOLERANCE
+                && pivotInputs.pivotPos >= PivotConstants::Position::PIVOT_HOME_POS - PivotConstants::Position::POS_TOLERANCE)
                 {
                     m_systemState = SystemState::STAYING_AT_HOME;
                     m_wantedState = WantedState::STAND_BY;

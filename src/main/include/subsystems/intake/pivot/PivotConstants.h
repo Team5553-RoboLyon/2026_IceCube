@@ -46,15 +46,21 @@ namespace PivotConstants
     namespace Specifications
     {
         constexpr double PIVOT_GEAR_RATIO = 16*2.333; //ul
-        constexpr double PIVOT_HOME_POS = NDEGtoRAD(-7.0); //in rad
-        constexpr double PIVOT_EXTENDED_POS = M_PI; //in rad
-        constexpr double POS_TOLERANCE = 1.0; //in deg
         constexpr double pivotMotor_FREE_SPEED = pivotMotor::VOLTAGE_COMPENSATION * pivotMotor::KV; //RPM
     } 
 
+    namespace Position //in rad TUNEME
+    {
+        constexpr double MIN = NDEGtoRAD(5.0);
+        constexpr double MAX = M_PI;
+        constexpr double PIVOT_EXTENDED_POS = MIN;
+        constexpr double PIVOT_HOME_POS = MAX;
+        constexpr double POS_TOLERANCE = NDEGtoRAD(1.0);
+    }
+
     namespace Gains
     {
-        namespace PIVOT_POSITION_DUTYCYCLE_PID
+        namespace POSITION_DUTYCYCLE_PID
         {
             constexpr double KP = 0.001; //TUNEME
             constexpr double KI = 0.0; //TUNEME
@@ -63,7 +69,7 @@ namespace PivotConstants
         }
     }
 
-    namespace Speed 
+    namespace DutyCycle 
     {
         constexpr double MAX = 1.0; 
         constexpr double MIN = -1.0;
