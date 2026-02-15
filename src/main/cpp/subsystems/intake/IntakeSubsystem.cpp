@@ -280,6 +280,11 @@ void IntakeSubsystem::Periodic()
         }
     }
 
+    if (pivotInputs.pivotPos >= PivotConstants::Position::MAX && m_pivotOutput > 0.0)
+        m_pivotOutput = 0.0;
+    else if (pivotInputs.pivotPos <= PivotConstants::Position::MIN && m_pivotOutput < 0.0)
+        m_pivotOutput = 0.0;
+
     // Apply output
     switch(m_pivotControlMode)
     {
