@@ -205,9 +205,9 @@ void ShooterSubsystem::Periodic()
                     case SystemState::RAMPING_TO_FEED:
                     case SystemState::RAMPING_BACKWARD:
                     case SystemState::SOON_MINE:
-                        m_flywheelOutput += m_flywheelPIDController.CalculateWithRealTime(m_flywheelTargetSpeed, 
+                        m_flywheelOutput += units::volt_t{m_flywheelPIDController.CalculateWithRealTime(m_flywheelTargetSpeed, 
                                                                                         flywheelInputs.shooterVelocity, 
-                                                                                        m_timestamp);
+                                                                                        m_timestamp)};
                         break;
 
                     case SystemState::IDLE:

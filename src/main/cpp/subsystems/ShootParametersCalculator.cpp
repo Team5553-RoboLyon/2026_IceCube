@@ -54,16 +54,16 @@ void ShootParametersCalculator::CalculateNewParameters(ShootParameters& params, 
         lookAheadTargetDistance = (lookAheadTargetPos - estimatedNextTurretPos).Translation().Norm().value();
     }
 
-    params.hoodPos = m_hoodPosMap[lookAheadTargetDistance];
-    if (params.hoodPos < HoodConstants::Position::MIN)
+    params.hoodAngle = m_hoodPosMap[lookAheadTargetDistance];
+    if (params.hoodAngle < HoodConstants::Position::MIN)
     {
         params.flywheelSpeed = FlywheelConstants::Speed::AGAINST_HUB;
-        params.hoodPos = HoodConstants::Position::MIN;
+        params.hoodAngle = HoodConstants::Position::MIN;
     }
-    else if (params.hoodPos < HoodConstants::Position::MAX)
+    else if (params.hoodAngle > HoodConstants::Position::MAX)
     {
         params.flywheelSpeed = FlywheelConstants::Speed::AGAINST_HUB;
-        params.hoodPos = HoodConstants::Position::MAX;
+        params.hoodAngle = HoodConstants::Position::MAX;
     }
     else
         params.flywheelSpeed = m_flywheelSpeedMap[lookAheadTargetDistance];
