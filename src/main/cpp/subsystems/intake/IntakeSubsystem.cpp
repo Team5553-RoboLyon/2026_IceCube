@@ -176,6 +176,8 @@ void IntakeSubsystem::Periodic()
     m_pivotMotorDisconnected.Set(!pivotInputs.isPivotMotorConnected);
     m_pivotMotorHot.Set(pivotInputs.pivotMotorTemperature > PivotConstants::pivotMotor::HOT_THRESHOLD);
     m_pivotMotorOverheating.Set(pivotInputs.pivotMotorTemperature > PivotConstants::pivotMotor::OVERHEATING_THRESHOLD);
+    m_pivotLeftEncoderDisconnected.Set(pivotInputs.isLeftEncoderConnected);
+    m_pivotRightEncoderDisconnected.Set(pivotInputs.isRightEncoderConnected);
     
     if(!m_isInitialized)
     {
@@ -404,8 +406,3 @@ void IntakeSubsystem::RunStateMachine()
             break; //end of default
     }
 }
-
-// void IntakeSubsystem::PivotResetEncoder()
-// {
-//     m_pPivotIO->ResetEncoder();
-// }

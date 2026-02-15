@@ -29,28 +29,25 @@ namespace PivotConstants
     
     namespace EncoderLeft
     {
-       constexpr int ID_CHANNEL_A = 8;
-       constexpr int ID_CHANNEL_B = 9;
-       constexpr double REDUCTION = 1.0;
+       constexpr int ID = 8;
        constexpr bool INVERTED = true;
-       constexpr double DISTANCE_PER_PULSE = (360.0/ENCODER_TICKS_PER_REVOLUTION_K2X)/REDUCTION; //in deg
+       constexpr double FULL_RANGE = 2.0*M_PI;
+       constexpr double EXPECTED_ZERO = 0.0;//TUNEME
     }
 
     namespace EncoderRight
     {
-       constexpr int ID_CHANNEL_A = 0;
-       constexpr int ID_CHANNEL_B = 15;
-       constexpr double REDUCTION = 1.0;
+       constexpr int ID = 0;
        constexpr bool INVERTED = false;
-       constexpr double DISTANCE_PER_PULSE = (360.0/ENCODER_TICKS_PER_REVOLUTION_K2X)/REDUCTION; //in deg
+       constexpr double FULL_RANGE = 2.0*M_PI;
+       constexpr double EXPECTED_ZERO = 0.0;//TUNEME
     }
 
     namespace Specifications
     {
         constexpr double PIVOT_GEAR_RATIO = 16*2.333; //ul
-        constexpr double PIVOT_HOME_POS = -7.0; //in deg
-        constexpr double PIVOT_EXTENDED_POS = 90.0; //in deg
-        constexpr double STARTING_POS = PIVOT_HOME_POS;
+        constexpr double PIVOT_HOME_POS = NDEGtoRAD(-7.0); //in rad
+        constexpr double PIVOT_EXTENDED_POS = M_PI; //in rad
         constexpr double POS_TOLERANCE = 1.0; //in deg
         constexpr double pivotMotor_FREE_SPEED = pivotMotor::VOLTAGE_COMPENSATION * pivotMotor::KV; //RPM
     } 

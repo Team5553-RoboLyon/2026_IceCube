@@ -96,6 +96,8 @@ class IntakeSubsystem : public frc2::SubsystemBase {
       Alert m_pivotMotorDisconnected{"Pivot motor: Disconnected", Alert::AlertType::ERROR};
       Alert m_pivotMotorHot{"Pivot motor: Temperature exceeds 60°C", Alert::AlertType::WARNING};
       Alert m_pivotMotorOverheating{"Pivot motor: Temperature exceeds 75°C", Alert::AlertType::ERROR};
+      Alert m_pivotLeftEncoderDisconnected{"Pivot Left encoder : Disconnected", Alert::AlertType::ERROR};
+      Alert m_pivotRightEncoderDisconnected{"Pivot Right encoder : Disconnected", Alert::AlertType::ERROR};
     // === Internal Methods ===
       void RunStateMachine();
 };

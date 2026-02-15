@@ -22,8 +22,8 @@ PivotIOSpark::PivotIOSpark()
                             rev::PersistMode::kPersistParameters);
     m_pivotMotor.ClearFaults();
 
-    m_rightEncoder.SetDistancePerPulse(PivotConstants::EncoderRight::DISTANCE_PER_PULSE);
-    m_leftEncoder.SetDistancePerPulse(PivotConstants::EncoderLeft::DISTANCE_PER_PULSE);
+    m_rightEncoder.SetInverted(PivotConstants::EncoderRight::INVERTED);
+    m_leftEncoder.SetInverted(PivotConstants::EncoderLeft::INVERTED);
 }
 
 void PivotIOSpark::UpdateInputs(PivotIOInputs& inputs) 
@@ -35,7 +35,22 @@ void PivotIOSpark::UpdateInputs(PivotIOInputs& inputs)
     inputs.pivotMotorCurrent = m_pivotMotor.GetOutputCurrent();
     inputs.pivotMotorTemperature = m_pivotMotor.GetMotorTemperature();
 
-    inputs.pivotPos = PivotConstants::Specifications::STARTING_POS+(m_leftEncoder.GetDistance()+m_rightEncoder.GetDistance())/2;
+    inputs.isLeftEncoderConnected = m_leftEncoder.IsConnected();
+    inputs.isRightEncoderConnected = m_rightEncoder.IsConnected();
+
+    if (inputs.isLeftEncoderConnected && inputs.isLeftEncoderConnected)
+    {
+        inputs.pivotPos = (m_leftEncoder.Get()+m_rightEncoder.Get())/2;
+    }
+    else if (!inputs.isLeftEncoderConnected && inputs.isLeftEncoderConnected)
+    {
+        inputs.pivotPos = m_rightEncoder.Get();
+    }
+    else if (inputs.isLeftEncoderConnected && !inputs.isLeftEncoderConnected)
+    {
+        inputs.pivotPos = m_leftEncoder.Get();
+    }
+
     frc::SmartDashboard::PutNumber("intake/PivotPos", inputs.pivotPos);
     frc::SmartDashboard::PutNumber("intake/PivotTargetPos", m_pivotMotorController.GetSetpoint());
 }
@@ -60,10 +75,3 @@ void PivotIOSpark::SetTargetPos(double targetPos)
 {
     m_pivotMotorController.SetSetpoint(targetPos,rev::spark::SparkLowLevel::ControlType::kPosition);
 }
-
-void PivotIOSpark::ResetEncoder()
-{
-    m_rightEncoder.Reset();
-    m_leftEncoder.Reset();
-}
-

@@ -8,6 +8,9 @@ struct PivotIOInputs
     double pivotMotorBusVoltage = 0.0;
     double pivotMotorCurrent = 0.0;
     double pivotMotorTemperature = 0.0;
+
+    bool isLeftEncoderConnected = true;
+    bool isRightEncoderConnected = true;
     
     double pivotPos = 0.0;
 };
@@ -21,6 +24,4 @@ public:
     virtual void SetVoltage(double voltage) = 0; 
     virtual void SetDutyCycle(double dutyCycle) = 0;
     virtual void SetTargetPos(double targetPos) = 0;
-
-    virtual void ResetEncoder() = 0;
 };
