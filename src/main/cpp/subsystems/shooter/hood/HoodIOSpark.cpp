@@ -17,7 +17,9 @@ HoodIOSpark::HoodIOSpark()
                             rev::ResetMode::kResetSafeParameters,
                             rev::PersistMode::kPersistParameters);
     m_hoodMotor.ClearFaults();
-    m_hoodMotor.GetEncoder().SetPosition(0.0);
+    
+    m_hoodEncoder.SetDistancePerPulse(HoodConstants::HoodEncoder::DISTANCE_PER_PULSE);
+    m_hoodEncoder.Reset();
 }
 
 void HoodIOSpark::UpdateInputs(HoodIOInputs& inputs) 
@@ -29,7 +31,7 @@ void HoodIOSpark::UpdateInputs(HoodIOInputs& inputs)
     inputs.hoodMotorCurrent = m_hoodMotor.GetOutputCurrent();
     inputs.hoodMotorTemperature = m_hoodMotor.GetMotorTemperature();
 
-    inputs.hoodPos = m_hoodMotor.GetEncoder().GetPosition()*HoodConstants::HoodMotor::ENCODER_DISTANCE_PER_PULSE;
+    inputs.hoodPos = m_hoodEncoder.GetDistance();
 
     frc::SmartDashboard::PutNumber("HoodAppliedVoltage",inputs.hoodMotorAppliedVoltage);
     frc::SmartDashboard::PutNumber("HoodVoltage", inputs.hoodMotorBusVoltage);
@@ -53,4 +55,9 @@ void HoodIOSpark::SetDutyCycle(double dutyCycle)
     DEBUG_ASSERT((dutyCycle <= 1.0) && (dutyCycle >= -1.0) 
         ,"Hood Duty Cycle out of range");
     m_hoodMotor.Set(dutyCycle);
+}
+
+void HoodIOSpark::ResetEncoder()
+{
+    m_hoodEncoder.Reset();
 }

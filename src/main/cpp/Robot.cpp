@@ -58,11 +58,6 @@ void Robot::AutonomousExit() {}
 
 void Robot::TeleopInit() {}
 void Robot::TeleopPeriodic() {
-  if (m_container.operatorGamepad.GetTriangleButtonPressed())
-  {
-    m_container.shooterSubsystem.ToggleFlywheelControlMode();
-    m_container.shooterSubsystem.ToggleHoodControlMode();
-  }
 }
 void Robot::TeleopExit() {}
 

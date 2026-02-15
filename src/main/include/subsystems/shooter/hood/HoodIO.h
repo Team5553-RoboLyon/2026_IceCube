@@ -21,4 +21,6 @@ public:
 
     virtual void SetVoltage(double voltage) = 0; 
     virtual void SetDutyCycle(double dutyCycle) = 0;
+
+    virtual void ResetEncoder() = 0;
 };

@@ -28,7 +28,15 @@ namespace HoodConstants
         constexpr int HOT_THRESHOLD = 60;
         constexpr int OVERHEATING_THRESHOLD = 75;
         constexpr int KV = 568.8; // RPM.V-1
-        constexpr double ENCODER_DISTANCE_PER_PULSE = 2*M_PI/Specifications::GEAR_RATIO/42.0;
+    }
+
+    namespace HoodEncoder
+    {
+        constexpr int ID_CHANNEL_A = 20;
+        constexpr int ID_CHANNEL_B = 21;
+        constexpr bool INVERTED = false;
+        constexpr double GEAR_RATIO = 14.0/215.0;
+        constexpr double DISTANCE_PER_PULSE = 2.0*M_PI/GEAR_RATIO/ENCODER_TICKS_PER_REVOLUTION_K2X;
     }
 
     namespace Specifications
