@@ -1,14 +1,21 @@
-#include "LyonLib/gamepads/XboxGamepad.h"
+#include "LyonLib/gamepads/RevGamepad.h"
 
-class Operator final : public XboxGamepad
+class Operator final : public RevGamepad
 {
 
 #if (OPERATOR == (ADAM))
 private:
 
 public:
-    Operator(int port) : XboxGamepad(port){};
-    Operator(int port, double threshold) : XboxGamepad(port, threshold){};
+
+    frc2::Trigger STAND_BY{_triangleButton};
+    frc2::Trigger REFUEL{_circleButton};
+    frc2::Trigger EJECT{_crossButton};
+    frc2::Trigger BECOME_AN_INDEXER{_squareButton};
+    frc2::Trigger EXTEND{_L1Button};
+    frc2::Trigger RETURN_AT_HOME{_R1Button};
+    Operator(int port) : RevGamepad(port){};
+    Operator(int port, double threshold) : RevGamepad(port, threshold){};
     ~Operator() override = default;
 
 #elif (OPERATOR == (VICTOR))
@@ -24,15 +31,15 @@ public:
 
     void SetRumble(RumbleType type, double value)
     {
-        XboxGamepad::SetRumble(type, value);
+        RevGamepad::SetRumble(type, value);
     }
     void SetRumble(double value)
     {
-        XboxGamepad::SetRumble(RumbleType::kBothRumble, value);
+        RevGamepad::SetRumble(RumbleType::kBothRumble, value);
     }
     void SetRumble(RumbleType type)
     {
-        XboxGamepad::SetRumble(type, 1.0);
+        RevGamepad::SetRumble(type, 1.0);
     }
 
 };

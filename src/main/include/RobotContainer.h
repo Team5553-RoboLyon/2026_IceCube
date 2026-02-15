@@ -14,18 +14,26 @@
 
 #include "subsystems/indexer/IndexerSubsystem.h"
 #include "subsystems/indexer/IndexerIOSpark.h"
+#include "subsystems/intake/pivot/PivotIOSim.h"
+#include "subsystems/intake/roller/RollerIOSim.h"
 
 class RobotContainer {
  public:
   RobotContainer();
-
-  IntakeSubsystem intakeSubsystem{new RollerIOSpark{}, new PivotIOSpark{}};
   
   Operator operatorGamepad{ControlPanelConstants::OPERATOR_GAMEPAD_PORT, ControlPanelConstants::OPERATOR_GAMEPAD_THRESHOLD};
   frc::Joystick forwardJoystick{ControlPanelConstants::JOYSTICK_FORWARD_ID};
   frc::Joystick rotationJoystick{ControlPanelConstants::JOYSTICK_ROTATION_ID};
 
-  IndexerSubsystem indexer{new IndexerIOSpark{}};
+  #if ROBOT_MODEL == SIMULATION
+    // IndexerSubsystem indexer{new IndexerIOSpark{}};
+    IntakeSubsystem intakeSubsystem{new RollerIOSim{}, new PivotIOSim{}};
+  #else
+    // IndexerSubsystem indexer{new IndexerIOSpark{}};
+    IntakeSubsystem intakeSubsystem{new RollerIOSpark{}, new PivotIOSpark{}};
+  #endif
+
+
  private:
   void ConfigureBindings();
 };

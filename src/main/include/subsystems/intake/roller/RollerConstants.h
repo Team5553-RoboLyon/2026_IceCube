@@ -5,6 +5,7 @@
 #include "LyonLib/logging/DebugUtils.h"
 #include "rev/SparkMax.h"  
 #include "units/length.h" 
+#include "units/moment_of_inertia.h"
 
 using IdleMode = rev::spark::SparkBaseConfig::IdleMode;
 
@@ -26,6 +27,11 @@ namespace RollerConstants
         constexpr int HOT_THRESHOLD = 60;
         constexpr int OVERHEATING_THRESHOLD = 75;
         constexpr int KV = 496.3; // RPM.V-1
+    }
+
+    namespace Simulation //appramtive values
+    {
+        constexpr units::kilogram_square_meter_t MOI = 0.36_kg_sq_m;
     }
 
     namespace Specifications

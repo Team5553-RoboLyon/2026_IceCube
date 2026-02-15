@@ -23,5 +23,4 @@ class PivotIOSpark  final : public PivotIO
     void UpdateInputs(PivotIOInputs& inputs) override;
     void SetVoltage(double voltage) override; //COMMENTME
     void SetDutyCycle(double dutyCycle) override; //COMMENTME
-    void SetTargetPos(double targetPos) override;
 };

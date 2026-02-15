@@ -321,22 +321,20 @@ void IntakeSubsystem::Periodic()
     frc::SmartDashboard::PutNumber("intake/pivotVoltage", pivotInputs.pivotMotorAppliedVoltage);
 }
 
+
 void IntakeSubsystem::RunStateMachine()
 {
     switch (m_currentWantedState) //Handle State transition
     {
         case WantedState::STAND_BY :
-            if (m_systemState != SystemState::CHILLING_OUT || m_systemState != SystemState::STAYING_AT_HOME)
+            if (pivotInputs.pivotPos <= PivotConstants::Position::MIN + PivotConstants::Position::RANGE/2)
             {
-                if (IsOut())
-                {
-                    m_systemState = SystemState::CHILLING_OUT;
-                }
-                else
-                    m_systemState = SystemState::STAYING_AT_HOME;
+                m_systemState = SystemState::CHILLING_OUT;
             }
-            break; //end of Others States 
-            //TODO
+            else
+                m_systemState = SystemState::STAYING_AT_HOME;
+            break;
+
         case WantedState::REFUEL:
             if (m_systemState != SystemState::REFUELING)
             {
@@ -368,8 +366,34 @@ void IntakeSubsystem::RunStateMachine()
                 {
                     m_systemState = SystemState::COMING_BACK_HOME;
                 }
-                else
+                else if (m_systemState != SystemState::COMING_BACK_HOME)
                     m_systemState = SystemState::FEELING_LIKE_AN_INDEXER;
+            }
+            break;
+
+        case WantedState::EXTEND:
+            if(!IsOut())
+            {
+                m_systemState = SystemState::EXTENDING;
+            }
+            else 
+            {
+                m_systemState = SystemState::CHILLING_OUT;
+                m_wantedState = WantedState::STAND_BY;
+                m_currentWantedState = m_wantedState;
+            }
+            break;
+
+        case WantedState::RETURN_AT_HOME:
+            if(IsOut())
+            {
+                m_systemState = SystemState::COMING_BACK_HOME;
+            }
+            else if (m_systemState != SystemState::COMING_BACK_HOME)
+            {
+                m_systemState = SystemState::STAYING_AT_HOME;
+                m_wantedState = WantedState::STAND_BY;
+                m_currentWantedState = m_wantedState;
             }
             break;
 
@@ -394,22 +418,52 @@ void IntakeSubsystem::RunStateMachine()
                    //    and SystemState::FEELING_LIKE_AN_INDEXER
 
         case SystemState::EXTENDING:
-            if (pivotInputs.pivotPos <= PivotConstants::Position::PIVOT_EXTENDED_POS + PivotConstants::Position::POS_TOLERANCE
-                && pivotInputs.pivotPos >= PivotConstants::Position::PIVOT_EXTENDED_POS - PivotConstants::Position::POS_TOLERANCE)
+            if (IS_IN_RANGE(pivotInputs.pivotPos, PivotConstants::Position::PIVOT_EXTENDED_POS,PivotConstants::Position::POS_TOLERANCE ))
+            {
+                switch(m_currentWantedState)
                 {
-                    m_systemState = SystemState::CHILLING_OUT;
-                    m_wantedState = WantedState::STAND_BY;
+                    case WantedState::EJECT:
+                        m_systemState = SystemState::EJECTING;
+                        break;
+
+                    case WantedState::REFUEL:
+                        m_systemState = SystemState::REFUELING;
+                        break;
+
+                    case WantedState::EXTEND:
+                        m_systemState = SystemState::CHILLING_OUT;
+                        m_wantedState = WantedState::STAND_BY;
+                        m_currentWantedState = m_wantedState;
+                        break;
+
+                    default:
+                        DEBUG_ASSERT(false, "Intake : Why am I EXTENDING if my Wanted State don't ask me to do it ?");
+                        break;
                 }
-                break;
+            }
+            break;
 
         case SystemState::COMING_BACK_HOME:
-            if (pivotInputs.pivotPos <= PivotConstants::Position::PIVOT_HOME_POS + PivotConstants::Position::POS_TOLERANCE
-                && pivotInputs.pivotPos >= PivotConstants::Position::PIVOT_HOME_POS - PivotConstants::Position::POS_TOLERANCE)
+            if (IS_IN_RANGE(pivotInputs.pivotPos, PivotConstants::Position::PIVOT_HOME_POS, PivotConstants::Position::POS_TOLERANCE))
                 {
-                    m_systemState = SystemState::STAYING_AT_HOME;
-                    m_wantedState = WantedState::STAND_BY;
+                    switch(m_currentWantedState)
+                    {
+                        case WantedState::BECOME_AN_INDEXER:
+                            m_systemState = SystemState::FEELING_LIKE_AN_INDEXER;
+                            break;
+                        
+                        case WantedState::RETURN_AT_HOME:
+                            m_systemState = SystemState::STAYING_AT_HOME;
+                            m_wantedState = WantedState::STAND_BY;
+                            m_currentWantedState = m_wantedState;
+                            break;
+
+                        default:
+                            DEBUG_ASSERT(false, "Intake : Why am I COMING_BACK_HOME if my Wanted State don't ask me to do it ?");
+                            break;
+                    }
                 }
-                break;
+            break;
 
         default:
             DEBUG_ASSERT(false, "intake : impossible state");

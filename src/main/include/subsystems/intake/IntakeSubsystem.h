@@ -24,24 +24,26 @@ class IntakeSubsystem : public frc2::SubsystemBase {
 
     enum class WantedState 
     {
-      STAND_BY, // no wanted state scheduled. (It's all good man, it's all good !)
-      REFUEL,
-      EJECT,
-      BECOME_AN_INDEXER
+      STAND_BY = 0, // no wanted state scheduled. (It's all good man, it's all good !)
+      REFUEL = 1,
+      EJECT = 2,
+      BECOME_AN_INDEXER = 3,
+      EXTEND = 4,
+      RETURN_AT_HOME = 5
     };
 
     enum class SystemState
     {
-      IDLE,
+      IDLE = 0,
       //Steady states
-      STAYING_AT_HOME,
-      CHILLING_OUT,
-      REFUELING,
-      EJECTING,
-      FEELING_LIKE_AN_INDEXER,
+      STAYING_AT_HOME = 1,
+      CHILLING_OUT = 2,
+      REFUELING = 3,
+      EJECTING = 4,
+      FEELING_LIKE_AN_INDEXER = 5,
       //Transition states
-      EXTENDING,
-      COMING_BACK_HOME
+      EXTENDING = 6,
+      COMING_BACK_HOME = 7
     };
 
     void SetWantedState(const WantedState wantedState);

@@ -61,15 +61,11 @@ void Robot::TeleopPeriodic() {
 void Robot::TeleopExit() {}
 
 void Robot::DisabledInit() {
-  m_container.intakeSubsystem.SetPivotControlMode(ControlMode::DISABLED);
-  m_container.intakeSubsystem.SetRollerControlMode(ControlMode::DISABLED);
-  m_container.indexer.SetControlMode(ControlMode::DISABLED);
+
 }
 void Robot::DisabledPeriodic() {}
 void Robot::DisabledExit() {
-  m_container.intakeSubsystem.SetPivotControlMode(PivotConstants::MainControlMode);
-  m_container.intakeSubsystem.SetRollerControlMode(RollerConstants::MainControlMode);
-  m_container.indexer.SetControlMode(IndexerConstants::MainControlMode);
+
 }
 
 void Robot::TestInit() {}

@@ -67,8 +67,3 @@ void PivotIOSpark::SetDutyCycle(double dutyCycle)
         ,"Intake Duty Cycle out of range");
     m_pivotMotor.Set(dutyCycle);    
 }
-
-void PivotIOSpark::SetTargetPos(double targetPos)
-{
-    m_pivotMotorController.SetSetpoint(targetPos,rev::spark::SparkLowLevel::ControlType::kPosition);
-}

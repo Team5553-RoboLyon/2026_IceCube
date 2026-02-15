@@ -5,6 +5,8 @@
 #include "LyonLib/logging/DebugUtils.h"
 #include "rev/SparkMax.h"  
 #include "units/length.h" 
+#include "units/moment_of_inertia.h"
+#include "LyonLib/utils/MacroUtilsRBL.h"
 
 using IdleMode = rev::spark::SparkBaseConfig::IdleMode;
 
@@ -31,7 +33,7 @@ namespace PivotConstants
     {
        constexpr int ID = 8;
        constexpr bool INVERTED = true;
-       constexpr double FULL_RANGE = 2.0*M_PI;
+       constexpr double FULL_RANGE = 2.0*NF64_PI;
        constexpr double EXPECTED_ZERO = 0.0;//TUNEME
     }
 
@@ -39,7 +41,7 @@ namespace PivotConstants
     {
        constexpr int ID = 0;
        constexpr bool INVERTED = false;
-       constexpr double FULL_RANGE = 2.0*M_PI;
+       constexpr double FULL_RANGE = 2.0*NF64_PI;
        constexpr double EXPECTED_ZERO = 0.0;//TUNEME
     }
 
@@ -49,10 +51,18 @@ namespace PivotConstants
         constexpr double pivotMotor_FREE_SPEED = pivotMotor::VOLTAGE_COMPENSATION * pivotMotor::KV; //RPM
     } 
 
+    namespace Simulation //approximative values
+    {
+        constexpr units::kilogram_square_meter_t MOI = 0.2_kg_sq_m;
+        constexpr units::meter_t ARM_LENGTH = 0.31_m;
+        constexpr bool APPLY_GRAVITY = true;
+    }
+
     namespace Position //in rad TUNEME
     {
         constexpr double MIN = NDEGtoRAD(5.0);
-        constexpr double MAX = M_PI;
+        constexpr double MAX = NF64_PI/2.0;
+        constexpr double RANGE = MAX-MIN;
         constexpr double PIVOT_EXTENDED_POS = MIN;
         constexpr double PIVOT_HOME_POS = MAX;
         constexpr double POS_TOLERANCE = NDEGtoRAD(1.0);
@@ -62,7 +72,7 @@ namespace PivotConstants
     {
         namespace POSITION_DUTYCYCLE_PID
         {
-            constexpr double KP = 0.001; //TUNEME
+            constexpr double KP = 0.2; //TUNEME
             constexpr double KI = 0.0; //TUNEME
             constexpr double KD = 0.0; //TUNEME
             constexpr double KG = 0.0; //TUNEME
