@@ -43,12 +43,12 @@ void IntakeSubsystem::SetPivotControlMode(ControlMode mode)
             m_pivotControlMode = mode;
             break; //end of ControlMode::POSITION_DUTYCYCLE_PID
 
-        case ControlMode::MANUAL_VOLTAGE:
+        case ControlMode::MANUAL_DUTY_CYCLE:
             m_pivotOutput = PivotConstants::DutyCycle::REST;
             m_pivotManualControlInput = 0.0;
 
             m_pivotControlMode = mode;
-            break; //end of ControlMode::MANUAL_VOLTAGE
+            break; //end of ControlMode::MANUAL_DUTY_CYCLE
 
         case ControlMode::DISABLED :
             m_pivotOutput = PivotConstants::DutyCycle::REST;
@@ -201,9 +201,9 @@ void IntakeSubsystem::Periodic()
                 m_pivotOutput = PivotConstants::DutyCycle::REST;
                 break; //end of ControlMode::DISABLED
 
-            case ControlMode::MANUAL_VOLTAGE:
-                m_pivotOutput = m_tunablePivotVoltageLogger.Get();
-                break; //end of ControlMode::MANUAL_VOLTAGE
+            case ControlMode::MANUAL_DUTY_CYCLE:
+                m_pivotOutput = m_tunablePivotDutyCycleLogger.Get();
+                break; //end of ControlMode::MANUAL_DUTY_CYCLE
 
             case ControlMode::POSITION_DUTYCYCLE_PID:
                 switch(m_systemState)
@@ -284,12 +284,9 @@ void IntakeSubsystem::Periodic()
     switch(m_pivotControlMode)
     {
         case ControlMode::DISABLED:
-        case ControlMode::MANUAL_VOLTAGE:
-            m_pPivotIO->SetVoltage(m_pivotOutput);
-            break;
-
+        case ControlMode::MANUAL_DUTY_CYCLE:
         case ControlMode::POSITION_DUTYCYCLE_PID:
-            m_pPivotIO->SetTargetPos(m_pivotTargetPos);
+            m_pPivotIO->SetDutyCycle(m_pivotOutput);
             break;
 
         default:

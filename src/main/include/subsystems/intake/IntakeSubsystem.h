@@ -85,7 +85,7 @@ class IntakeSubsystem : public frc2::SubsystemBase {
       double m_pivotTargetPos{0.0};
       double m_timestamp{0.0};
     // std::function<double()> m_fxAxis; //temporary
-      TunableValueLogger m_tunablePivotVoltageLogger{"Intake/PivotVoltage", 0.0}; //RPM
+      TunableValueLogger m_tunablePivotDutyCycleLogger{"Intake/PivotDutyCycle", 0.0}; //RPM
       TunableValueLogger m_tunableRollerVoltageLogger{"Intake/RollerVoltage", 0.0}; //RPM
     // === Status Flags ===
       bool m_isInitialized = true;
