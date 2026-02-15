@@ -329,10 +329,10 @@ void IntakeSubsystem::RunStateMachine()
         case WantedState::STAND_BY :
             if (pivotInputs.pivotPos <= PivotConstants::Position::MIN + PivotConstants::Position::RANGE/2)
             {
-                m_systemState = SystemState::CHILLING_OUT;
+                m_systemState = SystemState::EXTENDING;
             }
             else
-                m_systemState = SystemState::STAYING_AT_HOME;
+                m_systemState = SystemState::COMING_BACK_HOME;
             break;
 
         case WantedState::REFUEL:
@@ -430,6 +430,7 @@ void IntakeSubsystem::RunStateMachine()
                         m_systemState = SystemState::REFUELING;
                         break;
 
+                    case WantedState::STAND_BY:
                     case WantedState::EXTEND:
                         m_systemState = SystemState::CHILLING_OUT;
                         m_wantedState = WantedState::STAND_BY;
@@ -452,6 +453,7 @@ void IntakeSubsystem::RunStateMachine()
                             m_systemState = SystemState::FEELING_LIKE_AN_INDEXER;
                             break;
                         
+                        case WantedState::STAND_BY:
                         case WantedState::RETURN_AT_HOME:
                             m_systemState = SystemState::STAYING_AT_HOME;
                             m_wantedState = WantedState::STAND_BY;
