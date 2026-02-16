@@ -31,8 +31,8 @@ namespace HoodConstants
 
     namespace HoodEncoder
     {
-        constexpr int ID_CHANNEL_A = 16;
-        constexpr int ID_CHANNEL_B = 17;
+        constexpr int ID_CHANNEL_A = 19;
+        constexpr int ID_CHANNEL_B = 20;
         constexpr bool INVERTED = false;
         constexpr double RATIO = 215.0/14.0; 
         constexpr double DISTANCE_PER_PULSE = 2.0*NF64_PI/RATIO/ENCODER_TICKS_PER_REVOLUTION_K2X;
