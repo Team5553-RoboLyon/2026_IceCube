@@ -39,7 +39,7 @@ namespace PivotConstants
 
     namespace EncoderRight
     {
-       constexpr int ID = 0;
+       constexpr int ID = 9;
        constexpr bool INVERTED = false;
        constexpr double FULL_RANGE = 2.0*NF64_PI;
        constexpr double EXPECTED_ZERO = 0.0;//TUNEME
