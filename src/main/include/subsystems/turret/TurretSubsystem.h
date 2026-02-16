@@ -7,7 +7,6 @@
 #include <frc2/command/SubsystemBase.h>
 
 #include "turretConstants.h"
-#include "turretIOLogger.h"
 #include "turretIO.h"
 #include "Constants.h"
 
@@ -15,13 +14,13 @@
 #include "LyonLib/control/pidRBL.h"
 #include "LyonLib/logging/Alert.h"
 #include "camera/AprilTagPhotonCamera.h"
-#include "subsystems/ShootParametersCalculator.h"
 
 #include "frc/DriverStation.h"
 
 class TurretSubsystem : public frc2::SubsystemBase {
   public:
-    TurretSubsystem(TurretIO *pIO, ShootParameters *pShootParams);
+    // TurretSubsystem(TurretIO *pIO, ShootParameters *pShootParams);
+    TurretSubsystem(TurretIO *pIO);
 
     enum class WantedState 
     {
@@ -61,9 +60,8 @@ class TurretSubsystem : public frc2::SubsystemBase {
     // === Hardware & IO Interfaces ===
       TurretIO *m_pTurretIO;
       TurretIOInputs inputs;
-      TurretIOLogger m_logger{frc::DataLogManager::GetLog(), "/Turret"};
       AprilTagPhotonCamera m_turretCamera{new photon::PhotonCamera{TurretConstants::TurretCamera::NAME}};
-      ShootParameters* m_pShootParams;
+      // ShootParameters* m_pShootParams;
       double m_robotOrientation = 0.0;
     // === System States & Control Modes ===
       WantedState m_wantedState = WantedState::STAND_BY;
@@ -82,9 +80,9 @@ class TurretSubsystem : public frc2::SubsystemBase {
       bool m_isInitialized = false;
       bool m_isInBlueAlliance = true;
     // === System Alerts ===
-            Alert m_motorDisconnected{"Turret motor: Disconnected", Alert::AlertType::ERROR};
-      Alert m_motorHot{"Turret motor: Temperature exceeds 60°C", Alert::AlertType::WARNING};
-      Alert m_motorOverheating{"Turret motor: Temperature exceeds 75°C", Alert::AlertType::ERROR};
+      Alert m_motorDisconnected{"Turret Motor: Disconnected", Alert::AlertType::ERROR};
+      Alert m_motorHot{"Turret Motor: Temperature exceeds 60°C", Alert::AlertType::WARNING};
+      Alert m_motorOverheating{"Turret Motor: Temperature exceeds 75°C", Alert::AlertType::ERROR};
     // === Internal Methods ===
       void RunStateMachine();
 };
