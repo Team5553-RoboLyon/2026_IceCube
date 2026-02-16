@@ -7,8 +7,8 @@
 #include "LyonLib/Utils/MacroUtilsRBL.h"
 
 
-TurretSubsystem::TurretSubsystem(TurretIO *pIO, ShootParameters *pShootParams) : 
-                                                    m_pTurretIO(pIO), m_pShootParams(pShootParams)
+TurretSubsystem::TurretSubsystem(TurretIO *pIO) : 
+                                                    m_pTurretIO(pIO)
 {
     m_TurretPIDController.SetGains(TurretConstants::Gains::POSITION_DUTYCYCLE_PID::KP, 
                                 TurretConstants::Gains::POSITION_DUTYCYCLE_PID::KI, 
@@ -115,12 +115,10 @@ void TurretSubsystem::Periodic()
 
     m_pTurretIO->UpdateInputs(inputs);
     m_turretCamera.UpdateResults();
-
-    m_logger.Log(inputs);
     
-    m_motorDisconnected.Set(!inputs.ismotorConnected);
-    m_motorHot.Set(inputs.motorTemperature > TurretConstants::motor::HOT_THRESHOLD);
-    m_motorOverheating.Set(inputs.motorTemperature > TurretConstants::motor::OVERHEATING_THRESHOLD);
+    m_motorDisconnected.Set(!inputs.isMotorConnected);
+    m_motorHot.Set(inputs.motorTemperature > TurretConstants::Motor::HOT_THRESHOLD);
+    m_motorOverheating.Set(inputs.motorTemperature > TurretConstants::Motor::OVERHEATING_THRESHOLD);
     
     if(!m_isInitialized)
     {
@@ -251,25 +249,25 @@ void TurretSubsystem::RunStateMachine()
 
         case SystemState::ALIGNING_WITH_HUB:
         case SystemState::ALIGNED_WITH_HUB:
-            if(inputs.orientation < 0)
+            // if(inputs.orientation < 0)
+            // {
+            //     m_targetPos = m_pShootParams->lookAheadTargetTurretPos - 2*NF64_PI;
+            // }
+            // else
+            // {
+            //     m_targetPos = m_pShootParams->lookAheadTargetTurretPos;
+            // }
+
+            if (inputs.orientation >= 0 && m_targetPos - inputs.orientation > NF64_PI)
             {
-                m_targetPos = m_pShootParams->lookAheadTargetTurretPos - 2*M_PI;
+                m_targetPos -= 2*NF64_PI;
             }
-            else
+            else if (inputs.orientation <= 0 && m_targetPos - (inputs.orientation+2*NF64_PI) < NF64_PI)
             {
-                m_targetPos = m_pShootParams->lookAheadTargetTurretPos;
+                m_targetPos += 2*NF64_PI;
             }
 
-            if (inputs.orientation >= 0 && m_targetPos - inputs.orientation > M_PI)
-            {
-                m_targetPos -= 2*M_PI;
-            }
-            else if (inputs.orientation <= 0 && m_targetPos - (inputs.orientation+2*M_PI) < M_PI)
-            {
-                m_targetPos += 2*M_PI;
-            }
-
-            if (IS_IN_RANGE(inputs.orientation, m_targetPos, TurretConstants::Gains::POSITION_DUTYCYCLE_PID::TOLERANCE))
+            if (IS_IN_RANGE(inputs.orientation, m_targetPos, TurretConstants::Setpoints::TOLERANCE))
                 m_systemState = SystemState::ALIGNED_WITH_HUB;
             else
                 m_systemState = SystemState::ALIGNING_WITH_HUB;
@@ -280,25 +278,25 @@ void TurretSubsystem::RunStateMachine()
             if(m_isInBlueAlliance)
             {
                 if (inputs.orientation < 0)
-                    m_targetPos = -M_PI - m_robotOrientation;
+                    m_targetPos = -NF64_PI - m_robotOrientation;
                 else
-                    m_targetPos = M_PI - m_robotOrientation;
+                    m_targetPos = NF64_PI - m_robotOrientation;
             }
             else
             {
                 m_targetPos = -m_robotOrientation;
             }
 
-            if (inputs.orientation >= 0 && m_targetPos - inputs.orientation > M_PI)
+            if (inputs.orientation >= 0 && m_targetPos - inputs.orientation > NF64_PI)
             {
-                m_targetPos -= 2*M_PI;
+                m_targetPos -= 2*NF64_PI;
             }
-            else if (inputs.orientation <= 0 && m_targetPos - (inputs.orientation+2*M_PI) < M_PI)
+            else if (inputs.orientation <= 0 && m_targetPos - (inputs.orientation+2*NF64_PI) < NF64_PI)
             {
-                m_targetPos += 2*M_PI;
+                m_targetPos += 2*NF64_PI;
             }
 
-            if(IS_IN_RANGE(inputs.orientation, m_targetPos, TurretConstants::Gains::POSITION_DUTYCYCLE_PID::TOLERANCE))
+            if(IS_IN_RANGE(inputs.orientation, m_targetPos, TurretConstants::Setpoints::TOLERANCE))
                 m_systemState = SystemState::POINTING_AT_ALLIANCE_ZONE;
             else
             {
@@ -307,8 +305,8 @@ void TurretSubsystem::RunStateMachine()
             break;
 
         case SystemState::SPINNING_TO_EJECT:
-            m_targetPos = TurretConstants::Specifications::EJECT_POS;
-            if(IS_IN_RANGE(inputs.orientation, m_targetPos, TurretConstants::Gains::POSITION_DUTYCYCLE_PID::TOLERANCE))
+            m_targetPos = TurretConstants::Setpoints::EJECT;
+            if(IS_IN_RANGE(inputs.orientation, m_targetPos, TurretConstants::Setpoints::TOLERANCE))
                 m_systemState = SystemState::READY_TO_EJECT;
             break;
         

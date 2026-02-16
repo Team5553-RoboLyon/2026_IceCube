@@ -10,13 +10,20 @@
 #include <frc/Joystick.h>
 
 #include "subsystems/turret/TurretIOSpark.h"
+#include "subsystems/turret/TurretIOSim.h"
 #include "subsystems/turret/TurretSubsystem.h"
 
 class RobotContainer {
  public:
   RobotContainer();
 
-  TurretSubsystem turretSubsystem{new TurretIOSpark, new ShootParameters};
+  #if ROBOT_MODEL == SIMULATION
+    TurretSubsystem turretSubsystem{new TurretIOSim};
+    // TurretSubsystem turretSubsystem{new TurretIOSim, new ShootParameters};
+  #else
+  TurretSubsystem turretSubsystem{new TurretIOSpark};
+  // TurretSubsystem turretSubsystem{new TurretIOSpark, new ShootParameters};
+  #endif
 
   Operator operatorGamepad{ControlPanelConstants::OPERATOR_GAMEPAD_PORT, ControlPanelConstants::OPERATOR_GAMEPAD_THRESHOLD};
   frc::Joystick forwardJoystick{ControlPanelConstants::JOYSTICK_FORWARD_ID};

@@ -1,8 +1,9 @@
 #pragma once
 
+#include "units/voltage.h"
 struct TurretIOInputs
 {
-        bool ismotorConnected = true;
+    bool isMotorConnected = true;
     
     double motorAppliedVoltage = 0.0;
     double motorBusVoltage = 0.0;
@@ -20,7 +21,7 @@ public:
 
     virtual void UpdateInputs(TurretIOInputs& inputs) = 0;
 
-    virtual void SetVoltage(double voltage) = 0; 
+    virtual void SetVoltage(units::volt_t voltage) = 0; 
     virtual void SetDutyCycle(double dutyCycle) = 0;
 
     virtual void ResetOrientation() = 0;
