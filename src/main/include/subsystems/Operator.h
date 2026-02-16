@@ -19,6 +19,12 @@ public:
     Operator(int port, double threshold) : XboxGamepad(port, threshold){};
     ~Operator() override = default;
 
+    frc2::Trigger STAND_BY{_YButton};
+    frc2::Trigger SHOOT_TO_HUB{_R3AsButton};
+    frc2::Trigger FEED_ALLY{_XButton};
+    frc2::Trigger STOP{_BButton};
+    frc2::Trigger REVERSE{_L3AsButton};
+    frc2::Trigger KEEP_ALL_FOR_YOU{_AButton};
 #endif
 
 
