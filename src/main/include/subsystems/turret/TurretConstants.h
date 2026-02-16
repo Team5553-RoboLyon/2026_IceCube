@@ -31,7 +31,7 @@ namespace TurretConstants
     
     namespace Specifications
     {
-        constexpr double GEAR_RATIO = (130.0/24.0)*(1.0); //ul
+        constexpr double GEAR_RATIO = (130.0/24.0)*(5.23)*(5.23); //ul
         constexpr double MOTOR_FREE_SPEED = Motor::VOLTAGE_COMPENSATION * Motor::KV; //RPM
         constexpr frc::Transform2d ROBOT_TO_TURRET{155.0_m, 155.0_m,{}}; //TUNEME
     }
@@ -65,7 +65,7 @@ namespace TurretConstants
     {
         namespace POSITION_DUTYCYCLE_PID
         {
-            constexpr double KP = 0.1; //TUNEME
+            constexpr double KP = 0.15; //TUNEME
             constexpr double KI = 0.0; //TUNEME
             constexpr double KD = 0.0; //TUNEME
         }
