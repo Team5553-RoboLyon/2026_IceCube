@@ -51,56 +51,81 @@ void DrivetrainIOFlex::UpdateInputs(DrivetrainIOInputs& inputs)
     inputs.isFrontLeftMotorConnected = (m_motorFrontLeft.GetBusVoltage() != 0.0) && !m_motorFrontLeft.GetFaults().can;
     inputs.isFrontRightMotorConnected = (m_motorFrontRight.GetBusVoltage() != 0.0) && !m_motorFrontRight.GetFaults().can;
 
-    inputs.backLeftMotorAppliedVoltage = m_motorBackLeft.GetAppliedOutput() * driveConstants::Motors::VOLTAGE_COMPENSATION;
-    inputs.backRightMotorAppliedVoltage = m_motorBackRight.GetAppliedOutput() * driveConstants::Motors::VOLTAGE_COMPENSATION;
-    inputs.frontLeftMotorAppliedVoltage = m_motorFrontLeft.GetAppliedOutput() * driveConstants::Motors::VOLTAGE_COMPENSATION;
-    inputs.frontRightMotorAppliedVoltage = m_motorFrontRight.GetAppliedOutput() * driveConstants::Motors::VOLTAGE_COMPENSATION;
+    inputs.backLeftMotorAppliedVoltage = units::volt_t(m_motorBackLeft.GetAppliedOutput() * driveConstants::Motors::VOLTAGE_COMPENSATION);
+    inputs.backRightMotorAppliedVoltage = units::volt_t(m_motorBackRight.GetAppliedOutput() * driveConstants::Motors::VOLTAGE_COMPENSATION);
+    inputs.frontLeftMotorAppliedVoltage = units::volt_t(m_motorFrontLeft.GetAppliedOutput() * driveConstants::Motors::VOLTAGE_COMPENSATION);
+    inputs.frontRightMotorAppliedVoltage = units::volt_t(m_motorFrontRight.GetAppliedOutput() * driveConstants::Motors::VOLTAGE_COMPENSATION);
 
-    inputs.backLeftMotorBusVoltage = m_motorBackLeft.GetBusVoltage();
-    inputs.backRightMotorBusVoltage = m_motorBackRight.GetBusVoltage();
-    inputs.frontLeftMotorBusVoltage = m_motorFrontLeft.GetBusVoltage();
-    inputs.frontRightMotorBusVoltage = m_motorFrontRight.GetBusVoltage();
+    inputs.backLeftMotorBusVoltage = units::volt_t(m_motorBackLeft.GetBusVoltage());
+    inputs.backRightMotorBusVoltage = units::volt_t(m_motorBackRight.GetBusVoltage());
+    inputs.frontLeftMotorBusVoltage = units::volt_t(m_motorFrontLeft.GetBusVoltage());
+    inputs.frontRightMotorBusVoltage = units::volt_t(m_motorFrontRight.GetBusVoltage());
 
-    inputs.backLeftMotorCurrent = m_motorBackLeft.GetOutputCurrent();
-    inputs.backRightMotorCurrent = m_motorBackRight.GetOutputCurrent();
-    inputs.frontLeftMotorCurrent = m_motorFrontLeft.GetOutputCurrent();
-    inputs.frontRightMotorCurrent = m_motorFrontRight.GetOutputCurrent();
+    inputs.backLeftMotorCurrent = units::ampere_t(m_motorBackLeft.GetOutputCurrent());
+    inputs.backRightMotorCurrent = units::ampere_t(m_motorBackRight.GetOutputCurrent());
+    inputs.frontLeftMotorCurrent = units::ampere_t(m_motorFrontLeft.GetOutputCurrent());
+    inputs.frontRightMotorCurrent = units::ampere_t(m_motorFrontRight.GetOutputCurrent());
 
-    inputs.backLeftMotorTemperature = m_motorBackLeft.GetMotorTemperature();
-    inputs.backRightMotorTemperature = m_motorBackRight.GetMotorTemperature();
-    inputs.frontLeftMotorTemperature = m_motorFrontLeft.GetMotorTemperature();
-    inputs.frontRightMotorTemperature = m_motorFrontRight.GetMotorTemperature();
+    inputs.backLeftMotorTemperature = units::celsius_t(m_motorBackLeft.GetMotorTemperature());
+    inputs.backRightMotorTemperature = units::celsius_t(m_motorBackRight.GetMotorTemperature());
+    inputs.frontLeftMotorTemperature = units::celsius_t(m_motorFrontLeft.GetMotorTemperature());
+    inputs.frontRightMotorTemperature = units::celsius_t(m_motorFrontRight.GetMotorTemperature());
 
-    inputs.leftSideTraveledDistance = m_encoderLeft.GetDistance();
-    inputs.leftSideVelocity = m_encoderLeft.GetRate();
-    inputs.rightSideTraveledDistance = m_encoderRight.GetDistance();
-    inputs.rightSideVelocity = m_encoderRight.GetRate();
+    inputs.leftSideTraveledDistance = units::meter_t(m_encoderLeft.GetDistance());
+    inputs.leftSideVelocity = units::meters_per_second_t(m_encoderLeft.GetRate());
+    inputs.rightSideTraveledDistance = units::meter_t(m_encoderRight.GetDistance());
+    inputs.rightSideVelocity = units::meters_per_second_t(m_encoderRight.GetRate());
 
-    m_realLeftSideSpeed = inputs.leftSideVelocity;
-    m_realRightSideSpeed = inputs.rightSideVelocity;
+    m_realLeftSideSpeed = inputs.leftSideVelocity.value();
+    m_realRightSideSpeed = inputs.rightSideVelocity.value();
 
-    inputs.robotPosition = m_odometry.UpdateUsingFusionTwistExp(inputs.leftSideTraveledDistance, inputs.rightSideTraveledDistance, TIME_PER_CYCLE);
-    // inputs.robotPosition = m_odometry.UpdateOdometryFromVelocity(0.02);
+    inputs.robotPosition = m_odometry.UpdateUsingFusionTwistExp(inputs.leftSideTraveledDistance.value(), inputs.rightSideTraveledDistance.value(), TIME_PER_CYCLE);
 
-    robotPoseLogger.Log(inputs.robotPosition);
-    frc::SmartDashboard::PutBoolean("Drivetrain/LeftSide/Front/Connection", inputs.isFrontLeftMotorConnected);
-    frc::SmartDashboard::PutBoolean("Drivetrain/RightSide/Back/Connection", inputs.isBackRightMotorConnected);
-    frc::SmartDashboard::PutBoolean("Drivetrain/RightSide/Front/Connection", inputs.isFrontRightMotorConnected);
-    frc::SmartDashboard::PutBoolean("Drivetrain/LeftSide/Back/Connection", inputs.isBackLeftMotorConnected);
+    #ifndef DRIVETRAIN_SMARTDASHBOARD_LOG
+    m_logger.Log(inputs);
+    #else
+    frc::SmartDashboard::PutBoolean("Drivetrain/Motors/BackLeft/isConnected", inputs.isBackLeftMotorConnected);
+    frc::SmartDashboard::PutBoolean("Drivetrain/Motors/BackRight/isConnected", inputs.isBackRightMotorConnected);
+    frc::SmartDashboard::PutBoolean("Drivetrain/Motors/FrontLeft/isConnected", inputs.isFrontLeftMotorConnected);
+    frc::SmartDashboard::PutBoolean("Drivetrain/Motors/FrontRight/isConnected", inputs.isFrontRightMotorConnected);  
+    frc::SmartDashboard::PutNumber("Drivetrain/Motors/BackLeft/AppliedVoltage", inputs.backLeftMotorAppliedVoltage.value());
+    frc::SmartDashboard::PutNumber("Drivetrain/Motors/BackRight/AppliedVoltage", inputs.backRightMotorAppliedVoltage.value());
+    frc::SmartDashboard::PutNumber("Drivetrain/Motors/FrontLeft/AppliedVoltage", inputs.frontLeftMotorAppliedVoltage.value());
+    frc::SmartDashboard::PutNumber("Drivetrain/Motors/FrontRight/AppliedVoltage", inputs.frontRightMotorAppliedVoltage.value());
+    frc::SmartDashboard::PutNumber("Drivetrain/Motors/BackLeft/BusVoltage", inputs.backLeftMotorBusVoltage.value());
+    frc::SmartDashboard::PutNumber("Drivetrain/Motors/BackRight/BusVoltage", inputs.backRightMotorBusVoltage.value());
+    frc::SmartDashboard::PutNumber("Drivetrain/Motors/FrontLeft/BusVoltage", inputs.frontLeftMotorBusVoltage.value()); 
+    frc::SmartDashboard::PutNumber("Drivetrain/Motors/FrontRight/BusVoltage", inputs.frontRightMotorBusVoltage.value());
+    frc::SmartDashboard::PutNumber("Drivetrain/Motors/BackLeft/Current", inputs.backLeftMotorCurrent.value());
+    frc::SmartDashboard::PutNumber("Drivetrain/Motors/BackRight/Current", inputs.backRightMotorCurrent.value());
+    frc::SmartDashboard::PutNumber("Drivetrain/Motors/FrontLeft/Current", inputs.frontLeftMotorCurrent.value());
+    frc::SmartDashboard::PutNumber("Drivetrain/Motors/FrontRight/Current", inputs.frontRightMotorCurrent.value());
+    frc::SmartDashboard::PutNumber("Drivetrain/Motors/BackLeft/Temperature", inputs.backLeftMotorTemperature.value());
+    frc::SmartDashboard::PutNumber("Drivetrain/Motors/BackRight/Temperature", inputs.backRightMotorTemperature.value());
+    frc::SmartDashboard::PutNumber("Drivetrain/Motors/FrontLeft/Temperature", inputs.frontLeftMotorTemperature.value());
+    frc::SmartDashboard::PutNumber("Drivetrain/Motors/FrontRight/Temperature", inputs.frontRightMotorTemperature.value());
+    frc::SmartDashboard::PutNumber("Drivetrain/LeftSide/TraveledDistance", inputs.leftSideTraveledDistance.value());
+    frc::SmartDashboard::PutNumber("Drivetrain/LeftSide/Velocity", inputs.leftSideVelocity.value());
+    frc::SmartDashboard::PutNumber("Drivetrain/RightSide/TraveledDistance", inputs.rightSideTraveledDistance.value());
+    frc::SmartDashboard::PutNumber("Drivetrain/RightSide/Velocity", inputs.rightSideVelocity.value());
+    #endif
+
+     robotPoseLogger.Log(inputs.robotPosition);
+
 }
 
-void DrivetrainIOFlex::SetVoltage(const double leftSideVoltage, const double rightSideVoltage)
+void DrivetrainIOFlex::SetVoltage(const units::volt_t leftSideVoltage, const units::volt_t rightSideVoltage)
 {
-    DEBUG_ASSERT((leftSideVoltage <= driveConstants::Motors::VOLTAGE_COMPENSATION) 
-        && (leftSideVoltage >= -driveConstants::Motors::VOLTAGE_COMPENSATION) 
+    DEBUG_ASSERT((leftSideVoltage.value() <= driveConstants::Motors::VOLTAGE_COMPENSATION) 
+        && (leftSideVoltage.value() >= -driveConstants::Motors::VOLTAGE_COMPENSATION) 
         ,"Drivetrain left side Voltage out of range");
 
-    DEBUG_ASSERT((rightSideVoltage <= driveConstants::Motors::VOLTAGE_COMPENSATION) 
-        && (rightSideVoltage >= -driveConstants::Motors::VOLTAGE_COMPENSATION) 
+    DEBUG_ASSERT((rightSideVoltage.value() <= driveConstants::Motors::VOLTAGE_COMPENSATION) 
+        && (rightSideVoltage.value() >= -driveConstants::Motors::VOLTAGE_COMPENSATION) 
         ,"Drivetrain right side Voltage out of range");
     
-    m_motorBackLeft.SetVoltage(units::volt_t(leftSideVoltage));
-    m_motorBackRight.SetVoltage(units::volt_t(rightSideVoltage));
+    m_motorBackLeft.SetVoltage(leftSideVoltage);
+    m_motorBackRight.SetVoltage(rightSideVoltage);
 }
 
 void DrivetrainIOFlex::SetDutyCycle(const double leftSideDutyCycle, const double rightSideDutyCycle)
@@ -124,7 +149,7 @@ void DrivetrainIOFlex::SetChassisSpeed(const frc::ChassisSpeeds &speeds)
     // Vl = Vf - Rb * omega
     double rightSideSpeed = speeds.vx() + driveConstants::Specifications::BASE_TRACK_RADIUS * speeds.omega();
     double leftSideSpeed = speeds.vx() - driveConstants::Specifications::BASE_TRACK_RADIUS * speeds.omega();
-
+ 
     double highestSpeedSide = NMAX(NABS(rightSideSpeed), NABS(leftSideSpeed));
     if(highestSpeedSide > driveConstants::Specifications::MAX_LINEAR_SPEED)
     {
@@ -132,7 +157,7 @@ void DrivetrainIOFlex::SetChassisSpeed(const frc::ChassisSpeeds &speeds)
         rightSideSpeed *= scaleFactor;
         leftSideSpeed *= scaleFactor;
     }
-
+    
     double rightOutput = rightSideSpeed * driveConstants::Specifications::LINEAR_TO_MOTOR_SPEED_FACTOR;
     double leftOutput = leftSideSpeed * driveConstants::Specifications::LINEAR_TO_MOTOR_SPEED_FACTOR;
 

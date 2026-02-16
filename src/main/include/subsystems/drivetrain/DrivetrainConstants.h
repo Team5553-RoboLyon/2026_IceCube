@@ -13,9 +13,12 @@ enum class DriveMode
     DISABLE
 };
 
+#if ROBOT_MODEL != COMPETITON
+    #define DRIVETRAIN_SMARTDASHBOARD_LOG
+#endif
 using IdleMode = rev::spark::SparkBaseConfig::IdleMode;
 
-#if ROBOT_MODEL == COMPETITON || ROBOT_MODEL == TRAINING || ROBOT_MODEL == PROTOTYPE || ROBOT_MODEL == DEMO || ROBOT_MODEL == SIMULATION
+#if ROBOT_MODEL == COMPETITION || ROBOT_MODEL == TRAINING || ROBOT_MODEL == PROTOTYPE || ROBOT_MODEL == DEMO || ROBOT_MODEL == SIMULATION
 namespace driveConstants 
 {
     constexpr DriveMode desiredDriveControl = DriveMode::ARCADE_DRIVE;
@@ -43,12 +46,12 @@ namespace driveConstants
 
     namespace Specifications
     {
-        constexpr double GEAR_RATIO = 12.0; //ul //TUNEME
+        constexpr double GEAR_RATIO = (56.0/11.0)*(42.0/18.0); //ul 
         constexpr int KV = 568.8; // RPM.V-1
         constexpr double MOTOR_FREE_SPEED = Motors::VOLTAGE_COMPENSATION * KV; //RPM
         
-        constexpr double WHEEL_RADIUS = 2.5 * 0.0254; //m //TUNEME
-        constexpr double TRACKWIDTH = 0.554; //m //TUNEME
+        constexpr double WHEEL_RADIUS = 2.5 * 0.0254; //m
+        constexpr double TRACKWIDTH = 0.6008685; //m //TUNEME
         constexpr double BASE_TRACK_RADIUS = TRACKWIDTH/2.0; //m
 
         constexpr double MAX_LINEAR_SPEED = WHEEL_RADIUS * (2.0 * NF64_PI) * ((MOTOR_FREE_SPEED / GEAR_RATIO) / 60.0); // m.s-1
@@ -57,21 +60,27 @@ namespace driveConstants
     }
     namespace Encoder
     {
-        constexpr int LEFT_ID_ENCODER_A = 5; //
-        constexpr int LEFT_ID_ENCODER_B = 6;
+        constexpr int LEFT_ID_ENCODER_A = 1;
+        constexpr int LEFT_ID_ENCODER_B = 2;
         constexpr bool LEFT_REVERSE_ENCODER = true; 
 
-        constexpr int RIGHT_ID_ENCODER_A = 7;
-        constexpr int RIGHT_ID_ENCODER_B = 8;
+        constexpr int RIGHT_ID_ENCODER_A = 3;
+        constexpr int RIGHT_ID_ENCODER_B = 4;
         constexpr bool RIGHT_REVERSE_ENCODER = false;
 
         constexpr double DISTANCE_PER_PULSE = (2.0 * NF64_PI * Specifications::WHEEL_RADIUS)/ENCODER_TICKS_PER_REVOLUTION_K2X;
     }
 
+    namespace Simulation
+    {
+        constexpr double MOI = 5.23; //TUNEME
+        constexpr double MASS = 60.0; //TUNEME
+    }
+
     namespace ArcadeDrive
     {
         constexpr double MIN_ROTATION_SIGMA = 0.1; //TUNEME
-        constexpr double MAX_ROTATION_SIGMA = 0.45; //TUNEME
+        constexpr double MAX_ROTATION_SIGMA = 0.3; //TUNEME
 
         constexpr double TIME_TO_REACH_FULL_FORWARD = 0.8; //TUNEME
         constexpr double TIME_TO_REACH_FULL_ROTATION = 0.5; //TUNEME
@@ -154,8 +163,8 @@ namespace driveConstants
 
     namespace ArcadeDrive
     {
-        constexpr double MIN_ROTATION_SIGMA = 0.1; //TUNEME
-        constexpr double MAX_ROTATION_SIGMA = 0.45; //TUNEME
+        constexpr double MIN_ROTATION_SIGMA = 0.05; //TUNEME
+        constexpr double MAX_ROTATION_SIGMA = 0.2; //TUNEME
 
         constexpr double TIME_TO_REACH_FULL_FORWARD = 0.8; //TUNEME
         constexpr double TIME_TO_REACH_FULL_ROTATION = 0.5; //TUNEME

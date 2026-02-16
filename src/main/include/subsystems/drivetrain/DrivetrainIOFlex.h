@@ -1,12 +1,14 @@
 #pragma once
 
-#include "DrivetrainIO.h"
 #include "rev/SparkFlex.h"
-#include "DrivetrainConstants.h"
-// #include <frc/smartdashboard/Field2d.h>
 #include "frc/Encoder.h"
-#include "LyonLib/localization/TankOdometryTracker.h"
 
+#include "DrivetrainIO.h"
+#include "DrivetrainConstants.h"
+#include "DrivetrainIOLogger.h"
+
+
+#include "LyonLib/localization/TankOdometryTracker.h"
 #include "LyonLib/logging/ComplexStructLogger.h"
 
 class DrivetrainIOFlex  final : public DrivetrainIO
@@ -37,7 +39,9 @@ class DrivetrainIOFlex  final : public DrivetrainIO
   double m_realRightSideSpeed{0.0};
 
   TankOdometryTracker m_odometry{&m_realLeftSideSpeed, &m_realRightSideSpeed, driveConstants::Specifications::TRACKWIDTH};
-
+  #ifndef DRIVETRAIN_SMARTDASHBOARD_LOG
+  DrivetrainIOLogger m_logger{frc::DataLogManager::GetLog(), "Drivetrain"};
+  #endif
   StructLogger<frc::Pose2d> robotPoseLogger{"Drivetrain/Odometry/Pose2d"};
 
   public:
@@ -46,7 +50,7 @@ class DrivetrainIOFlex  final : public DrivetrainIO
 
     void UpdateInputs(DrivetrainIOInputs& inputs) override;
 
-    void SetVoltage(const double leftSideVoltage, const double rightSideVoltage) override;
+    void SetVoltage(const units::volt_t leftSideVoltage, const units::volt_t rightSideVoltage) override;
     void SetDutyCycle(const double leftSideDutyCycle, const double rightSideDutyCycle) override;
     void SetChassisSpeed(const frc::ChassisSpeeds &speeds) override;
     

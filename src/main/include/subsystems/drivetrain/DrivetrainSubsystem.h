@@ -6,16 +6,17 @@
 
 #include "frc/kinematics/ChassisSpeeds.h"
 #include <frc2/command/SubsystemBase.h>
+#include "frc/controller/LTVUnicycleController.h"
 
 #include <functional>
 #include <optional>
 
 #include "DrivetrainIO.h"
-#include "DrivetrainIOLogger.h"
 #include "DrivetrainConstants.h"
 
 #include "LyonLib/control/RateLimiter.h"
 #include "LyonLib/logging/Alert.h"
+#include "LyonLib/logging/ComplexStructLogger.h"
 #include "LyonLib/control/PidRBL.h"
 #include "LyonLib/utils/TimerRBL.h"
 
@@ -57,7 +58,6 @@ class DrivetrainSubsystem : public frc2::SubsystemBase
  private:
   DrivetrainIO *m_pTankDriveIO;
   DrivetrainIOInputs inputs;
-  DrivetrainIOLogger m_logger{frc::DataLogManager::GetLog(), "/Drivetrain"};
 
   DriveMode m_wantedDrive = DriveMode::DISABLE;
   SystemDrive m_systemDrive = SystemDrive::DISABLE;
@@ -102,10 +102,15 @@ class DrivetrainSubsystem : public frc2::SubsystemBase
   choreo::Trajectory<choreo::DifferentialSample> m_desiredAutoTrajectory;
   TimerRBL m_autoTimer;
   std::optional<choreo::DifferentialSample> m_autoSampleToBeApplied;
-  PidRBL m_pidAutoX{};
-  PidRBL m_pidAutoTheta{};
-  
 
+  wpi::array<double, 3> Q = {0.05, 0.05, 0.2}; // x=5cm, y=5cm, heading=0.2 rad
+  wpi::array<double, 2> R = {1.0, 2.0};        // lin=1 m/s, ang=2 rad/s
+  frc::LTVUnicycleController m_ltvController{Q, R, 0.02_s};
+
+
+  // Logging
+  StructLogger<frc::Pose2d> m_ErreurLogger{"/Drivetrain/PoseError"};
+  StructLogger<frc::Pose2d> m_theoriticalLogger{"/Drivetrain/ReferencePose"}; 
 
   frc::DriverStation::Alliance m_alliance;
 

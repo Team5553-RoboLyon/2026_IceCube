@@ -11,12 +11,17 @@
 #include <frc2/command/button/JoystickButton.h>
 #include "subsystems/drivetrain/DrivetrainSubsystem.h"
 #include "subsystems/drivetrain/DrivetrainIOFlex.h"
+#include "subsystems/drivetrain/DrivetrainIOSim.h"
 
 class RobotContainer {
  public:
   RobotContainer();
 
+  #if ROBOT_MODEL == SIMULATION
+  DrivetrainSubsystem drivetrain{new DrivetrainIOSim()};
+  #else
   DrivetrainSubsystem drivetrain{new DrivetrainIOFlex()};
+  #endif
 
   Operator operatorGamepad{ControlPanelConstants::OPERATOR_GAMEPAD_PORT, ControlPanelConstants::OPERATOR_GAMEPAD_THRESHOLD};
   frc::Joystick forwardJoystick{ControlPanelConstants::JOYSTICK_FORWARD_ID};
