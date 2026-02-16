@@ -6,34 +6,37 @@
 
 using IdleMode = rev::spark::SparkBaseConfig::IdleMode;
 
+
+#if ROBOT_MODEL != COMPETITION
+    #define TURRET_SMARTDASHBOARD_LOG
+#endif
 namespace TurretConstants
 {
     constexpr ControlMode MainControlMode = ControlMode::POSITION_DUTYCYCLE_PID;
     constexpr ControlMode EmergencyControlMode = ControlMode::MANUAL_POSITION;
 
-    namespace motor
+    namespace Motor
     {
-        constexpr int ID = 8;
+        constexpr int ID = 3;
         constexpr bool INVERTED = false;
 
         constexpr IdleMode IDLE_MODE = IdleMode::kBrake;
-        constexpr double VOLTAGE_COMPENSATION = 12.0;
+        constexpr double VOLTAGE_COMPENSATION = 10.0;
         constexpr double CURRENT_LIMIT = 20.0;
         constexpr double RAMP_RATE = 0.4;
         constexpr int HOT_THRESHOLD = 60;
         constexpr int OVERHEATING_THRESHOLD = 75;
-        constexpr int KV = 496.3; // RPM.V-1
+        constexpr int KV = 985.6; // RPM.V-1
     }
     
     namespace Specifications
     {
-        constexpr double GEAR_RATIO = 130.0/24.0; //ul
-        constexpr double motor_FREE_SPEED = motor::VOLTAGE_COMPENSATION * motor::KV; //RPM
-        constexpr frc::Transform2d ROBOT_TO_TURRET {162.5_m, 162.5_m,{}};
-        constexpr double EJECT_POS = 0.0; //TUNEME
+        constexpr double GEAR_RATIO = (130.0/24.0)*(1.0); //ul
+        constexpr double MOTOR_FREE_SPEED = Motor::VOLTAGE_COMPENSATION * Motor::KV; //RPM
+        constexpr frc::Transform2d ROBOT_TO_TURRET{155.0_m, 155.0_m,{}}; //TUNEME
     }
 
-    namespace encoder 
+    namespace Encoder 
     {
         constexpr int A_ID = 23;
         constexpr int B_ID = 24;
@@ -41,11 +44,23 @@ namespace TurretConstants
         constexpr double DISTANCE_PER_PULSE = 2*NF64_PI/Specifications::GEAR_RATIO/ENCODER_TICKS_PER_REVOLUTION_K2X;
     }
 
+    namespace HallEffectSensor
+    {
+        constexpr int ID = 22;
+        constexpr double MIN_VALUE_WHEN_MAGNET = 2.5; //TUNEME
+    }
+
     namespace TurretCamera
     {
         const std::string NAME = "Big brother"; //TUNEME
     }
 
+    namespace Simulation
+    {
+        constexpr double MASS = 6.5; //kg, TUNEME
+        constexpr double RADIUS = 0.3; //m, TUNEME
+        constexpr double MOI = 0.5 * MASS * RADIUS * RADIUS; //kg*m^2, TUNEME
+    }
     namespace Gains
     {
         namespace POSITION_DUTYCYCLE_PID
@@ -53,19 +68,24 @@ namespace TurretConstants
             constexpr double KP = 0.1; //TUNEME
             constexpr double KI = 0.0; //TUNEME
             constexpr double KD = 0.0; //TUNEME
-            constexpr double TOLERANCE = NDEGtoRAD(0.1);
         }
     }
 
+    namespace Setpoints
+    {
+        constexpr double EJECT = NF64_PI; //TUNEME
+        constexpr double TOLERANCE = NDEGtoRAD(0.1);
+    }
 
     namespace DutyCycle 
     {
         constexpr double MAX = 1.0; 
         constexpr double MIN = -1.0;
         constexpr double REST = 0.0;
+        constexpr double INIT = 0.1;
     }
     
-     namespace Settings
+    namespace Settings
     {
         constexpr double BOTTOM_LIMIT = -2*NF64_PI; //TUNEME
         constexpr double TOP_LIMIT = 2*NF64_PI; //TUNEME

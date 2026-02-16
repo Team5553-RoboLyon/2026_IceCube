@@ -15,16 +15,22 @@
 
 #include <frc/Joystick.h>
 
+#include "subsystems/turret/TurretIOSpark.h"
+#include "subsystems/turret/TurretIOSim.h"
+#include "subsystems/turret/TurretSubsystem.h"
+
 class RobotContainer {
  public:
   RobotContainer();
 
   #if ROBOT_MODEL == SIMULATION
   ShooterSubsystem shooterSubsystem{new FlywheelIOSim{}, new HoodIOSim{}, new ShootParameters{}};
+  TurretSubsystem turretSubsystem{new TurretIOSim, new ShootParameters};
   #else
   ShooterSubsystem shooterSubsystem{new FlywheelIOSpark{}, new HoodIOSpark{}, new ShootParameters{}};
+  TurretSubsystem turretSubsystem{new TurretIOSpark, new ShootParameters};
   #endif
-  
+
   Operator operatorGamepad{ControlPanelConstants::OPERATOR_GAMEPAD_PORT, ControlPanelConstants::OPERATOR_GAMEPAD_THRESHOLD};
   frc::Joystick forwardJoystick{ControlPanelConstants::JOYSTICK_FORWARD_ID};
   frc::Joystick rotationJoystick{ControlPanelConstants::JOYSTICK_ROTATION_ID};

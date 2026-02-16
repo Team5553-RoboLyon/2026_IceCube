@@ -1,3 +1,5 @@
+#pragma once
+
 #include "frc/geometry/Pose2d.h"
 #include "frc/DriverStation.h"
 #include <wpi/interpolating_map.h>

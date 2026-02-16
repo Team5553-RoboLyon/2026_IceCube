@@ -24,7 +24,6 @@ void Robot::RobotInit() {
   m_operator.SetText(std::string("Operator currently operatoring : ") + OperatorToString());
   m_robot.Set(true);
   m_robot.SetText(std::string("Robot used : ") + RobotToString());
-  m_container.shooterSubsystem.SetControlMode(ControlMode::DISABLED, ControlMode::DISABLED);
   m_isNotCompetitionRobot.Set(ROBOT_MODEL != COMPETITON);
 }
 void Robot::RobotPeriodic() {
@@ -57,18 +56,15 @@ void Robot::AutonomousPeriodic() {}
 void Robot::AutonomousExit() {}
 
 void Robot::TeleopInit() {}
-void Robot::TeleopPeriodic() {
-}
+void Robot::TeleopPeriodic() {}
 void Robot::TeleopExit() {}
 
-void Robot::DisabledInit() 
-{
-  m_container.shooterSubsystem.SetControlMode(ControlMode::DISABLED, ControlMode::DISABLED);
+void Robot::DisabledInit() {
+  m_container.turretSubsystem.SetControlMode(ControlMode::DISABLED);
 }
-void Robot::DisabledPeriodic() {
-}
+void Robot::DisabledPeriodic() {}
 void Robot::DisabledExit() {
-  m_container.shooterSubsystem.SetControlMode(FlywheelConstants::MainControlMode, HoodConstants::MainControlMode);
+  m_container.turretSubsystem.SetControlMode(TurretConstants::MainControlMode);
 }
 
 void Robot::TestInit() {}
