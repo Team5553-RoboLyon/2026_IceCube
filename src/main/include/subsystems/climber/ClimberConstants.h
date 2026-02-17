@@ -45,8 +45,8 @@ namespace ClimberConstants
 
     namespace Encoder
     {
-        constexpr int ID_CHANNEL_A = 8;
-        constexpr int ID_CHANNEL_B = 9;
+        constexpr int ID_CHANNEL_A = 5;
+        constexpr int ID_CHANNEL_B = 6;
         constexpr bool INVERTED = false;
         
         constexpr double DISTANCE_PER_PULSE = Specifications::DRUM_RADIUS*2.0*NF64_PI/ENCODER_TICKS_PER_REVOLUTION_K2X; //in mm
@@ -58,7 +58,7 @@ namespace ClimberConstants
     }
     namespace IRbreaker
     {
-        constexpr int CHANNEL = 0;
+        constexpr int CHANNEL = 7;
         constexpr bool IS_TRIGGERED = false;
     }
     namespace Gains
