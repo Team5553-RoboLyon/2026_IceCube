@@ -316,25 +316,25 @@ class XboxGamepad : public frc::GenericHID{
   /** Represents a digital button on a Xbox gamepad. */
   struct Button {
     /// A button.
-    static constexpr int kA = 0;
+    static constexpr int kA = 1;
     /// B button.
-    static constexpr int kB = 1;
+    static constexpr int kB = 2;
     /// X button.
-    static constexpr int kX = 2;
+    static constexpr int kX = 3;
     /// Y button.
-    static constexpr int kY = 3;
+    static constexpr int kY = 4;
     /// Left trigger 1 button.
-    static constexpr int kL1 = 4;
+    static constexpr int kL1 = 5;
     /// Right trigger 1 button.
-    static constexpr int kR1 = 5;
+    static constexpr int kR1 = 6;
     /// Start button.
-    static constexpr int kStart = 6;
+    static constexpr int kStart = 7;
     /// Options button.
-    static constexpr int kOptions = 7;
+    static constexpr int kOptions = 8;
     /// L3 (left stick) button.
-    static constexpr int kL3 = 8;
+    static constexpr int kL3 = 9;
     /// R3 (right stick) button.
-    static constexpr int kR3 = 9;
+    static constexpr int kR3 = 10;
   };
 
   /** Represents an axis on a Xbox gamepad. */
