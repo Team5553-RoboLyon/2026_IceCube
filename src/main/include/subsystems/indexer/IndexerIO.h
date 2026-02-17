@@ -2,12 +2,13 @@
 
 struct IndexerIOInputs
 {
-        bool isindexerMotorConnected = true;
+    bool isindexerMotorConnected = true;
     
     double indexerMotorAppliedVoltage = 0.0;
     double indexerMotorBusVoltage = 0.0;
     double indexerMotorCurrent = 0.0;
     double indexerMotorTemperature = 0.0;
+    double indexerMotorSpeed = 0.0;
 
     bool isClodeMotorConnected = true;
 
@@ -16,7 +17,7 @@ struct IndexerIOInputs
     double clodeCurrent = 0.0;
     double clodeTemperature = 0.0;
 
-    bool wasTriggered = false;
+    bool isTriggered = false;
     int nbrOfBallShot = 0.0;
 };
 
@@ -29,5 +30,4 @@ public:
 
     virtual void SetVoltage(double voltage, double clodeVoltage) = 0; 
     virtual void SetDutyCycle(double dutyCycle, double clodeDutyCycle) = 0;
-    virtual void SetVelocity(double velocity, double clodeVoltage) = 0;
 };

@@ -12,7 +12,7 @@
 #include "Constants.h"
 
 #include "LyonLib/control/RateLimiter.h"
-#include "LyonLib/control/pidRBL.h"
+#include "LyonLib/control/FeedForwardModel.h"
 #include "LyonLib/logging/Alert.h"
 
 #include "LyonLib/logging/TunableValueLogger.h"
@@ -23,17 +23,21 @@ class IndexerSubsystem : public frc2::SubsystemBase {
 
     enum class WantedState 
     {
-      STAND_BY, // no wanted state scheduled. (It's all good man, it's all good !)
-      FEED_SHOOTER,
-      EVACUATE_SHOOTER
+      STAND_BY = 0, // no wanted state scheduled. (It's all good man, it's all good !)
+      FEED_SHOOTER = 1,
+      EVACUATE_SHOOTER = 2,
+      PREPARE_SHOOT = 3,
     };
     enum class SystemState
     {
-      IDLE,
+      IDLE = 0,
       //Steady states
-      SLEEPING,
-      FEEDING_SHOOTER,
-      EVACUATING_SHOOTER
+      SLEEPING = 1,
+      FEEDING_SHOOTER = 2,
+      EVACUATING_SHOOTER = 3,
+      READY_TO_SHOOT = 4,
+      //Transition state
+      PREPARING_SHOOT = 5,
     };
     void SetWantedState(const WantedState wantedState);
     SystemState GetSystemState();
@@ -58,7 +62,7 @@ class IndexerSubsystem : public frc2::SubsystemBase {
       SystemState m_systemState = SystemState::IDLE;
       ControlMode m_controlMode = IndexerConstants::MainControlMode;
     // === Motion Control (PID / Filters) ===
-      PidRBL m_IndexerPIDController;
+      FeedForwardModel m_indexerFeedforwardController;
     // === Control Inputs / Outputs ===
       double m_output{0.0};
       double m_clodeOutput{0.0};

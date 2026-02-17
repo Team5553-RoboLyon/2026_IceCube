@@ -8,7 +8,7 @@ using IdleMode = rev::spark::SparkBaseConfig::IdleMode;
 
 namespace IndexerConstants
 {
-    constexpr ControlMode MainControlMode = ControlMode::VELOCITY_DUTYCYCLE_PID;
+    constexpr ControlMode MainControlMode = ControlMode::FEEDFORWARD_VELOCITY_VOLTAGE;
     constexpr ControlMode EmergencyControlMode = ControlMode::DISABLED;
 
     namespace indexerMotor
@@ -37,6 +37,7 @@ namespace IndexerConstants
         constexpr int HOT_THRESHOLD = 60;
         constexpr int OVERHEATING_THRESHOLD = 75;
         constexpr int KV = 917; // RPM.V-1
+        constexpr double GEAR_RATIO = 45.0; //TUNEME
     }
 
     namespace theMostImportantSensorOfTheRobot //IndexerIRbreaker
@@ -56,21 +57,18 @@ namespace IndexerConstants
 
     namespace Gains
     {
-        namespace VELOCITY_DUTYCYCLE_PIDF
+        namespace FEEDFORWARD_VELOCITY_VOLTAGE
         {
-            constexpr double KP = 10.0; //TUNEME
-            constexpr double KI = 0.0; //TUNEME
-            constexpr double KD = 0.2; //TUNEME
-            constexpr double KF = 0.2; //TUNEME
+            constexpr double KS = 0.0; //TUNEME
+            constexpr double KV = 0.0; //TUNEME
+            constexpr double KA = 0.0; //TUNEME
         }
-        namespace MANUAL_SETPOINT_PID
-        {
-            constexpr double KP = 8.0; //TUNEME
-            constexpr double KI = 0.0; //TUNEME
-            constexpr double KD = 0.1; //TUNEME
-            constexpr double KG = 0.0; //TUNEME
-            constexpr double TOLERANCE = 0.001;
-        }
+    }
+
+    namespace Simulation //very aproximative values
+    {
+        constexpr double MOI = 0.05310484;
+        constexpr double CLODE_MOI = 0.3920869; 
     }
 
 
@@ -87,6 +85,7 @@ namespace IndexerConstants
         constexpr double REST = 0.0;
         constexpr double FEED = 2500.0;
         constexpr double EVACUATE = -1000.0;
+        constexpr double PREPARE_SHOOT = 1000.0;
     }
     
     namespace Settings

@@ -11,11 +11,7 @@ IndexerIOSpark::IndexerIOSpark()
         .Inverted(IndexerConstants::indexerMotor::INVERTED)
         .SmartCurrentLimit(IndexerConstants::indexerMotor::CURRENT_LIMIT)
         .ClosedLoopRampRate(IndexerConstants::indexerMotor::RAMP_RATE)
-        .VoltageCompensation(IndexerConstants::indexerMotor::VOLTAGE_COMPENSATION)
-        .closedLoop.P(IndexerConstants::Gains::VELOCITY_DUTYCYCLE_PIDF::KP)
-        .I(IndexerConstants::Gains::VELOCITY_DUTYCYCLE_PIDF::KI)
-        .D(IndexerConstants::Gains::VELOCITY_DUTYCYCLE_PIDF::KD)
-        .feedForward.kV(IndexerConstants::Gains::VELOCITY_DUTYCYCLE_PIDF::KF);
+        .VoltageCompensation(IndexerConstants::indexerMotor::VOLTAGE_COMPENSATION);
 
     // Apply the configs to the motors
     m_indexerMotor.Configure(  m_indexerMotorConfig, 
@@ -44,6 +40,7 @@ void IndexerIOSpark::UpdateInputs(IndexerIOInputs& inputs)
     inputs.indexerMotorBusVoltage = m_indexerMotor.GetBusVoltage();
     inputs.indexerMotorCurrent = m_indexerMotor.GetOutputCurrent();
     inputs.indexerMotorTemperature = m_indexerMotor.GetMotorTemperature();
+    inputs.indexerMotorSpeed = m_indexerMotor.GetEncoder().GetVelocity();
     
     inputs.isClodeMotorConnected = (m_clodeMotor.GetBusVoltage() !=0.0) && !m_clodeMotor.GetFaults().can;
 
@@ -52,12 +49,12 @@ void IndexerIOSpark::UpdateInputs(IndexerIOInputs& inputs)
     inputs.clodeCurrent = m_clodeMotor.GetOutputCurrent();
     inputs.clodeTemperature = m_clodeMotor.GetMotorTemperature();
 
-    if(m_bestSensor.Get() == IndexerConstants::theMostImportantSensorOfTheRobot::IS_TRIGERED && !inputs.wasTriggered)
+    if(m_bestSensor.Get() == IndexerConstants::theMostImportantSensorOfTheRobot::IS_TRIGERED && !inputs.isTriggered)
     {
         inputs.nbrOfBallShot++;
     }
 
-    inputs.wasTriggered = m_bestSensor.Get();
+    inputs.isTriggered = m_bestSensor.Get() == IndexerConstants::theMostImportantSensorOfTheRobot::IS_TRIGERED;
 
 
     frc::SmartDashboard::PutNumber("indexer/IndexerVelocity", m_indexerMotor.GetEncoder().GetVelocity()/3);
@@ -81,8 +78,4 @@ void IndexerIOSpark::SetDutyCycle(double dutyCycle, double clodeDutyCycle)
         m_clodeMotor.Set(clodeDutyCycle);
 }
 
-void IndexerIOSpark::SetVelocity(double targetVelocity, double clodeVoltage)
-{
-    m_indexerPIDFController.SetSetpoint(targetVelocity,rev::spark::SparkLowLevel::ControlType::kVelocity);
-}
 

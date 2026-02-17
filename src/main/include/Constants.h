@@ -15,7 +15,7 @@
 #define LENA 3
 #define TEST 4
 
-#define ROBOT_MODEL (PROTOTYPE) // Change this to the desired robot model
+#define ROBOT_MODEL (SIMULATION) // Change this to the desired robot model
 #define PILOT (ALEXIS)
 #define OPERATOR (VICTOR)
 

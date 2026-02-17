@@ -11,6 +11,7 @@
 
 #include "subsystems/indexer/IndexerSubsystem.h"
 #include "subsystems/indexer/IndexerIOSpark.h"
+#include "subsystems/indexer/IndexerIOSim.h"
 
 class RobotContainer {
  public:
@@ -20,7 +21,12 @@ class RobotContainer {
   frc::Joystick forwardJoystick{ControlPanelConstants::JOYSTICK_FORWARD_ID};
   frc::Joystick rotationJoystick{ControlPanelConstants::JOYSTICK_ROTATION_ID};
 
+  #if ROBOT_MODEL == SIMULATION
+  IndexerIOSim *IOSim = new IndexerIOSim{};
+  IndexerSubsystem indexer{IOSim};
+  #else
   IndexerSubsystem indexer{new IndexerIOSpark};
+  #endif
  private:
   void ConfigureBindings();
 };

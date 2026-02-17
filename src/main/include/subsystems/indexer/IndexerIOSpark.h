@@ -15,8 +15,6 @@ class IndexerIOSpark  final : public IndexerIO
     rev::spark::SparkMax m_clodeMotor {IndexerConstants::clodeMotor::ID, rev::spark::SparkMax::MotorType::kBrushless};
     rev::spark::SparkBaseConfig m_clodeMotorConfig;
 
-    rev::spark::SparkClosedLoopController m_indexerPIDFController{m_indexerMotor.GetClosedLoopController()};
-
     frc::DigitalInput m_bestSensor{IndexerConstants::theMostImportantSensorOfTheRobot::ID}; //Indexer IRBreaker
 
   public:
@@ -26,5 +24,4 @@ class IndexerIOSpark  final : public IndexerIO
     void UpdateInputs(IndexerIOInputs& inputs) override;
     void SetVoltage(double voltage, double clodeVoltage) override; //COMMENTME
     void SetDutyCycle(double dutyCycle, double clodeVoltage) override; //COMMENTME
-    void SetVelocity(double velocity, double clodeVoltage) override; 
 };

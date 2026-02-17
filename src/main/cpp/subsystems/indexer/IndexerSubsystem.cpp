@@ -8,6 +8,10 @@
 IndexerSubsystem::IndexerSubsystem(IndexerIO *pIO) : 
                                                     m_pIndexerIO(pIO)
 {
+    m_indexerFeedforwardController.SetGains(IndexerConstants::Gains::FEEDFORWARD_VELOCITY_VOLTAGE::KS,
+                                          IndexerConstants::Gains::FEEDFORWARD_VELOCITY_VOLTAGE::KV,
+                                          IndexerConstants::Gains::FEEDFORWARD_VELOCITY_VOLTAGE::KA);
+    m_indexerFeedforwardController.SetOutputLimits(IndexerConstants::Voltage::MIN, IndexerConstants::Voltage::MAX);
 }
 
 void IndexerSubsystem::SetWantedState(const WantedState wantedState)
@@ -39,7 +43,7 @@ void IndexerSubsystem::SetControlMode(const ControlMode mode)
             m_controlMode = mode;
             break; //end of ControlMode::MANUAL_VOLTAGE
 
-        case ControlMode::VELOCITY_DUTYCYCLE_PID:
+        case ControlMode::FEEDFORWARD_VELOCITY_VOLTAGE:
             m_output = IndexerConstants::Voltage::REST;
             m_targetVelocity = IndexerConstants::Voltage::REST;
             m_clodeOutput = IndexerConstants::Voltage::REST;
@@ -126,23 +130,40 @@ void IndexerSubsystem::Periodic()
                 m_clodeOutput = IndexerConstants::Voltage::REST;
                 break; //end of ControlMode::DISABLED
 
-            case ControlMode::VELOCITY_VOLTAGE_PID:
+            case ControlMode::FEEDFORWARD_VELOCITY_VOLTAGE:
                 switch(m_systemState)
                 {
                     case SystemState::IDLE:
                     case SystemState::SLEEPING:
+                    case SystemState::READY_TO_SHOOT:
                         m_targetVelocity = IndexerConstants::Speed::REST;
+                        m_output = IndexerConstants::Voltage::REST;
                         m_clodeOutput = IndexerConstants::Voltage::REST;
                         break;
 
                     case SystemState::FEEDING_SHOOTER:
                         m_targetVelocity = IndexerConstants::Speed::FEED;
+                        m_output = m_indexerFeedforwardController.Calculate(0.0,m_targetVelocity,0.0);
                         m_clodeOutput = IndexerConstants::Voltage::CLODE_POWER;
                         break;
 
                     case SystemState::EVACUATING_SHOOTER:
                         m_targetVelocity = IndexerConstants::Speed::EVACUATE;
+                        m_output = m_indexerFeedforwardController.Calculate(0.0,m_targetVelocity,0.0);
                         m_clodeOutput = IndexerConstants::Voltage::CLODE_POWER;
+                        break;
+
+                    case SystemState::PREPARING_SHOOT:
+                        m_targetVelocity = IndexerConstants::Speed::PREPARE_SHOOT;
+                        m_output = m_indexerFeedforwardController.Calculate(0.0,m_targetVelocity,0.0);
+                        m_clodeOutput = IndexerConstants::Voltage::CLODE_POWER;
+                        break;
+
+                    default:
+                        m_targetVelocity = IndexerConstants::Speed::REST;
+                        m_output = IndexerConstants::Voltage::REST;
+                        m_clodeOutput = IndexerConstants::Voltage::REST;
+                        DEBUG_ASSERT(false, "Indexer : unknown system state");
                         break;
                 }
                 break;
@@ -162,11 +183,8 @@ void IndexerSubsystem::Periodic()
     {
         case ControlMode::DISABLED:
         case ControlMode::MANUAL_VOLTAGE:
+        case ControlMode::FEEDFORWARD_VELOCITY_VOLTAGE:
             m_pIndexerIO->SetVoltage(m_output, m_clodeOutput);
-            break;
-
-        case ControlMode::VELOCITY_DUTYCYCLE_PID:
-            m_pIndexerIO->SetVelocity(m_targetVelocity, m_clodeOutput);
             break;
 
         default:
@@ -179,6 +197,11 @@ void IndexerSubsystem::Periodic()
     frc::SmartDashboard::PutNumber("indexer/SystemState", (int)m_systemState);
     frc::SmartDashboard::PutNumber("indexer/ControlMode", (int)m_controlMode);
     frc::SmartDashboard::PutBoolean("indexer/isInit", m_isInitialized);
+    frc::SmartDashboard::PutBoolean("indexer/IRBreaker", inputs.isTriggered);
+    frc::SmartDashboard::PutNumber("indexer/Motor Voltage", m_output);
+    frc::SmartDashboard::PutNumber("indexer/Target Velocity", m_targetVelocity);
+    frc::SmartDashboard::PutNumber("indexer/Clode Voltage ", m_clodeOutput);
+    frc::SmartDashboard::PutNumber("indexer/Motor speed", inputs.indexerMotorSpeed);
     frc::SmartDashboard::PutNumber("You have shot ", inputs.nbrOfBallShot);
 }
 
@@ -203,6 +226,13 @@ void IndexerSubsystem::RunStateMachine()
                 m_systemState = SystemState::FEEDING_SHOOTER;
             break;
 
+        case WantedState::PREPARE_SHOOT:
+            if(m_systemState != SystemState::READY_TO_SHOOT)
+            {
+                m_systemState = SystemState::PREPARING_SHOOT;
+            }
+            break;
+
         default:
             DEBUG_ASSERT(false, "indexer : impossible wanted state");
             break; //end of default
@@ -214,6 +244,14 @@ void IndexerSubsystem::RunStateMachine()
         case SystemState::SLEEPING:
         case SystemState::FEEDING_SHOOTER:
         case SystemState::EVACUATING_SHOOTER:
+        case SystemState::READY_TO_SHOOT:
+            break;
+
+        case SystemState::PREPARING_SHOOT:
+            if (inputs.isTriggered)
+            {
+                m_systemState = SystemState::READY_TO_SHOOT;
+            }
             break;
 
         default:

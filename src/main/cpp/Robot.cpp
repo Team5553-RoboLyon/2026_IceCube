@@ -60,11 +60,9 @@ void Robot::TeleopPeriodic() {}
 void Robot::TeleopExit() {}
 
 void Robot::DisabledInit() {
-  m_container.indexer.SetControlMode(ControlMode::DISABLED);
 }
 void Robot::DisabledPeriodic() {}
 void Robot::DisabledExit() {
-  m_container.indexer.SetControlMode(ControlMode::MANUAL_VOLTAGE);
 }
 
 void Robot::TestInit() {}
