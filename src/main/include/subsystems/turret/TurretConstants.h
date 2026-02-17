@@ -38,15 +38,15 @@ namespace TurretConstants
 
     namespace Encoder 
     {
-        constexpr int A_ID = 23;
-        constexpr int B_ID = 24;
+        constexpr int A_ID = 22;
+        constexpr int B_ID = 23;
         constexpr bool REVERSED = false;
         constexpr double DISTANCE_PER_PULSE = 2*NF64_PI/Specifications::GEAR_RATIO/ENCODER_TICKS_PER_REVOLUTION_K2X;
     }
 
     namespace HallEffectSensor
     {
-        constexpr int ID = 22;
+        constexpr int ID = 21;
         constexpr double MIN_VALUE_WHEN_MAGNET = 2.5; //TUNEME
     }
 
