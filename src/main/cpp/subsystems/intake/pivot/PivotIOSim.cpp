@@ -4,7 +4,7 @@
 
 PivotIOSim::PivotIOSim()
 {
-    m_pivotSim.SetState(units::radian_t(PivotConstants::Position::PIVOT_HOME_POS),0.0_rad_per_s);
+    m_pivotSim.SetState(units::radian_t(PivotConstants::Position::HOME_POS),0.0_rad_per_s);
 }
 
 void PivotIOSim::UpdateInputs(PivotIOInputs& inputs)

@@ -63,8 +63,9 @@ namespace PivotConstants
         constexpr double MIN = NDEGtoRAD(5.0);
         constexpr double MAX = NF64_PI/2.0;
         constexpr double RANGE = MAX-MIN;
-        constexpr double PIVOT_EXTENDED_POS = MIN;
-        constexpr double PIVOT_HOME_POS = MAX;
+        constexpr double EXTENDED_POS = MIN;
+        constexpr double HOME_POS = MAX;
+        constexpr double SAFETY_POS = NDEGtoRAD(61.0);
         constexpr double POS_TOLERANCE = NDEGtoRAD(1.0);
     }
 

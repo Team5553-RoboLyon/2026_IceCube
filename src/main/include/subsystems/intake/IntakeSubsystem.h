@@ -29,7 +29,8 @@ class IntakeSubsystem : public frc2::SubsystemBase {
       EJECT = 2,
       BECOME_AN_INDEXER = 3,
       EXTEND = 4,
-      RETURN_AT_HOME = 5
+      RETURN_AT_HOME = 5,
+      PROTECT_YOU_AGAINST_EVIL_PILOT = 6
     };
 
     enum class SystemState
@@ -41,9 +42,11 @@ class IntakeSubsystem : public frc2::SubsystemBase {
       REFUELING = 3,
       EJECTING = 4,
       FEELING_LIKE_AN_INDEXER = 5,
+      PROTECTED_AGAINST_EVIL_PILOT = 6,
       //Transition states
-      EXTENDING = 6,
-      COMING_BACK_HOME = 7
+      EXTENDING = 7,
+      COMING_BACK_HOME = 8,
+      GOING_TO_SAFE_POS = 9,
     };
 
     void SetWantedState(const WantedState wantedState);

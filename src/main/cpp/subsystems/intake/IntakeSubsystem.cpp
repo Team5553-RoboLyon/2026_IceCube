@@ -212,7 +212,7 @@ void IntakeSubsystem::Periodic()
                     case SystemState::REFUELING:
                     case SystemState::EJECTING:
                     case SystemState::EXTENDING:
-                        m_pivotTargetPos = PivotConstants::Position::PIVOT_EXTENDED_POS;
+                        m_pivotTargetPos = PivotConstants::Position::EXTENDED_POS;
                         m_pivotOutput = m_pivotPIDController.CalculateWithRealTime(m_pivotTargetPos,pivotInputs.pivotPos, m_timestamp);
                         break;
 
@@ -220,8 +220,13 @@ void IntakeSubsystem::Periodic()
                     case SystemState::FEELING_LIKE_AN_INDEXER:
                     case SystemState::STAYING_AT_HOME:
                     case SystemState::COMING_BACK_HOME:
-                        m_pivotTargetPos = PivotConstants::Position::PIVOT_HOME_POS;
+                        m_pivotTargetPos = PivotConstants::Position::HOME_POS;
                         m_pivotOutput = m_pivotPIDController.CalculateWithRealTime(m_pivotTargetPos,pivotInputs.pivotPos, m_timestamp);
+                        break;
+
+                    case SystemState::PROTECTED_AGAINST_EVIL_PILOT:
+                        m_pivotTargetPos = PivotConstants::Position::SAFETY_POS;
+                        m_pivotOutput = m_pivotPIDController.CalculateWithRealTime(m_pivotTargetPos, pivotInputs.pivotPos, PivotConstants::Position::POS_TOLERANCE);
                         break;
 
                     default:
@@ -253,6 +258,8 @@ void IntakeSubsystem::Periodic()
                     case SystemState::CHILLING_OUT:
                     case SystemState::EXTENDING:
                     case SystemState::COMING_BACK_HOME:
+                    case SystemState::PROTECTED_AGAINST_EVIL_PILOT:
+                    case SystemState::GOING_TO_SAFE_POS:
                         m_rollerOutput = RollerConstants::Voltage::REST;
                         break;
 
@@ -362,12 +369,7 @@ void IntakeSubsystem::RunStateMachine()
         case WantedState::BECOME_AN_INDEXER:
             if (m_systemState != SystemState::FEELING_LIKE_AN_INDEXER)
             {
-                if(IsOut())
-                {
-                    m_systemState = SystemState::COMING_BACK_HOME;
-                }
-                else if (m_systemState != SystemState::COMING_BACK_HOME)
-                    m_systemState = SystemState::FEELING_LIKE_AN_INDEXER;
+                m_systemState = SystemState::FEELING_LIKE_AN_INDEXER;
             }
             break;
 
@@ -397,6 +399,13 @@ void IntakeSubsystem::RunStateMachine()
             }
             break;
 
+        case WantedState::PROTECT_YOU_AGAINST_EVIL_PILOT:
+            if (m_systemState != SystemState::PROTECTED_AGAINST_EVIL_PILOT)
+            {
+                m_systemState = SystemState::GOING_TO_SAFE_POS;
+            }
+            break;
+
         default:
             DEBUG_ASSERT(false, "intake : impossible state");
             break; //end of default
@@ -410,15 +419,17 @@ void IntakeSubsystem::RunStateMachine()
         case SystemState::REFUELING:
         case SystemState::EJECTING:
         case SystemState::FEELING_LIKE_AN_INDEXER:
+        case SystemState::PROTECTED_AGAINST_EVIL_PILOT:
             break; //end of SystemState::IDLE
                    //    and SystemState::CHILLING_OUT
                    //    and SystemState::STAYING_AT_HOME
                    //    and SystemState::REFUELING
                    //    and SystemState::EJECTING
                    //    and SystemState::FEELING_LIKE_AN_INDEXER
+                   //    and SystemState::PROTECTED_AGAINST_EVIL_PILOT
 
         case SystemState::EXTENDING:
-            if (IS_IN_RANGE(pivotInputs.pivotPos, PivotConstants::Position::PIVOT_EXTENDED_POS,PivotConstants::Position::POS_TOLERANCE ))
+            if (IS_IN_RANGE(pivotInputs.pivotPos, PivotConstants::Position::EXTENDED_POS,PivotConstants::Position::POS_TOLERANCE ))
             {
                 switch(m_currentWantedState)
                 {
@@ -445,7 +456,7 @@ void IntakeSubsystem::RunStateMachine()
             break;
 
         case SystemState::COMING_BACK_HOME:
-            if (IS_IN_RANGE(pivotInputs.pivotPos, PivotConstants::Position::PIVOT_HOME_POS, PivotConstants::Position::POS_TOLERANCE))
+            if (IS_IN_RANGE(pivotInputs.pivotPos, PivotConstants::Position::HOME_POS, PivotConstants::Position::POS_TOLERANCE))
                 {
                     switch(m_currentWantedState)
                     {
@@ -465,6 +476,13 @@ void IntakeSubsystem::RunStateMachine()
                             break;
                     }
                 }
+            break;
+
+        case SystemState::GOING_TO_SAFE_POS:
+            if(IS_IN_RANGE(pivotInputs.pivotPos, PivotConstants::Position::SAFETY_POS, PivotConstants::Position::POS_TOLERANCE))
+            {
+                m_systemState = SystemState::PROTECTED_AGAINST_EVIL_PILOT;
+            }
             break;
 
         default:

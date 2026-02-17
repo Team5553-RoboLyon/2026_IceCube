@@ -19,7 +19,7 @@ class PivotIOSim final : public PivotIO
                                                  units::radian_t(PivotConstants::Position::MIN),
                                                  units::radian_t(PivotConstants::Position::MAX),
                                                  PivotConstants::Simulation::APPLY_GRAVITY,
-                                                 units::radian_t(PivotConstants::Position::PIVOT_HOME_POS)
+                                                 units::radian_t(PivotConstants::Position::HOME_POS)
                                                 };
 
         // frc::sim::DutyCycleEncoderSim m_leftEncoder{PivotConstants::EncoderLeft::ID};
