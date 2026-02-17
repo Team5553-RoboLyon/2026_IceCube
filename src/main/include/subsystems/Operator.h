@@ -14,6 +14,7 @@ public:
     frc2::Trigger BECOME_AN_INDEXER{_squareButton};
     frc2::Trigger EXTEND{_L1Button};
     frc2::Trigger RETURN_AT_HOME{_R1Button};
+    frc2::Trigger PROTECT_YOURSELF{_optionsButton};
     Operator(int port) : RevGamepad(port){};
     Operator(int port, double threshold) : RevGamepad(port, threshold){};
     ~Operator() override = default;

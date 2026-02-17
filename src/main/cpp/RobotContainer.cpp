@@ -29,4 +29,6 @@ void RobotContainer::ConfigureBindings() {
                                             .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
     operatorGamepad.RETURN_AT_HOME.ToggleOnTrue(SetWantedIntakeStateCmd(&intakeSubsystem, IntakeSubsystem::WantedState::RETURN_AT_HOME)
                                             .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
+    operatorGamepad.PROTECT_YOURSELF.ToggleOnTrue(SetWantedIntakeStateCmd(&intakeSubsystem, IntakeSubsystem::WantedState::PROTECT_YOURSELF_AGAINST_EVIL_PILOT)
+                                            .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
 }

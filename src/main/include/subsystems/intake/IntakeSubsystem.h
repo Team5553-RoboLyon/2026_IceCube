@@ -30,7 +30,7 @@ class IntakeSubsystem : public frc2::SubsystemBase {
       BECOME_AN_INDEXER = 3,
       EXTEND = 4,
       RETURN_AT_HOME = 5,
-      PROTECT_YOU_AGAINST_EVIL_PILOT = 6
+      PROTECT_YOURSELF_AGAINST_EVIL_PILOT = 6
     };
 
     enum class SystemState

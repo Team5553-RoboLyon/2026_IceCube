@@ -225,8 +225,9 @@ void IntakeSubsystem::Periodic()
                         break;
 
                     case SystemState::PROTECTED_AGAINST_EVIL_PILOT:
+                    case SystemState::GOING_TO_SAFE_POS:
                         m_pivotTargetPos = PivotConstants::Position::SAFETY_POS;
-                        m_pivotOutput = m_pivotPIDController.CalculateWithRealTime(m_pivotTargetPos, pivotInputs.pivotPos, PivotConstants::Position::POS_TOLERANCE);
+                        m_pivotOutput = m_pivotPIDController.CalculateWithRealTime(m_pivotTargetPos, pivotInputs.pivotPos, m_timestamp);
                         break;
 
                     default:
@@ -286,6 +287,8 @@ void IntakeSubsystem::Periodic()
                 break; //end of default
         }
     }
+
+    frc::SmartDashboard::PutNumber("Pivot/TragtePos", m_pivotTargetPos);
 
     if (pivotInputs.pivotPos >= PivotConstants::Position::MAX && m_pivotOutput > 0.0)
         m_pivotOutput = 0.0;
@@ -399,7 +402,7 @@ void IntakeSubsystem::RunStateMachine()
             }
             break;
 
-        case WantedState::PROTECT_YOU_AGAINST_EVIL_PILOT:
+        case WantedState::PROTECT_YOURSELF_AGAINST_EVIL_PILOT:
             if (m_systemState != SystemState::PROTECTED_AGAINST_EVIL_PILOT)
             {
                 m_systemState = SystemState::GOING_TO_SAFE_POS;
