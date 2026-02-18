@@ -21,6 +21,7 @@
 #include "subsystems/indexer/IndexerSubsystem.h"
 #include "subsystems/indexer/IndexerIOSpark.h"
 #include "subsystems/indexer/IndexerIOSim.h"
+#include "subsystems/intake/IntakeSubsystem.h"
 #include "subsystems/intake/pivot/PivotIOSim.h"
 #include "subsystems/intake/roller/RollerIOSim.h"
 #include "subsystems/turret/TurretIOSpark.h"

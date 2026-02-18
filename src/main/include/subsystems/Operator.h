@@ -23,8 +23,8 @@ public:
 private:
 
 public:
-    Operator(int port) : XboxGamepad(port){};
-    Operator(int port, double threshold) : XboxGamepad(port, threshold){};
+    Operator(int port) : RevGamepad(port){};
+    Operator(int port, double threshold) : RevGamepad(port, threshold){};
     ~Operator() override = default;
 
 #endif
