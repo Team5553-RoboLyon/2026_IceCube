@@ -95,6 +95,9 @@
     "variant": "cpp",
     "*.inc": "cpp",
     "xtr1common": "cpp",
-    "xtree": "cpp"
+    "xtree": "cpp",
+    "xmemory": "cpp",
+    "xstring": "cpp",
+    "xutility": "cpp"
   }
 }
