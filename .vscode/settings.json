@@ -94,6 +94,7 @@
     "valarray": "cpp",
     "variant": "cpp",
     "*.inc": "cpp",
-    "xtr1common": "cpp"
+    "xtr1common": "cpp",
+    "xtree": "cpp"
   }
 }

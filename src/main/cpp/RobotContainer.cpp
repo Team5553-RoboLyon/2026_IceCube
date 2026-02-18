@@ -8,10 +8,6 @@
 #include <frc2/command/InstantCommand.h>
 #include <frc2/command/Commands.h>
 
-#include "commands/SetWantedStateClimberCmd.h"
-#include "commands/SetIRBreakerValueCmd.h"
-#include "commands/SetWantedIndexerStateCmd.h"
-
 
 RobotContainer::RobotContainer()
 {
