@@ -35,18 +35,26 @@ void IndexerSubsystem::SetControlMode(const ControlMode mode)
             m_controlMode = mode;
             break; //end of ControlMode::DISABLED
 
-        case ControlMode::MANUAL_VOLTAGE:
+        case ControlMode::VOLTAGE:
             m_output = IndexerConstants::Voltage::REST;
             m_manualControlInput = IndexerConstants::Voltage::REST;
             m_clodeOutput = IndexerConstants::Voltage::REST;
 
+            m_systemState = SystemState::IDLE;
+            m_wantedState = WantedState::STAND_BY;
+            m_currentWantedState = m_wantedState;
+
             m_controlMode = mode;
-            break; //end of ControlMode::MANUAL_VOLTAGE
+            break; //end of ControlMode::VOLTAGE
 
         case ControlMode::FEEDFORWARD_VELOCITY_VOLTAGE:
             m_output = IndexerConstants::Voltage::REST;
             m_targetVelocity = IndexerConstants::Voltage::REST;
             m_clodeOutput = IndexerConstants::Voltage::REST;
+
+            m_systemState = SystemState::IDLE;
+            m_wantedState = WantedState::STAND_BY;
+            m_currentWantedState = m_wantedState;
 
             m_controlMode = mode;
             break; //end of ControlMode::VELOCITY_DUTYCYCLE_PID
@@ -120,10 +128,41 @@ void IndexerSubsystem::Periodic()
 
         switch (m_controlMode) //actualise motion
         {
-            case ControlMode::MANUAL_VOLTAGE:
-                m_output = m_tunableVoltageLogger.Get();
-                m_clodeOutput = m_tunableClodeVoltageLogger.Get();
-                break; //end of ControlMode::MANUAL_VOLTAGE
+            case ControlMode::VOLTAGE:
+                switch(m_systemState)
+                {
+                    case SystemState::IDLE:
+                    case SystemState::SLEEPING:
+                    case SystemState::READY_TO_SHOOT:
+                        m_output = IndexerConstants::Voltage::REST;
+                        m_clodeOutput = IndexerConstants::Voltage::REST;
+                        break;
+
+                    case SystemState::FEEDING_SHOOTER:
+                        m_output = IndexerConstants::Voltage::FEED;
+                        m_clodeOutput = IndexerConstants::Voltage::CLODE_POWER;
+                        break;
+
+                    case SystemState::EVACUATING_SHOOTER:
+                        m_targetVelocity = IndexerConstants::Speed::EVACUATE;
+                        m_output = m_indexerFeedforwardController.Calculate(0.0,m_targetVelocity,0.0);
+                        m_clodeOutput = IndexerConstants::Voltage::CLODE_POWER;
+                        break;
+
+                    case SystemState::PREPARING_SHOOT:
+                        m_targetVelocity = IndexerConstants::Speed::PREPARE_SHOOT;
+                        m_output = m_indexerFeedforwardController.Calculate(0.0,m_targetVelocity,0.0);
+                        m_clodeOutput = IndexerConstants::Voltage::CLODE_POWER;
+                        break;
+
+                    default:
+                        m_targetVelocity = IndexerConstants::Speed::REST;
+                        m_output = IndexerConstants::Voltage::REST;
+                        m_clodeOutput = IndexerConstants::Voltage::REST;
+                        DEBUG_ASSERT(false, "Indexer : unknown system state");
+                        break;
+                }
+                break;
 
             case ControlMode::DISABLED :
                 m_output = IndexerConstants::Voltage::REST;

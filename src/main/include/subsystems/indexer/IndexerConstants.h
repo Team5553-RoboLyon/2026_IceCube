@@ -9,7 +9,7 @@ using IdleMode = rev::spark::SparkBaseConfig::IdleMode;
 namespace IndexerConstants
 {
     constexpr ControlMode MainControlMode = ControlMode::FEEDFORWARD_VELOCITY_VOLTAGE;
-    constexpr ControlMode EmergencyControlMode = ControlMode::DISABLED;
+    constexpr ControlMode EmergencyControlMode = ControlMode::VOLTAGE;
 
     namespace indexerMotor
     {
@@ -72,12 +72,13 @@ namespace IndexerConstants
     }
 
 
-    namespace Voltage 
+    namespace Voltage //TUNEME
     {
         constexpr double REST = 0.0;
         constexpr double MAX = indexerMotor::VOLTAGE_COMPENSATION; 
         constexpr double MIN = -indexerMotor::VOLTAGE_COMPENSATION;
-        constexpr double CLODE_POWER = 8.0; //TUNEME
+        constexpr double FEED = 8.0;
+        constexpr double CLODE_POWER = 8.0;
     }
 
     namespace Speed //in RPM
