@@ -20,8 +20,10 @@
 #include "LyonLib/control/PidRBL.h"
 #include "LyonLib/utils/TimerRBL.h"
 
-#include "choreo/trajectory/DifferentialSample.h"
-#include "choreo/trajectory/Trajectory.h"
+#include <pathplanner/lib/auto/AutoBuilder.h>
+#include <pathplanner/lib/config/RobotConfig.h>
+#include <pathplanner/lib/controllers/PPLTVController.h>
+#include <frc/DriverStation.h>
 
 class DrivetrainSubsystem : public frc2::SubsystemBase 
 {
@@ -48,10 +50,8 @@ class DrivetrainSubsystem : public frc2::SubsystemBase
                           const std::function<bool()> fxSlowDriveButton,
                           const std::function<bool()> fxDriveActionButton);
   
-  void SetAlliance(frc::DriverStation::Alliance alliance);
-
-  void SetDesiredAutoTrajectory(choreo::Trajectory<choreo::DifferentialSample> trajectory);
   void ResetOdometryPose(const frc::Pose2d pose);
+  frc::Pose2d GetOdometryPose() const { return inputs.robotPosition; };
   
   void Periodic() override;
 
@@ -99,20 +99,9 @@ class DrivetrainSubsystem : public frc2::SubsystemBase
   const frc::ChassisSpeeds restSpeeds;
 
   //AUTO
-  choreo::Trajectory<choreo::DifferentialSample> m_desiredAutoTrajectory;
   TimerRBL m_autoTimer;
-  std::optional<choreo::DifferentialSample> m_autoSampleToBeApplied;
-
   wpi::array<double, 3> Q = {0.05, 0.05, 0.2}; // x=5cm, y=5cm, heading=0.2 rad
   wpi::array<double, 2> R = {1.0, 2.0};        // lin=1 m/s, ang=2 rad/s
-  frc::LTVUnicycleController m_ltvController{Q, R, 0.02_s};
-
-
-  // Logging
-  StructLogger<frc::Pose2d> m_ErreurLogger{"/Drivetrain/PoseError"};
-  StructLogger<frc::Pose2d> m_theoriticalLogger{"/Drivetrain/ReferencePose"}; 
-
-  frc::DriverStation::Alliance m_alliance;
 
   frc::ChassisSpeeds ArcadeDrive(const std::pair<double, double> percentage);
   frc::ChassisSpeeds CurveDrive(const std::pair<double, double> percentage, const bool quickTurnEnabled);

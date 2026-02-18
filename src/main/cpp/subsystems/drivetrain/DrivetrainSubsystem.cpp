@@ -6,13 +6,14 @@
 
 
 DrivetrainSubsystem::DrivetrainSubsystem(DrivetrainIO *pIO) 
-                    : m_pTankDriveIO(pIO), 
-                    m_fxForwardAxis([]() { return 0.0; }),
-                    m_fxRotationAxis([]() { return 0.0; }),
-                    m_fxSlowDriveButton([]() { return false; }),
-                    m_fxDriveActionButton([]() { return false; }),
-                    m_axisAreActive(false)
-{}
+: DrivetrainSubsystem(pIO,
+                    []() { return 0.0; },
+                    []() { return 0.0; },
+                    []() { return false; },
+                    []() { return false; })
+{
+    m_axisAreActive = false;
+}
 
 DrivetrainSubsystem::DrivetrainSubsystem(DrivetrainIO *pIO, 
                     std::function<double()> fxForwardAxis,
@@ -26,6 +27,23 @@ DrivetrainSubsystem::DrivetrainSubsystem(DrivetrainIO *pIO,
                     m_fxDriveActionButton(fxDriveActionButton),
                     m_axisAreActive(true)
 {
+    pathplanner::RobotConfig config = pathplanner::RobotConfig::fromGUISettings();
+    pathplanner::AutoBuilder::configure(
+        [this](){ return GetOdometryPose(); }, //TODO : replace with robot pose
+        [this](const frc::Pose2d &pose){ m_pTankDriveIO->ResetPosition(pose); },
+        [this](){ return m_pTankDriveIO->GetChassisSpeed(); }, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+        [this](const frc::ChassisSpeeds &speeds){ m_pTankDriveIO->SetChassisSpeed(speeds); },
+        std::make_shared<pathplanner::PPLTVController>(Q,R,0.02_s), 
+        config, // The robot configuration
+        []() {
+            auto alliance = frc::DriverStation::GetAlliance();
+            if (alliance) {
+                return alliance.value() == frc::DriverStation::Alliance::kRed;
+            }
+            return false;
+        },
+        this // Reference to this subsystem to set requirements
+    );
 }
 void DrivetrainSubsystem::SetWantedDrive(const DriveMode wantedDrive)
 {
@@ -49,16 +67,6 @@ void DrivetrainSubsystem::ConfigureManualControlInputsAxis(const std::function<d
     m_axisAreActive = true;
 }
 
-void DrivetrainSubsystem::SetAlliance(frc::DriverStation::Alliance alliance)
-{
-    m_alliance = alliance;
-}
-
-void DrivetrainSubsystem::SetDesiredAutoTrajectory(choreo::Trajectory<choreo::DifferentialSample> trajectory)
-{
-    m_desiredAutoTrajectory = trajectory;
-    m_autoTimer.Restart();
-}
 void DrivetrainSubsystem::ResetOdometryPose(const frc::Pose2d pose)
 {
     m_pTankDriveIO->ResetPosition(pose);
@@ -136,20 +144,22 @@ void DrivetrainSubsystem::Periodic()
     switch (m_systemDrive) //Calculate output from SystemDrive
     {
     case SystemDrive::AUTO_PATH_FOLLOWER:
-        m_autoSampleToBeApplied = m_desiredAutoTrajectory.SampleAt(units::time::second_t( m_autoTimer.GetElapsedTimeSeconds()));
-        m_output = FollowPath();
+        // m_output = FollowPath();
         break;
 
     case SystemDrive::ARCADE_DRIVE :
         m_output = ArcadeDrive(GetPercentages());
+        m_pTankDriveIO->SetChassisSpeed(m_output);
         break;
     
     case SystemDrive::CURVE_DRIVE :
         m_output = CurveDrive(GetPercentages(), m_fxDriveActionButton());
+        m_pTankDriveIO->SetChassisSpeed(m_output);
         break;
     
     case SystemDrive::DISABLE :
         m_output = restSpeeds;
+        m_pTankDriveIO->SetChassisSpeed(m_output);
         break;
     
     default:
@@ -160,8 +170,6 @@ void DrivetrainSubsystem::Periodic()
     frc::SmartDashboard::PutNumber("Drivetrain/SystemDrive", (int)m_systemDrive);
     frc::SmartDashboard::PutNumber("Drivetrain/WantedDrive", (int)m_wantedDrive);
     frc::SmartDashboard::PutNumber("Drivetrain/Timestamp", m_autoTimer.GetElapsedTimeSeconds()); 
-
-    m_pTankDriveIO->SetChassisSpeed(m_output);
 }
 
 frc::ChassisSpeeds DrivetrainSubsystem::ArcadeDrive(const std::pair<double, double> percentage)
@@ -257,19 +265,19 @@ frc::ChassisSpeeds DrivetrainSubsystem::CurveDrive(const std::pair<double, doubl
 frc::ChassisSpeeds DrivetrainSubsystem::FollowPath()
 {
     frc::ChassisSpeeds output{};
-    // Verify if there is a sample to follow
-    if (!m_autoSampleToBeApplied.has_value()) {
-        return output; // Nothing to do
-    }
+    // // Verify if there is a sample to follow
+    // if (!m_autoSampleToBeApplied.has_value()) {
+    //     return output; // Nothing to do
+    // }
 
-    // Current target sample from the trajectory
-    const choreo::DifferentialSample& currentSample = m_autoSampleToBeApplied.value();
-    const frc::ChassisSpeeds targetSpeeds = currentSample.GetChassisSpeeds();
-    const frc::Pose2d targetPose = currentSample.GetPose();
-    m_ErreurLogger.Log(inputs.robotPosition.RelativeTo(targetPose));
-    m_theoriticalLogger.Log(targetPose);
+    // // Current target sample from the trajectory
+    // const choreo::DifferentialSample& currentSample = m_autoSampleToBeApplied.value();
+    // const frc::ChassisSpeeds targetSpeeds = currentSample.GetChassisSpeeds();
+    // const frc::Pose2d targetPose = currentSample.GetPose();
+    // m_ErreurLogger.Log(inputs.robotPosition.RelativeTo(targetPose));
+    // m_theoriticalLogger.Log(targetPose);
      
-    output = m_ltvController.Calculate(inputs.robotPosition, targetPose, targetSpeeds.vx, targetSpeeds.omega);
+    // output = m_ltvController.Calculate(inputs.robotPosition, targetPose, targetSpeeds.vx, targetSpeeds.omega);
     return output;
 }
 
