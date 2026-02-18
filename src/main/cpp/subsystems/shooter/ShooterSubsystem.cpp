@@ -21,6 +21,10 @@ ShooterSubsystem::ShooterSubsystem(FlywheelIO *pFlywheelIO, HoodIO *pHoodIO, Sho
 
     m_hoodPIDController.SetOutputLimits(double(HoodConstants::Voltage::MIN), double(HoodConstants::Voltage::MAX));
     m_hoodPIDController.SetInputLimits(HoodConstants::Position::MIN, HoodConstants::Position::MAX);
+
+    // m_flywheelFeedforward.SetGains(0.0,12.0/6902.0,0.0);
+    // m_flywheelFeedforward.SetOutputLimits(double(FlywheelConstants::Voltage::MIN), double(FlywheelConstants::Voltage::MAX));
+
 }
 
 void ShooterSubsystem::SetWantedState(const WantedState wantedState)
@@ -205,9 +209,10 @@ void ShooterSubsystem::Periodic()
                     case SystemState::RAMPING_TO_FEED:
                     case SystemState::RAMPING_BACKWARD:
                     case SystemState::SOON_MINE:
-                        m_flywheelOutput += units::volt_t{m_flywheelPIDController.CalculateWithRealTime(m_flywheelTargetSpeed, 
+                        m_flywheelOutput = units::volt_t{m_flywheelPIDController.CalculateWithRealTime(m_flywheelTargetSpeed, 
                                                                                         flywheelInputs.shooterVelocity, 
                                                                                         m_timestamp)};
+                        // m_flywheelOutput = units::volt_t{m_flywheelFeedforward.Calculate(0.0,m_flywheelTargetSpeed,0.0)};
                         break;
 
                     case SystemState::IDLE:
@@ -268,12 +273,12 @@ void ShooterSubsystem::Periodic()
     frc::SmartDashboard::PutNumber("flywheelOutput", double(m_flywheelOutput));
 
      m_pFlywheelIO->SetVoltage(m_flywheelOutput);
-     m_pHoodIO->SetVoltage(m_hoodOutput);
+     m_pHoodIO->SetVoltage(m_hoodOutput); 
     //LOG
     frc::SmartDashboard::PutNumber("shooter/WantedState", (int)m_currentWantedState);
     frc::SmartDashboard::PutNumber("shooter/SystemState", (int)m_systemState);
-    frc::SmartDashboard::PutNumber("shooter/Flywheel/ControlMode", (int)m_flywheelControlMode);
-    frc::SmartDashboard::PutNumber("shooter/Hood/ControlMode", (int)m_hoodControlMode);
+    frc::SmartDashboard::PutNumber("shooter/flywheel/ControlMode", (int)m_flywheelControlMode);
+    frc::SmartDashboard::PutNumber("shooter/hood/ControlMode", (int)m_hoodControlMode);
     frc::SmartDashboard::PutBoolean("shooter/isInit", m_isInitialized);
     frc::SmartDashboard::PutNumber("shooter/flywheel/velocityTarget", m_flywheelTargetSpeed);
 }

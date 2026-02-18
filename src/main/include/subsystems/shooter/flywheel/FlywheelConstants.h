@@ -60,9 +60,9 @@ namespace FlywheelConstants
     {
         namespace VELOCITY_VOLTAGE_PID
         {
-            constexpr double KP = 0.02; //TUNEME
+            constexpr double KP = 0.2; //TUNEME
             constexpr double KI = 0.0; //TUNEME
-            constexpr double KD = 0.06; //TUNEME
+            constexpr double KD = 0.00; //TUNEME
         }
     }
 

@@ -15,6 +15,7 @@
 
 #include "LyonLib/control/RateLimiter.h"
 #include "LyonLib/control/pidRBL.h"
+// #include "LyonLib/control/FeedforwardModel.h"
 #include "LyonLib/logging/Alert.h"
 #include "LyonLib/logging/TunableValueLogger.h"
 
@@ -81,6 +82,7 @@ class ShooterSubsystem : public frc2::SubsystemBase {
     // === Motion Control (PID / Filters) ===
       PidRBL m_flywheelPIDController;
       PidRBL m_hoodPIDController;
+      // FeedForwardModel m_flywheelFeedforward;
     // === Control Inputs / Outputs ===
       double m_manualControlInput{0.0};
       double m_timestamp{0.0};
