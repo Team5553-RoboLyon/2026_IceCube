@@ -45,7 +45,7 @@ namespace FlywheelConstants
     namespace Specifications
     {
         constexpr double WHEEL_RADIUS = 2 * 0.0254; //m, 2 in
-        constexpr double GEAR_RATIO = 1; //ul
+        constexpr double GEAR_RATIO = 1.0; //ul
         constexpr double LEFT_MOTOR_FREE_SPEED = LeftMotor::VOLTAGE_COMPENSATION * LeftMotor::KV; //RPM
         constexpr double RIGHT_MOTOR_FREE_SPEED = RightMotor::VOLTAGE_COMPENSATION * RightMotor::KV; //RPM
     }
@@ -60,9 +60,9 @@ namespace FlywheelConstants
     {
         namespace VELOCITY_VOLTAGE_PID
         {
-            constexpr double KP = 10.0; //TUNEME
+            constexpr double KP = 0.2; //TUNEME
             constexpr double KI = 0.0; //TUNEME
-            constexpr double KD = 0.2; //TUNEME
+            constexpr double KD = 0.00; //TUNEME
         }
     }
 

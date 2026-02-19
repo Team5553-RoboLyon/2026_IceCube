@@ -18,7 +18,7 @@ void FlywheelIOSim::UpdateInputs(FlywheelIOInputs& inputs)
     inputs.leftMotorBusVoltage = 12.0;
     inputs.leftMotorCurrent = m_flywheelSim.GetCurrentDraw().value();
     inputs.leftMotorTemperature = 23.0;
-    inputs.leftMotorInternalEncoderVelocity = m_flywheelSim.GetAngularVelocity().value();
+    inputs.leftMotorInternalEncoderVelocity = units::revolutions_per_minute_t(m_flywheelSim.GetAngularVelocity()).value();
 
     inputs.isRightMotorConnected = inputs.isLeftMotorConnected;
 
@@ -30,15 +30,16 @@ void FlywheelIOSim::UpdateInputs(FlywheelIOInputs& inputs)
 
     inputs.shooterVelocity = (inputs.leftMotorInternalEncoderVelocity + inputs.rightMotorInternalEncoderVelocity) / 2; // Convert from RPS to RPM
 
-    frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Left/AppliedVoltage",inputs.leftMotorInternalEncoderVelocity);
-    frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Left/Voltage", inputs.leftMotorAppliedVoltage);
+    frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Left/AppliedVoltage",inputs.leftMotorAppliedVoltage);
+    frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Left/BusVoltage", inputs.leftMotorBusVoltage);
     frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Left/Current", inputs.leftMotorCurrent);
     frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Left/Temperature", inputs.leftMotorTemperature);
-    frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Right/AppliedVoltage",inputs.rightMotorInternalEncoderVelocity);
-    frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Right/Voltage", inputs.rightMotorAppliedVoltage);
+    frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Left/InternalEncoderVelocity", inputs.leftMotorInternalEncoderVelocity);
+    frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Right/AppliedVoltage",inputs.rightMotorAppliedVoltage);
+    frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Right/BusVoltage", inputs.rightMotorBusVoltage);
     frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Right/Current", inputs.rightMotorCurrent);
     frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Right/Temperature", inputs.rightMotorTemperature);
-
+    frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Right/InternalEncoderVelocity", inputs.rightMotorInternalEncoderVelocity);
     frc::SmartDashboard::PutNumber("shooter/flywheel/FlywheelVelocity", inputs.shooterVelocity);
 
     frc::SmartDashboard::PutNumber("shooter/flywheel/simulator/AngularAcceleration", m_flywheelSim.GetAngularAcceleration().value());
@@ -50,7 +51,6 @@ void FlywheelIOSim::SetVoltage(units::volt_t voltage)
     DEBUG_ASSERT((double(voltage) <= FlywheelConstants::RightMotor::VOLTAGE_COMPENSATION) 
         && (double(voltage) >= -FlywheelConstants::RightMotor::VOLTAGE_COMPENSATION) 
         ,"Flywheel voltage out of range");
-
     m_flywheelSim.SetInputVoltage(voltage);
 }
 
