@@ -1,25 +1,17 @@
-#include "LyonLib/gamepads/RevGamepad.h"
+#include "Constants.h"
 
-class Operator final : public RevGamepad
-{
 
 #if (OPERATOR == (ADAM))
+#include "LyonLib/gamepads/RevGamepad.h"
+class Operator final : public RevGamepad
+{
 private:
+
 
 public:
     Operator(int port) : RevGamepad(port){};
     Operator(int port, double threshold) : RevGamepad(port, threshold){};
     ~Operator() override = default;
-
-#elif (OPERATOR == (VICTOR))
-private:
-
-public:
-    Operator(int port) : RevGamepad(port){};
-    Operator(int port, double threshold) : RevGamepad(port, threshold){};
-    ~Operator() override = default;
-
-#endif
 
 
     void SetRumble(RumbleType type, double value)
@@ -36,3 +28,32 @@ public:
     }
 
 };
+
+#elif (OPERATOR == (VICTOR))
+#include "LyonLib/gamepads/XboxGamepad.h"
+class Operator final : public XboxGamepad
+{
+private:
+
+
+public:
+    Operator(int port) : XboxGamepad(port){};
+    Operator(int port, double threshold) : XboxGamepad(port, threshold){};
+    ~Operator() override = default;
+
+
+    void SetRumble(RumbleType type, double value)
+    {
+        XboxGamepad::SetRumble(type, value);
+    }
+    void SetRumble(double value)
+    {
+        XboxGamepad::SetRumble(RumbleType::kBothRumble, value);
+    }
+    void SetRumble(RumbleType type)
+    {
+        XboxGamepad::SetRumble(type, 1.0);
+    }
+
+};
+#endif
