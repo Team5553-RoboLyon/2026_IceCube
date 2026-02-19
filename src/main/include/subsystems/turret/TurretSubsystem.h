@@ -14,6 +14,7 @@
 #include "LyonLib/control/RateLimiter.h"
 #include "LyonLib/control/pidRBL.h"
 #include "LyonLib/logging/Alert.h"
+#include "LyonLib/logging/TunableValueLogger.h"
 #include "camera/AprilTagPhotonCamera.h"
 
 #include "frc/DriverStation.h"
@@ -24,23 +25,23 @@ class TurretSubsystem : public frc2::SubsystemBase {
 
     enum class WantedState 
     {
-      STAND_BY, // no wanted state scheduled. (It's all good man, it's all good !)
-      FOLLOW_HUB,
-      POINT_AT_ALLIANCE_ZONE,
-      PREPARE_EJECT
+      STAND_BY = 0, // no wanted state scheduled. (It's all good man, it's all good !)
+      FOLLOW_HUB = 1,
+      POINT_AT_ALLIANCE_ZONE = 2,
+      PREPARE_EJECT = 3
     };
     enum class SystemState
     {
-      IDLE,
+      IDLE = 0,
       //steady states
-      INACTIVE,
-      ALIGNED_WITH_HUB,
-      POINTING_AT_ALLIANCE_ZONE,
-      READY_TO_EJECT,
+      INACTIVE = 1,
+      ALIGNED_WITH_HUB = 2,
+      POINTING_AT_ALLIANCE_ZONE = 3,
+      READY_TO_EJECT = 4,
       //transition states
-      ALIGNING_WITH_HUB,
-      ALIGNING_WITH_ALLIANCE_ZONE,
-      SPINNING_TO_EJECT,
+      ALIGNING_WITH_HUB = 5,
+      ALIGNING_WITH_ALLIANCE_ZONE = 6,
+      SPINNING_TO_EJECT = 7,
     };
     void SetWantedState(const WantedState wantedState);
     SystemState GetSystemState();
@@ -76,8 +77,9 @@ class TurretSubsystem : public frc2::SubsystemBase {
       double m_timestamp{0.0};
       double m_targetPos{0.0};
       double m_highestHallEffectSensorValue{0.0};
+      TunableValueLogger m_tunableRobotOrientation{"Tunable robot orientation", 0.0};
     // === Status Flags ===
-      bool m_isInitialized = false;
+      bool m_isInitialized = true;
       bool m_isInBlueAlliance = true;
     // === System Alerts ===
       Alert m_motorDisconnected{"Turret Motor: Disconnected", Alert::AlertType::ERROR};

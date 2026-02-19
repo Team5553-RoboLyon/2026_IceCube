@@ -31,22 +31,22 @@ namespace TurretConstants
     
     namespace Specifications
     {
-        constexpr double GEAR_RATIO = (130.0/24.0)*(1.0); //ul
+        constexpr double GEAR_RATIO = (130.0/24.0)*(5.23)*(5.23); //ul
         constexpr double MOTOR_FREE_SPEED = Motor::VOLTAGE_COMPENSATION * Motor::KV; //RPM
         constexpr frc::Transform2d ROBOT_TO_TURRET{155.0_m, 155.0_m,{}}; //TUNEME
     }
 
     namespace Encoder 
     {
-        constexpr int A_ID = 23;
-        constexpr int B_ID = 24;
+        constexpr int A_ID = 22;
+        constexpr int B_ID = 23;
         constexpr bool REVERSED = false;
         constexpr double DISTANCE_PER_PULSE = 2*NF64_PI/Specifications::GEAR_RATIO/ENCODER_TICKS_PER_REVOLUTION_K2X;
     }
 
     namespace HallEffectSensor
     {
-        constexpr int ID = 22;
+        constexpr int ID = 21;
         constexpr double MIN_VALUE_WHEN_MAGNET = 2.5; //TUNEME
     }
 
@@ -65,7 +65,7 @@ namespace TurretConstants
     {
         namespace POSITION_DUTYCYCLE_PID
         {
-            constexpr double KP = 0.1; //TUNEME
+            constexpr double KP = 0.15; //TUNEME
             constexpr double KI = 0.0; //TUNEME
             constexpr double KD = 0.0; //TUNEME
         }

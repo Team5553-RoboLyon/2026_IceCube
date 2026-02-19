@@ -115,7 +115,7 @@ void TurretSubsystem::Periodic()
     m_timestamp = TimerRBL::GetFPGATimestampInSeconds();
 
     m_pTurretIO->UpdateInputs(inputs);
-    m_turretCamera.UpdateResults();
+    // m_turretCamera.UpdateResults();
     
     m_motorDisconnected.Set(!inputs.isMotorConnected);
     m_motorHot.Set(inputs.motorTemperature > TurretConstants::Motor::HOT_THRESHOLD);
@@ -200,6 +200,8 @@ void TurretSubsystem::Periodic()
         m_output = NMIN(0.0, m_output); // prevent the turret to go through the top side
     }
 
+    frc::SmartDashboard::PutNumber("Target", m_targetPos);
+
     // Apply output
     m_pTurretIO->SetDutyCycle(m_output);
 
@@ -259,6 +261,15 @@ void TurretSubsystem::RunStateMachine()
                 m_targetPos = m_pShootParams->lookAheadTargetTurretPos;
             }
 
+            if(inputs.orientation < 0)
+            {
+                m_targetPos = NDEGtoRAD(m_tunableRobotOrientation.Get())- 2*NF64_PI;
+            }
+            else
+            {
+                m_targetPos = NDEGtoRAD(m_tunableRobotOrientation.Get());
+            }
+
             if (inputs.orientation >= 0 && m_targetPos - inputs.orientation > NF64_PI)
             {
                 m_targetPos -= 2*NF64_PI;
@@ -279,13 +290,13 @@ void TurretSubsystem::RunStateMachine()
             if(m_isInBlueAlliance)
             {
                 if (inputs.orientation < 0)
-                    m_targetPos = -NF64_PI - m_robotOrientation;
+                    m_targetPos = -NF64_PI - NDEGtoRAD(m_tunableRobotOrientation.Get());
                 else
-                    m_targetPos = NF64_PI - m_robotOrientation;
+                    m_targetPos = NF64_PI - NDEGtoRAD(m_tunableRobotOrientation.Get());
             }
             else
             {
-                m_targetPos = -m_robotOrientation;
+                m_targetPos = -NDEGtoRAD(m_tunableRobotOrientation.Get());
             }
 
             if (inputs.orientation >= 0 && m_targetPos - inputs.orientation > NF64_PI)
