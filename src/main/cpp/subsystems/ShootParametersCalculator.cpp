@@ -7,7 +7,16 @@
 #include "Constants.h"
 
 ShootParametersCalculator::ShootParametersCalculator()
-{}
+{
+    m_hoodPosMap.insert(0.0, 0.0);
+    m_hoodPosMap.insert(6.0, HoodConstants::Position::MAX);
+
+    m_flywheelSpeedMap.insert(0.0, 1706.0);
+    m_flywheelSpeedMap.insert(6.0, 4500.0);
+
+    m_timeToReachTargetMap.insert(0.0, 2.0);
+    m_timeToReachTargetMap.insert(0.0, 6.0);
+}
 
 void ShootParametersCalculator::SetAlliance(frc::DriverStation::Alliance alliance)
 {

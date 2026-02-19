@@ -28,6 +28,8 @@
 #include "subsystems/turret/TurretIOSim.h"
 #include "subsystems/turret/TurretSubsystem.h"
 
+#include "subsystems/superstrucure/Superstructure.h"
+
 class RobotContainer {
  public:
   RobotContainer();
@@ -36,20 +38,23 @@ class RobotContainer {
   frc::Joystick forwardJoystick{ControlPanelConstants::JOYSTICK_FORWARD_ID};
   frc::Joystick rotationJoystick{ControlPanelConstants::JOYSTICK_ROTATION_ID};
 
+  ShootParameters *pShootParams{new ShootParameters};
 
   #if ROBOT_MODEL == SIMULATION
-  ClimberSubsystem climber{new ClimberIOSim};
-  IndexerIOSim *IOSim = new IndexerIOSim{};
-  IndexerSubsystem indexer{IOSim};
-  IntakeSubsystem intakeSubsystem{new RollerIOSim{}, new PivotIOSim{}};
-  ShooterSubsystem shooterSubsystem{new FlywheelIOSim{}, new HoodIOSim{}, new ShootParameters{}};
-  TurretSubsystem turretSubsystem{new TurretIOSim, new ShootParameters};
+  IndexerIOSim *indexerIOSim = new IndexerIOSim{};
+  Superstructure superstructure{new IntakeSubsystem {new RollerIOSim{}, new PivotIOSim{}},
+                                new IndexerSubsystem {indexerIOSim},
+                                new TurretSubsystem {new TurretIOSim, pShootParams},
+                                new ShooterSubsystem {new FlywheelIOSim{}, new HoodIOSim{}, pShootParams},
+                                new ClimberSubsystem {new ClimberIOSim},
+                                pShootParams};
   #else
-  ClimberSubsystem climber{new ClimberIOSpark};
-  IndexerSubsystem indexer{new IndexerIOSpark};
-  IntakeSubsystem intakeSubsystem{new RollerIOSpark{}, new PivotIOSpark{}};
-  ShooterSubsystem shooterSubsystem{new FlywheelIOSpark{}, new HoodIOSpark{}, new ShootParameters{}};
-  TurretSubsystem turretSubsystem{new TurretIOSpark, new ShootParameters};
+  Superstructure superstructure{new IntakeSubsystem {new RollerIOSpark{}, new PivotIOSpark{}},
+                                new IndexerSubsystem {new IndexerIOSpark{}},
+                                new TurretSubsystem {new TurretIOSpark{}, pShootParams},
+                                new ShooterSubsystem {new FlywheelIOSpark{}, new HoodIOSpark{}, pShootParams},
+                                new ClimberSubsystem {new ClimberIOSpark},
+                                pShootParams};
   #endif
 
 

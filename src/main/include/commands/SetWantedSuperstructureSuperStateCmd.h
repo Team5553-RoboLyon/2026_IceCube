@@ -7,7 +7,7 @@
 #include <frc2/command/Command.h>
 #include <frc2/command/CommandHelper.h>
 
-#include "subsystems/turret/TurretSubsystem.h"
+#include "subsystems/superstrucure/Superstructure.h"
 
 /**
  * An example command.
@@ -16,13 +16,13 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  */
-class SetSystemTurretStateCmd
-    : public frc2::CommandHelper<frc2::Command, SetSystemTurretStateCmd> {
+class SetWantedSuperstructureSuperStateCmd
+    : public frc2::CommandHelper<frc2::Command, SetWantedSuperstructureSuperStateCmd> {
  public:
   /* You should consider using the more terse Command factories API instead
    * https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands
    */
-  SetSystemTurretStateCmd(TurretSubsystem *pTurret, TurretSubsystem::WantedState wantedState);
+  SetWantedSuperstructureSuperStateCmd(Superstructure *pSuperstructure, Superstructure::WantedSuperState wantedSuperState);
 
   void Initialize() override;
 
@@ -33,6 +33,7 @@ class SetSystemTurretStateCmd
   bool IsFinished() override;
 
   private:
-   TurretSubsystem* m_pTurret;
-   TurretSubsystem::WantedState m_wantedState;
+
+  Superstructure *m_pSuperstructure;
+  Superstructure::WantedSuperState m_wantedSuperState;
 };
