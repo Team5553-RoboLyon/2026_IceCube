@@ -8,6 +8,9 @@
 #include <frc2/command/InstantCommand.h>
 #include <frc2/command/Commands.h>
 
+#include "commands/SetWantedShooterStateCmd.h"
+#include "commands/SetSystemTurretStateCmd.h"
+
 
 RobotContainer::RobotContainer()
 {

@@ -15,6 +15,7 @@
 
 #include "LyonLib/control/RateLimiter.h"
 #include "LyonLib/control/pidRBL.h"
+// #include "LyonLib/control/FeedforwardModel.h"
 #include "LyonLib/logging/Alert.h"
 #include "LyonLib/logging/TunableValueLogger.h"
 
@@ -24,28 +25,28 @@ class ShooterSubsystem : public frc2::SubsystemBase {
 
     enum class WantedState 
     {
-      STAND_BY, // no wanted state scheduled. (It's all good man, it's all good !)
-      SHOOT_TO_HUB,
-      FEED_ALLY,
-      STOP,
-      REVERSE,
-      KEEP_ALL_FOR_YOU
+      STAND_BY = 0, // no wanted state scheduled. (It's all good man, it's all good !)
+      SHOOT_TO_HUB = 1,
+      FEED_ALLY = 2,
+      STOP = 3,
+      REVERSE = 4,
+      KEEP_ALL_FOR_YOU = 5
     };
 
     enum class SystemState
     {
-      IDLE,
+      IDLE = 0,
       //Steady states
-      AT_SHOOT_SPEED,
-      READY_TO_FEED,
-      RESTING,
-      SHOOTING_BACKWARD,
-      THATS_ALL_MINE,
+      AT_SHOOT_SPEED = 1,
+      READY_TO_FEED = 2,
+      RESTING = 3,
+      SHOOTING_BACKWARD = 4,
+      THATS_ALL_MINE = 5,
       //Transition states
-      RAMPING_TO_SHOOT,
-      RAMPING_TO_FEED,
-      RAMPING_BACKWARD,
-      SOON_MINE
+      RAMPING_TO_SHOOT = 6,
+      RAMPING_TO_FEED = 7,
+      RAMPING_BACKWARD = 8,
+      SOON_MINE = 9
     };
 
     void SetWantedState(const WantedState wantedState);
@@ -81,6 +82,7 @@ class ShooterSubsystem : public frc2::SubsystemBase {
     // === Motion Control (PID / Filters) ===
       PidRBL m_flywheelPIDController;
       PidRBL m_hoodPIDController;
+      // FeedForwardModel m_flywheelFeedforward;
     // === Control Inputs / Outputs ===
       double m_manualControlInput{0.0};
       double m_timestamp{0.0};

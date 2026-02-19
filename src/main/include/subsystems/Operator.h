@@ -1,6 +1,6 @@
-#include "LyonLib/gamepads/RevGamepad.h"
+#include "LyonLib/gamepads/XboxGamepad.h"
 
-class Operator final : public RevGamepad
+class Operator final : public XboxGamepad
 {
 
 #if (OPERATOR == (ADAM))
@@ -8,39 +8,38 @@ private:
 
 public:
 
-    frc2::Trigger STAND_BY{_triangleButton};
-    frc2::Trigger REFUEL{_circleButton};
-    frc2::Trigger EJECT{_crossButton};
-    frc2::Trigger BECOME_AN_INDEXER{_squareButton};
-    frc2::Trigger EXTEND{_L1Button};
-    frc2::Trigger RETURN_AT_HOME{_R1Button};
-    frc2::Trigger PROTECT_YOURSELF{_optionsButton};
-    Operator(int port) : RevGamepad(port){};
-    Operator(int port, double threshold) : RevGamepad(port, threshold){};
+    Operator(int port) : XboxGamepad(port){};
+    Operator(int port, double threshold) : XboxGamepad(port, threshold){};
     ~Operator() override = default;
-    
+
 #elif (OPERATOR == (VICTOR))
 private:
 
 public:
-    Operator(int port) : RevGamepad(port){};
-    Operator(int port, double threshold) : RevGamepad(port, threshold){};
+    Operator(int port) : XboxGamepad(port){};
+    Operator(int port, double threshold) : XboxGamepad(port, threshold){};
     ~Operator() override = default;
 
+    frc2::Trigger STAND_BY{_YButton};
+    frc2::Trigger SHOOT_TO_HUB{_R3AsButton};
+    frc2::Trigger FEED_ALLY{_XButton};
+    frc2::Trigger STOP{_BButton};
+    frc2::Trigger REVERSE{_L3AsButton};
+    frc2::Trigger KEEP_ALL_FOR_YOU{_AButton};
 #endif
 
 
     void SetRumble(RumbleType type, double value)
     {
-        RevGamepad::SetRumble(type, value);
+        XboxGamepad::SetRumble(type, value);
     }
     void SetRumble(double value)
     {
-        RevGamepad::SetRumble(RumbleType::kBothRumble, value);
+        XboxGamepad::SetRumble(RumbleType::kBothRumble, value);
     }
     void SetRumble(RumbleType type)
     {
-        RevGamepad::SetRumble(type, 1.0);
+        XboxGamepad::SetRumble(type, 1.0);
     }
 
 };
