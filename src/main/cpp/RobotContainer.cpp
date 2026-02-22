@@ -8,11 +8,19 @@
 #include <frc2/command/InstantCommand.h>
 #include <frc2/command/Commands.h>
 
-
 RobotContainer::RobotContainer()
 {
     ConfigureBindings();
+
 }
 
 void RobotContainer::ConfigureBindings() {
+    vision.SetDefaultCommand(vision.ProcessVision(
+    [this] {
+        return robotState.GetPose().value();
+    },
+    [this](const VisionMeasurement& measurement) {
+        robotState.AddVisionMeasurement(measurement);
+    }));
+
 }

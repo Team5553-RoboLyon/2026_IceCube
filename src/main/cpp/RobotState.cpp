@@ -1,0 +1,78 @@
+#include "RobotState.h"
+
+RobotState::RobotState(frc::Pose2d& initialPose,
+         frc::DifferentialDriveKinematics& kinematics,
+          units::meter_t *pLeftDistance,
+          units::meter_t *pRightDistance,
+         studica::AHRS& navX)
+    : m_navX(navX),
+      m_pLeftDistance(pLeftDistance),
+      m_pRightDistance(pRightDistance),
+      m_poseEstimator(
+        kinematics,
+        frc::Rotation2d(units::radian_t(m_navX.GetYaw() * M_PI / 180.0)),
+        0.0_m,
+        0.0_m,
+        initialPose,
+        wpi::array<double, 3>{0.02, 0.02, 0.02},     // std dev odometry (m, m, rad)
+        wpi::array<double, 3>{0.1, 0.1, 0.1}         // std dev vision (m, m, rad)
+      )
+  {}
+
+void RobotState::AddVisionMeasurement(const VisionMeasurement& measurement)
+{
+  m_poseEstimator.AddVisionMeasurement(
+      measurement.robotPose,
+      measurement.timestamp,
+      measurement.stdDevs
+  );
+
+  m_lastVisionPose = measurement.robotPose;
+}
+
+void RobotState::UpdateOdometry()
+{
+  frc::Rotation2d heading(units::radian_t(m_navX.GetYaw() * M_PI / 180.0));
+
+  // Détection glissement / bosses
+  if (IsOdometryReliable()) {
+      m_poseEstimator.UpdateWithTime(frc::Timer::GetFPGATimestamp(),
+                                    heading, *m_pLeftDistance, *m_pRightDistance);
+  } else {
+      // poids odométrie réduit sur boss
+      m_poseEstimator.SetVisionMeasurementStdDevs({0.05, 0.05, 0.1});
+      m_poseEstimator.UpdateWithTime(frc::Timer::GetFPGATimestamp(),
+                                    heading, *m_pLeftDistance, *m_pRightDistance);
+      // remise à la normale
+      m_poseEstimator.SetVisionMeasurementStdDevs({0.1, 0.1, 0.1});
+  }
+}
+
+std::optional<frc::Pose2d> RobotState::GetPose() const
+{
+    return m_poseEstimator.GetEstimatedPosition();
+}
+
+void RobotState::ResetPoseWithVision()
+{
+    m_poseEstimator.ResetPosition(frc::Rotation2d(units::radian_t(m_navX.GetYaw() * M_PI / 180.0)),
+                                  *m_pLeftDistance,
+                                  *m_pRightDistance,
+                                  m_lastVisionPose);
+}
+
+void RobotState::ResetPose(frc::Pose2d &resetPosition)
+{
+    m_poseEstimator.ResetPosition(frc::Rotation2d(units::radian_t(m_navX.GetYaw() * M_PI / 180.0)),
+                                  *m_pLeftDistance,
+                                  *m_pRightDistance,
+                                  resetPosition);
+}
+
+bool RobotState::IsOdometryReliable() const
+{
+        constexpr double kMaxPitch = 10.0; // deg
+        constexpr double kMaxRoll  = 10.0; // deg
+        return (std::abs(m_navX.GetPitch()) < kMaxPitch) &&
+               (std::abs(m_navX.GetRoll())  < kMaxRoll);
+}
