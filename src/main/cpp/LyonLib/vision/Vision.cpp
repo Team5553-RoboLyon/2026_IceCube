@@ -123,7 +123,7 @@ frc2::CommandPtr Vision::ProcessVision(
             continue;
           }
 
-          Eigen::Vector3d stdDevMat = DetermineStandardDeviation(
+          const wpi::array<double, 3U> stdDevMat = DetermineStandardDeviation(
             tagDistance,
             m_inputs[i].visibleTagIDs.size() > 1,
             m_inputs[i].visibleTagIDs.size());
@@ -135,7 +135,7 @@ frc2::CommandPtr Vision::ProcessVision(
 
         // Log the accepted pose
         frc::SmartDashboard::PutNumberArray("Vision/" + m_inputs[i].cameraName + "/stdDevMat",
-                                      std::array<double, 3>{stdDevMat.x(), stdDevMat.y(), stdDevMat.z()});
+                                      stdDevMat);
           measurementConsumer(
               VisionMeasurement(selectedPose.ToPose2d(), timestamp, stdDevMat));
         }
@@ -186,7 +186,7 @@ double Vision::CalculateTagDistance(const std::vector<double>& tagAreas) {
   return (1 / std::sqrt(largestArea / 100.0)) * minTagDistance;
 }
 
-Eigen::Vector3d Vision::DetermineStandardDeviation(double tagDistance,
+const wpi::array<double, 3U> Vision::DetermineStandardDeviation(double tagDistance,
                                                      bool isMultiPose,
                                                      int tagCount) {
   // Determine the standard deviation of the measurement
@@ -204,5 +204,5 @@ Eigen::Vector3d Vision::DetermineStandardDeviation(double tagDistance,
     rotStdDev = 1e4; // Don't use rotation result when only one tag is visible
   }
 
-  return Eigen::Vector3d(xyStdDev, xyStdDev, rotStdDev);
+  return wpi::array<double, 3U>{xyStdDev, xyStdDev, rotStdDev};
 }
