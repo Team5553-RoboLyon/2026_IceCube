@@ -48,17 +48,19 @@ void FlywheelIOSpark::UpdateInputs(FlywheelIOInputs& inputs)
     inputs.rightMotorTemperature = m_rightMotor.GetMotorTemperature();
     inputs.rightMotorInternalEncoderVelocity = m_rightMotor.GetEncoder().GetVelocity();
 
-    inputs.shooterVelocity = (inputs.leftMotorInternalEncoderVelocity + inputs.rightMotorInternalEncoderVelocity) / 2; // Convert from RPS to RPM
+    inputs.shooterVelocity = (inputs.leftMotorInternalEncoderVelocity + inputs.rightMotorInternalEncoderVelocity) / 2.0;
 
     #ifdef FLYWHEEL_SMARTDASHBOARD_LOG
-    frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Left/AppliedVoltage",inputs.leftMotorInternalEncoderVelocity);
-    frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Left/Voltage", inputs.leftMotorAppliedVoltage);
+    frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Left/AppliedVoltage",inputs.leftMotorAppliedVoltage);
+    frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Left/BusVoltage", inputs.leftMotorBusVoltage);
     frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Left/Current", inputs.leftMotorCurrent);
     frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Left/Temperature", inputs.leftMotorTemperature);
-    frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Right/AppliedVoltage",inputs.rightMotorInternalEncoderVelocity);
-    frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Right/Voltage", inputs.rightMotorAppliedVoltage);
+    frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Left/InternalEncoderVelocity", inputs.leftMotorInternalEncoderVelocity);
+    frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Right/AppliedVoltage",inputs.rightMotorAppliedVoltage);
+    frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Right/BusVoltage", inputs.rightMotorBusVoltage);
     frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Right/Current", inputs.rightMotorCurrent);
     frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Right/Temperature", inputs.rightMotorTemperature);
+    frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Right/InternalEncoderVelocity", inputs.rightMotorInternalEncoderVelocity);
 
     frc::SmartDashboard::PutNumber("shooter/flywheel/FlywheelVelocity", inputs.shooterVelocity);
     #else

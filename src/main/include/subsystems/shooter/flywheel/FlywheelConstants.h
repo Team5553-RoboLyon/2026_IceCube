@@ -17,8 +17,8 @@ namespace FlywheelConstants
 
     namespace LeftMotor
     {
-        constexpr int ID = 5;
-        constexpr bool INVERTED = false;
+        constexpr int ID = 1;
+        constexpr bool INVERTED = true;
 
         constexpr IdleMode IDLE_MODE = IdleMode::kCoast;
         constexpr double VOLTAGE_COMPENSATION = 12.0; //TUNEME
@@ -30,8 +30,8 @@ namespace FlywheelConstants
     }
     namespace RightMotor
     {
-        constexpr int ID = 4;
-        constexpr bool INVERTED = true;
+        constexpr int ID = 2;
+        constexpr bool INVERTED = false;
 
         constexpr IdleMode IDLE_MODE = IdleMode::kCoast;
         constexpr double VOLTAGE_COMPENSATION = 12.0; //TUNEME
