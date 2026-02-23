@@ -200,7 +200,7 @@ void TurretSubsystem::Periodic()
         m_output = NMIN(0.0, m_output); // prevent the turret to go through the top side
     }
 
-    frc::SmartDashboard::PutNumber("Target", m_targetPos);
+    frc::SmartDashboard::PutNumber("turret/Target", m_targetPos);
 
     // Apply output
     m_pTurretIO->SetDutyCycle(m_output);
@@ -252,29 +252,20 @@ void TurretSubsystem::RunStateMachine()
 
         case SystemState::ALIGNING_WITH_HUB:
         case SystemState::ALIGNED_WITH_HUB:
-            if(inputs.orientation < 0)
+            if(inputs.orientation < 0.0)
             {
-                m_targetPos = m_pShootParams->lookAheadTargetTurretPos - 2*NF64_PI;
+                m_targetPos = m_pShootParams->lookAheadTargetTurretPos - 2.0*NF64_PI;
             }
             else
             {
                 m_targetPos = m_pShootParams->lookAheadTargetTurretPos;
             }
 
-            if(inputs.orientation < 0)
-            {
-                m_targetPos = NDEGtoRAD(m_tunableRobotOrientation.Get())- 2*NF64_PI;
-            }
-            else
-            {
-                m_targetPos = NDEGtoRAD(m_tunableRobotOrientation.Get());
-            }
-
-            if (inputs.orientation >= 0 && m_targetPos - inputs.orientation > NF64_PI)
+            if (inputs.orientation >= 0.0 && m_targetPos - inputs.orientation > NF64_PI)
             {
                 m_targetPos -= 2*NF64_PI;
             }
-            else if (inputs.orientation <= 0 && m_targetPos - (inputs.orientation+2*NF64_PI) < NF64_PI)
+            else if (inputs.orientation <= 0.0 && m_targetPos - inputs.orientation < -NF64_PI)
             {
                 m_targetPos += 2*NF64_PI;
             }
@@ -289,21 +280,24 @@ void TurretSubsystem::RunStateMachine()
         case SystemState::POINTING_AT_ALLIANCE_ZONE:
             if(m_isInBlueAlliance)
             {
-                if (inputs.orientation < 0)
-                    m_targetPos = -NF64_PI - NDEGtoRAD(m_tunableRobotOrientation.Get());
+                if (inputs.orientation < 0.0)
+                    m_targetPos = -NF64_PI - m_robotOrientation;
                 else
-                    m_targetPos = NF64_PI - NDEGtoRAD(m_tunableRobotOrientation.Get());
+                    m_targetPos = NF64_PI - m_robotOrientation;
             }
             else
             {
-                m_targetPos = -NDEGtoRAD(m_tunableRobotOrientation.Get());
+                if (inputs.orientation >= 0.0)
+                    m_targetPos = NF64_2PI-m_robotOrientation;
+                else
+                    m_targetPos = -m_robotOrientation;
             }
 
-            if (inputs.orientation >= 0 && m_targetPos - inputs.orientation > NF64_PI)
+            if (inputs.orientation >= 0.0 && m_targetPos - inputs.orientation > NF64_PI)
             {
                 m_targetPos -= 2*NF64_PI;
             }
-            else if (inputs.orientation <= 0 && m_targetPos - (inputs.orientation+2*NF64_PI) < NF64_PI)
+            else if (inputs.orientation <= 0.0 && m_targetPos - inputs.orientation < -NF64_PI)
             {
                 m_targetPos += 2*NF64_PI;
             }

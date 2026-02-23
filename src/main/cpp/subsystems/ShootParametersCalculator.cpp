@@ -5,9 +5,19 @@
 #include "subsystems/shooter/hood/HoodConstants.h"
 #include "subsystems/shooter/flywheel/FlywheelConstants.h"
 #include "Constants.h"
+#include "frc/smartdashboard/SmartDashboard.h"
 
 ShootParametersCalculator::ShootParametersCalculator()
-{}
+{
+    m_hoodPosMap.insert(0.0, 0.0);
+    m_hoodPosMap.insert(6.0, HoodConstants::Position::MAX);
+
+    m_flywheelSpeedMap.insert(0.0, 1706.0);
+    m_flywheelSpeedMap.insert(6.0, 4500.0);
+
+    m_timeToReachTargetMap.insert(0.0, 2.0);
+    m_timeToReachTargetMap.insert(0.0, 6.0);
+}
 
 void ShootParametersCalculator::SetAlliance(frc::DriverStation::Alliance alliance)
 {
@@ -71,5 +81,5 @@ void ShootParametersCalculator::CalculateNewParameters(ShootParameters& params, 
     params.lookAheadTargetTurretPos = m_targetPos.Rotation().Radians().value() - estimatedNextTurretPos.Rotation().Radians().value();
 
     m_lastRobotPos = robotPos;
-    m_lastTimestamp = timestamp;       
+    m_lastTimestamp = timestamp;
 }
