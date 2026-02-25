@@ -56,7 +56,6 @@ class TurretSubsystem : public frc2::SubsystemBase {
     /**
      * @param robotOrientation Robot orientation in rad
      */
-    void SetRobotOrientation(double robotOrientation);
     void SetAlliance(frc::DriverStation::Alliance alliance);
 
 
@@ -67,7 +66,6 @@ class TurretSubsystem : public frc2::SubsystemBase {
       TurretIOInputs inputs;
       // AprilTagPhotonCamera m_turretCamera{new photon::PhotonCamera{TurretConstants::TurretCamera::NAME}};
       ShootParameters* m_pShootParams;
-      double m_robotOrientation = 0.0;
     // === System States & Control Modes ===
       WantedState m_wantedState = WantedState::STAND_BY;
       WantedState m_currentWantedState = m_wantedState; //Local discrete snapshot of m_wantedState for each cycle

@@ -98,11 +98,6 @@ void TurretSubsystem::SetManualControlInput(const double value)
     }
 }
 
-void TurretSubsystem::SetRobotOrientation(double robotOrientation)
-{
-    m_robotOrientation = robotOrientation;
-}
-
 void TurretSubsystem::SetAlliance(frc::DriverStation::Alliance alliance)
 {
     m_isInBlueAlliance = (alliance == frc::DriverStation::Alliance::kBlue);
@@ -278,19 +273,14 @@ void TurretSubsystem::RunStateMachine()
 
         case SystemState::ALIGNING_WITH_ALLIANCE_ZONE:
         case SystemState::POINTING_AT_ALLIANCE_ZONE:
-            if(m_isInBlueAlliance)
+
+            if (inputs.orientation < 0.0)
             {
-                if (inputs.orientation < 0.0)
-                    m_targetPos = -NF64_PI - m_robotOrientation;
-                else
-                    m_targetPos = NF64_PI - m_robotOrientation;
+                m_targetPos = m_pShootParams->lookAheadTargetTurretPos - 2.0*NF64_PI;
             }
             else
             {
-                if (inputs.orientation >= 0.0)
-                    m_targetPos = NF64_2PI-m_robotOrientation;
-                else
-                    m_targetPos = -m_robotOrientation;
+                m_targetPos = m_pShootParams->lookAheadTargetTurretPos;
             }
 
             if (inputs.orientation >= 0.0 && m_targetPos - inputs.orientation > NF64_PI)

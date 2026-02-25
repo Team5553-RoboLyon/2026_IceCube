@@ -89,8 +89,8 @@ namespace FlywheelConstants
         constexpr double TOLERANCE = 50.0; //TUNEME
         constexpr double FEED = 1200.0; //TUNEME
         constexpr double BACKWARD = -1000.0; //TUNEME
-        constexpr double TO_ALLIANCE_ZONE = 5000.0; //TUNEME
         constexpr double AGAINST_HUB = 2000.0; //TUNEME
+        constexpr double AGAINST_ALLIANCE_ZONE = 1000.0; //TUNEME
         constexpr double MAX_FOR_SHOOT = 4500.0; //TUNEME
     }
     

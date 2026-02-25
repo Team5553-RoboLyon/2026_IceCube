@@ -81,7 +81,6 @@ namespace HoodConstants
         constexpr double MIN = 0.0; //TUNEME
         constexpr double TOLERANCE = NDEGtoRAD(0.1); //TUNEME
         constexpr double FEED = MAX;  //TUNEME
-        constexpr double TO_ALLIANCE_ZONE = NDEGtoRAD(8.5); //TUNEME
     }
     
     namespace Settings

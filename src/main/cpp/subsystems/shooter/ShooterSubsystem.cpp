@@ -241,7 +241,14 @@ void ShooterSubsystem::Periodic()
         {
             case ControlMode::VOLTAGE:
             case ControlMode::POSITION_VOLTAGE_PID:
-                m_hoodOutput = units::volt_t{m_hoodPIDController.CalculateWithRealTime(m_hoodTargetPos, hoodInputs.hoodAngle, m_timestamp)};
+                if (m_wantedState == WantedState::PREPARE_HUB_SHOOTING || m_wantedState == WantedState::PREPARE_TO_KEEP_ALL)
+                {
+                    m_hoodOutput = units::volt_t{m_hoodPIDController.CalculateWithRealTime(0.0, hoodInputs.hoodAngle, m_timestamp)};
+                }
+                else
+                {
+                    m_hoodOutput = units::volt_t{m_hoodPIDController.CalculateWithRealTime(m_hoodTargetPos, hoodInputs.hoodAngle, m_timestamp)};
+                }
                 break;
 
             case ControlMode::DISABLED:
@@ -292,6 +299,7 @@ void ShooterSubsystem::RunStateMachine()
             m_systemState = SystemState::RESTING;
             break;
 
+        case WantedState::PREPARE_HUB_SHOOTING:
         case WantedState::SHOOT_TO_HUB:
             if (m_systemState != SystemState::AT_SHOOT_SPEED)
                 m_systemState = SystemState::RAMPING_TO_SHOOT;
@@ -307,6 +315,7 @@ void ShooterSubsystem::RunStateMachine()
                 m_systemState = SystemState::RAMPING_BACKWARD;
             break;
 
+        case WantedState::PREPARE_TO_KEEP_ALL:
         case WantedState::KEEP_ALL_FOR_YOU:
             if (m_systemState != SystemState::THATS_ALL_MINE)
                 m_systemState = SystemState::SOON_MINE;
@@ -365,8 +374,8 @@ void ShooterSubsystem::RunStateMachine()
             break;
 
         case SystemState::SOON_MINE:
-            m_flywheelTargetSpeed = FlywheelConstants::Speed::TO_ALLIANCE_ZONE;
-            m_hoodTargetPos = HoodConstants::Position::TO_ALLIANCE_ZONE;
+            m_flywheelTargetSpeed = m_pShootParameters->flywheelSpeed;
+            m_hoodTargetPos = m_pShootParameters->hoodAngle;
 
             if (IS_IN_RANGE(flywheelInputs.shooterVelocity,m_flywheelTargetSpeed,FlywheelConstants::Speed::TOLERANCE)
                 && IS_IN_RANGE(hoodInputs.hoodAngle, m_hoodTargetPos, HoodConstants::Position::TOLERANCE))

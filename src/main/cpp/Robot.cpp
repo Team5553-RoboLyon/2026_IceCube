@@ -66,8 +66,7 @@ void Robot::TeleopInit() {
 void Robot::TeleopPeriodic() {
   m_container.robotOrientation = WRAP_ANGLE_0_TO_360(m_container.robotOrientation - NDEADBAND(m_container.operatorGamepad.GetLeftX(),0.05));
   frc::SmartDashboard::PutNumber("robotOrientation", m_container.robotOrientation);
-  m_container.ShootParamCalculator.CalculateNewParameters(*m_container.pShootParameter,{0.0_m,0.0_m,{units::degree_t(m_container.robotOrientation)}},TimerRBL::GetFPGATimestampInSeconds());
-  m_container.turretSubsystem.SetRobotOrientation(NDEGtoRAD(m_container.robotOrientation));
+  m_container.ShootParamCalculator.CalculateHubNewParameters(*m_container.pShootParameter,{0.0_m,0.0_m,{units::degree_t(m_container.robotOrientation)}},TimerRBL::GetFPGATimestampInSeconds());
 }
 void Robot::TeleopExit() {}
 
