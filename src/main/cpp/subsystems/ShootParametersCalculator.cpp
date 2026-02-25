@@ -5,6 +5,7 @@
 #include "subsystems/shooter/hood/HoodConstants.h"
 #include "subsystems/shooter/flywheel/FlywheelConstants.h"
 #include "Constants.h"
+#include "frc/smartdashboard/SmartDashboard.h"
 
 ShootParametersCalculator::ShootParametersCalculator()
 {
@@ -80,5 +81,5 @@ void ShootParametersCalculator::CalculateNewParameters(ShootParameters& params, 
     params.lookAheadTargetTurretPos = m_targetPos.Rotation().Radians().value() - estimatedNextTurretPos.Rotation().Radians().value();
 
     m_lastRobotPos = robotPos;
-    m_lastTimestamp = timestamp;       
+    m_lastTimestamp = timestamp;
 }
