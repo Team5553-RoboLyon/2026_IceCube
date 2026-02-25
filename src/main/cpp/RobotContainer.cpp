@@ -6,6 +6,7 @@
 
 #include <frc2/command/ConditionalCommand.h>
 #include <frc2/command/InstantCommand.h>
+#include <frc2/command/ParallelCommandGroup.h>
 #include <frc2/command/Commands.h>
 
 #include "commands/SetWantedShooterStateCmd.h"
@@ -18,23 +19,21 @@ RobotContainer::RobotContainer()
 }
 
 void RobotContainer::ConfigureBindings() {
-    operatorGamepad.STAND_BY.ToggleOnTrue(SetWantedShooterStateCmd(&shooterSubsystem, ShooterSubsystem::WantedState::STAND_BY)
-                                          .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
-    operatorGamepad.SHOOT_TO_HUB.ToggleOnTrue(SetWantedShooterStateCmd(&shooterSubsystem, ShooterSubsystem::WantedState::SHOOT_TO_HUB)
-                                          .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
-    operatorGamepad.FEED_ALLY.ToggleOnTrue(SetWantedShooterStateCmd(&shooterSubsystem, ShooterSubsystem::WantedState::FEED_ALLY)
-                                          .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
-    operatorGamepad.STOP.ToggleOnTrue(SetWantedShooterStateCmd(&shooterSubsystem, ShooterSubsystem::WantedState::STOP)
-                                          .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
-    operatorGamepad.REVERSE.ToggleOnTrue(SetWantedShooterStateCmd(&shooterSubsystem, ShooterSubsystem::WantedState::REVERSE)
-                                          .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
-    operatorGamepad.KEEP_ALL_FOR_YOU.ToggleOnTrue(SetWantedShooterStateCmd(&shooterSubsystem, ShooterSubsystem::WantedState::KEEP_ALL_FOR_YOU)
-    operatorGamepad.STAND_BY.ToggleOnTrue(SetSystemTurretStateCmd(&turretSubsystem, TurretSubsystem::WantedState::STAND_BY)
-                                          .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
-    operatorGamepad.FOLLOW_HUB.ToggleOnTrue(SetSystemTurretStateCmd(&turretSubsystem, TurretSubsystem::WantedState::FOLLOW_HUB)
-                                          .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
-    operatorGamepad.POINT_AT_ALLIANCE_ZONE.ToggleOnTrue(SetSystemTurretStateCmd(&turretSubsystem, TurretSubsystem::WantedState::POINT_AT_ALLIANCE_ZONE)
-                                          .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
-    operatorGamepad.PREPARE_EJECT.ToggleOnTrue(SetSystemTurretStateCmd(&turretSubsystem, TurretSubsystem::WantedState::PREPARE_EJECT)
-                                          .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
+    operatorGamepad.STAND_BY.ToggleOnTrue(new frc2::ParallelCommandGroup{SetWantedShooterStateCmd(&shooterSubsystem, ShooterSubsystem::WantedState::STAND_BY),
+                                                                         SetSystemTurretStateCmd(&turretSubsystem, TurretSubsystem::WantedState::STAND_BY)});
+
+    operatorGamepad.SHOOT_TO_HUB.ToggleOnTrue(new frc2::ParallelCommandGroup{SetWantedShooterStateCmd(&shooterSubsystem, ShooterSubsystem::WantedState::SHOOT_TO_HUB),
+                                                SetSystemTurretStateCmd(&turretSubsystem, TurretSubsystem::WantedState::FOLLOW_HUB)});
+
+    operatorGamepad.FEED_ALLY.ToggleOnTrue(new frc2::ParallelCommandGroup{SetWantedShooterStateCmd(&shooterSubsystem, ShooterSubsystem::WantedState::FEED_ALLY),
+                                                                          SetSystemTurretStateCmd(&turretSubsystem, TurretSubsystem::WantedState::PREPARE_EJECT)});
+
+    operatorGamepad.STOP.ToggleOnTrue(new frc2::ParallelCommandGroup{SetWantedShooterStateCmd(&shooterSubsystem, ShooterSubsystem::WantedState::STOP),
+                                                                         SetSystemTurretStateCmd(&turretSubsystem, TurretSubsystem::WantedState::STAND_BY)});
+
+    operatorGamepad.KEEP_ALL_FOR_YOU.ToggleOnTrue(new frc2::ParallelCommandGroup{SetWantedShooterStateCmd(&shooterSubsystem, ShooterSubsystem::WantedState::KEEP_ALL_FOR_YOU),
+                                                                                 SetSystemTurretStateCmd(&turretSubsystem, TurretSubsystem::WantedState::POINT_AT_ALLIANCE_ZONE)});
+                                                                                 
+    operatorGamepad.REVERSE.ToggleOnTrue(new frc2::ParallelCommandGroup{SetWantedShooterStateCmd(&shooterSubsystem, ShooterSubsystem::WantedState::REVERSE),
+                                                                         SetSystemTurretStateCmd(&turretSubsystem, TurretSubsystem::WantedState::STAND_BY)});
 }

@@ -10,6 +10,8 @@
 
 #include <frc/Filesystem.h>
 #include <wpinet/WebServer.h>
+#include "LyonLib/utils/TimerRBL.h"
+#include "frc/smartdashboard/SmartDashboard.h"
 
 Robot::Robot() {}
 void Robot::RobotInit() {
@@ -49,14 +51,24 @@ void Robot::RobotPeriodic() {
 void Robot::DriverStationConnected() {
   //link driver station to data logging
   frc::DriverStation::StartDataLog(frc::DataLogManager::GetLog());
+  m_container.ShootParamCalculator.SetAlliance(frc::DriverStation::GetAlliance().value());
+  m_container.turretSubsystem.SetAlliance(frc::DriverStation::GetAlliance().value());
 }
 
 void Robot::AutonomousInit() {}
 void Robot::AutonomousPeriodic() {}
 void Robot::AutonomousExit() {}
 
-void Robot::TeleopInit() {}
-void Robot::TeleopPeriodic() {}
+void Robot::TeleopInit() {
+  m_container.ShootParamCalculator.SetRobotPos({0.0_m,0.0_m,{}},TimerRBL::GetFPGATimestampInSeconds());
+  m_container.turretSubsystem.SetControlMode(TurretConstants::MainControlMode);
+}
+void Robot::TeleopPeriodic() {
+  m_container.robotOrientation = WRAP_ANGLE_0_TO_360(m_container.robotOrientation - NDEADBAND(m_container.operatorGamepad.GetLeftX(),0.05));
+  frc::SmartDashboard::PutNumber("robotOrientation", m_container.robotOrientation);
+  m_container.ShootParamCalculator.CalculateNewParameters(*m_container.pShootParameter,{0.0_m,0.0_m,{units::degree_t(m_container.robotOrientation)}},TimerRBL::GetFPGATimestampInSeconds());
+  m_container.turretSubsystem.SetRobotOrientation(NDEGtoRAD(m_container.robotOrientation));
+}
 void Robot::TeleopExit() {}
 
 void Robot::DisabledInit() {

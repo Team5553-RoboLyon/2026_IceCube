@@ -18,17 +18,21 @@
 #include "subsystems/turret/TurretIOSpark.h"
 #include "subsystems/turret/TurretIOSim.h"
 #include "subsystems/turret/TurretSubsystem.h"
+#include "subsystems/ShootParametersCalculator.h"
 
 class RobotContainer {
  public:
   RobotContainer();
+  ShootParameters* pShootParameter{new ShootParameters};
+  ShootParametersCalculator ShootParamCalculator{};
+  double robotOrientation{0.0};
 
   #if ROBOT_MODEL == SIMULATION
-  ShooterSubsystem shooterSubsystem{new FlywheelIOSim{}, new HoodIOSim{}, new ShootParameters{}};
-  TurretSubsystem turretSubsystem{new TurretIOSim, new ShootParameters};
+  ShooterSubsystem shooterSubsystem{new FlywheelIOSim{}, new HoodIOSim{}, pShootParameter};
+  TurretSubsystem turretSubsystem{new TurretIOSim, pShootParameter};
   #else
-  ShooterSubsystem shooterSubsystem{new FlywheelIOSpark{}, new HoodIOSpark{}, new ShootParameters{}};
-  TurretSubsystem turretSubsystem{new TurretIOSpark, new ShootParameters};
+  ShooterSubsystem shooterSubsystem{new FlywheelIOSpark{}, new HoodIOSpark{}, pShootParameter};
+  TurretSubsystem turretSubsystem{new TurretIOSpark, pShootParameter};
   #endif
 
   Operator operatorGamepad{ControlPanelConstants::OPERATOR_GAMEPAD_PORT, ControlPanelConstants::OPERATOR_GAMEPAD_THRESHOLD};
