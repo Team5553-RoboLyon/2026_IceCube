@@ -60,6 +60,7 @@ class IntakeSubsystem : public frc2::SubsystemBase {
     void ToggleRollerControlMode();
 
     bool IsOut();
+    bool IsPivotMoving();
     bool IsInitialized() { return m_isInitialized; }
     // void ResetPivotEncoder();
     // void SetManualControlInput(const double value);

@@ -18,6 +18,7 @@ IntakeSubsystem::IntakeSubsystem(RollerIO *pRollerIO, PivotIO *pPivotIO) :
 
 void IntakeSubsystem::SetWantedState(const WantedState wantedState)
 {
+    if (!(m_wantedState == WantedState::PROTECT_YOURSELF_AGAINST_EVIL_PILOT && wantedState != WantedState::STAND_BY))
         m_wantedState = wantedState;
 }
 
@@ -140,9 +141,15 @@ void IntakeSubsystem::ToggleRollerControlMode()
 
 bool IntakeSubsystem::IsOut()
 {
-    return m_systemState == SystemState::CHILLING_OUT ||
-           m_systemState == SystemState::REFUELING || 
-           m_systemState == SystemState::EJECTING;
+    return pivotInputs.pivotPos <= PivotConstants::Position::MIN + PivotConstants::Position::RANGE/2;
+}
+
+bool IntakeSubsystem::IsPivotMoving()
+{
+    return (m_systemState == SystemState::EXTENDING ||
+            m_systemState == SystemState::COMING_BACK_HOME ||
+            m_systemState == SystemState::FEELING_LIKE_AN_INDEXER ||
+            m_systemState == SystemState::GOING_TO_SAFE_POS);
 }
 
 // void IntakeSubsystem::SetManualControlInput(const double value)
@@ -217,7 +224,6 @@ void IntakeSubsystem::Periodic()
                         break;
 
                     case SystemState::IDLE:
-                    case SystemState::FEELING_LIKE_AN_INDEXER:
                     case SystemState::STAYING_AT_HOME:
                     case SystemState::COMING_BACK_HOME:
                         m_pivotTargetPos = PivotConstants::Position::HOME_POS;
@@ -228,6 +234,10 @@ void IntakeSubsystem::Periodic()
                     case SystemState::GOING_TO_SAFE_POS:
                         m_pivotTargetPos = PivotConstants::Position::SAFETY_POS;
                         m_pivotOutput = m_pivotPIDController.CalculateWithRealTime(m_pivotTargetPos, pivotInputs.pivotPos, m_timestamp);
+                        break;
+
+                    case SystemState::FEELING_LIKE_AN_INDEXER:
+                        m_pivotOutput = PivotConstants::DutyCycle::INDEXER_MODE;
                         break;
 
                     default:
@@ -337,7 +347,7 @@ void IntakeSubsystem::RunStateMachine()
     switch (m_currentWantedState) //Handle State transition
     {
         case WantedState::STAND_BY :
-            if (pivotInputs.pivotPos <= PivotConstants::Position::MIN + PivotConstants::Position::RANGE/2)
+            if (IsOut())
             {
                 m_systemState = SystemState::EXTENDING;
             }
@@ -348,7 +358,7 @@ void IntakeSubsystem::RunStateMachine()
         case WantedState::REFUEL:
             if (m_systemState != SystemState::REFUELING)
             {
-                if(IsOut())
+                if(IsOut() && !IsPivotMoving())
                 {
                     m_systemState = SystemState::REFUELING;
                 }
@@ -360,7 +370,7 @@ void IntakeSubsystem::RunStateMachine()
         case WantedState::EJECT:
             if (m_systemState != SystemState::EJECTING)
             {
-                if(IsOut())
+                if(IsOut() && !IsPivotMoving())
                 {
                     m_systemState = SystemState::EJECTING;
                 }
@@ -377,7 +387,7 @@ void IntakeSubsystem::RunStateMachine()
             break;
 
         case WantedState::EXTEND:
-            if(!IsOut())
+            if(!IsOut() || IsPivotMoving())
             {
                 m_systemState = SystemState::EXTENDING;
             }
@@ -390,7 +400,7 @@ void IntakeSubsystem::RunStateMachine()
             break;
 
         case WantedState::RETURN_AT_HOME:
-            if(IsOut())
+            if(IsOut() || IsPivotMoving())
             {
                 m_systemState = SystemState::COMING_BACK_HOME;
             }
