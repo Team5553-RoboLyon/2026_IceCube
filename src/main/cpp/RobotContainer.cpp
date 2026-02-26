@@ -31,13 +31,13 @@ void RobotContainer::ConfigureBindings() {
                                           .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
     operatorGamepad.SHOOT_TO_HUB.ToggleOnTrue(SetWantedSuperstructureSuperStateCmd(&superstructure,Superstructure::WantedSuperState::SHOOT_TO_HUB)
                                           .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
-    operatorGamepad.PREPARE_CLIMB.ToggleOnTrue(SetWantedSuperstructureSuperStateCmd(&superstructure,Superstructure::WantedSuperState::PREPARE_CLIMB)
+    operatorGamepad.PREPARE_SHOOT_TO_ALLIANCE_ZONE.ToggleOnTrue(SetWantedSuperstructureSuperStateCmd(&superstructure,Superstructure::WantedSuperState::PREPARE_SHOOT_TO_ALLIANCE_ZONE)
                                           .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
     operatorGamepad.RETRACT_CLIMB.ToggleOnTrue(SetWantedSuperstructureSuperStateCmd(&superstructure,Superstructure::WantedSuperState::RETRACT_CLIMBER)
                                           .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
     operatorGamepad.CLIMB.ToggleOnTrue(SetWantedSuperstructureSuperStateCmd(&superstructure,Superstructure::WantedSuperState::CLIMB)
                                           .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
-    operatorGamepad.PREPARE_REFUEL.ToggleOnTrue(SetWantedSuperstructureSuperStateCmd(&superstructure,Superstructure::WantedSuperState::PREPARE_REFUEL)
+    operatorGamepad.SHOOT_TO_AZ.ToggleOnTrue(SetWantedSuperstructureSuperStateCmd(&superstructure,Superstructure::WantedSuperState::SHOOT_TO_ALLIANCE_ZONE)
                                           .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
     operatorGamepad.RETRACT_INTAKE.ToggleOnTrue(SetWantedSuperstructureSuperStateCmd(&superstructure,Superstructure::WantedSuperState::RETRACT_INTAKE)
                                           .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));

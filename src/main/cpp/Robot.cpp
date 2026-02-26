@@ -51,6 +51,7 @@ void Robot::RobotPeriodic() {
 void Robot::DriverStationConnected() {
   //link driver station to data logging
   frc::DriverStation::StartDataLog(frc::DataLogManager::GetLog());
+  m_container.superstructure.SetAlliance();
 }
 
 void Robot::AutonomousInit() {}

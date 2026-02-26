@@ -98,10 +98,6 @@ void TurretSubsystem::SetManualControlInput(const double value)
     }
 }
 
-void TurretSubsystem::SetAlliance(frc::DriverStation::Alliance alliance)
-{
-    m_isInBlueAlliance = (alliance == frc::DriverStation::Alliance::kBlue);
-}
 
 // This method will be called once per scheduler run
 void TurretSubsystem::Periodic()

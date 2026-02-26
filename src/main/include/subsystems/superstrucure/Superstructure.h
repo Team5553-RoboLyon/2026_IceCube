@@ -36,7 +36,7 @@ class Superstructure final : public frc2::SubsystemBase
         //Basic states : Do only one action
         REFUEL = 7,
         // FEED_ALLY = 8,
-        // SHOOT_TO_ALLIANCE_ZONE = 9,
+        SHOOT_TO_ALLIANCE_ZONE = 9,
         SHOOT_TO_HUB = 10,
         PREPARE_CLIMB = 11,
         RETRACT_CLIMBER = 12,
@@ -49,11 +49,11 @@ class Superstructure final : public frc2::SubsystemBase
         // PREPARE_CLIMB_SHOOTING_AT_HUB = 17+1,
         // PREPARE_CLIMB_FEEDING_ALLY = 18+1,
         // SHOOT_AT_HUB_REFUELING = 19+1,
-        // SHOOT_AT_ALLIANCE_ZONE_REFUELING = 20+1,
+        // SHOOT_AT_ALLIANCE_ZONE_REFUELING = 21,
         // FEED_ALLY_REFUELING = 21+1,
         //Optional states : States that are not necessary for the functioning of the robot but prepare for future actions
-        // PREPARE_SHOOT_TO_HUB = 22+1,
-        // PREPARE_SHOOT_TO_ALLAICNE_ZONE = 23+1,
+        PREPARE_SHOOT_TO_HUB = 23,
+        PREPARE_SHOOT_TO_ALLIANCE_ZONE = 24,
         // PREPARE_ALLY_FEEDING = 24+1,
         PREPARE_REFUEL = 26,
         RETRACT_INTAKE = 27,
@@ -64,26 +64,28 @@ class Superstructure final : public frc2::SubsystemBase
         IDLE = 0,
         //steady states
         REFUELING = 1,
-        SHOOTING_TO_HUB = 2,
-        READY_TO_REFUEL = 3,
-        INTAKE_SAFE = 4,
-        READY_TO_CLIMB = 5,
-        CLIMBED = 6,
-        AT_HOME = 7,
+        SHOOTING_TO_ALLIANCE_ZONE = 2,
+        SHOOTING_TO_HUB = 2+1,
+        READY_TO_REFUEL = 3+1,
+        INTAKE_SAFE = 4+1,
+        READY_TO_CLIMB = 5+1,
+        CLIMBED = 6+1,
+        AT_HOME = 7+1,
         //transition states
-        EXTENDING_INTAKE = 8,
-        PREPARING_TO_SHOOT = 9,
-        MOVING_INTAKE_TO_SAFE_POS = 10,
-        PREPARING_CLIMB = 11,
-        CLIMBING = 12,
-        RETRACTING_INTAKE = 13,
-        RETRACTING_CLIMBER = 14
+        EXTENDING_INTAKE = 8+1,
+        PREPARING_ALLIANCE_ZONE_SHOOT = 9+1,
+        PREPARING_TO_SHOOT = 10+1,
+        MOVING_INTAKE_TO_SAFE_POS = 11+1,
+        PREPARING_CLIMB = 12+1,
+        CLIMBING = 13+1,
+        RETRACTING_INTAKE = 14+1,
+        RETRACTING_CLIMBER = 1+15,
     };
 
     void SetWantedSuperState(WantedSuperState wantedSuperState);
     SystemSuperState GetSystemSuperState();
 
-    void SetAlliance(frc::DriverStation::Alliance alliance);
+    void SetAlliance();
 
     void Periodic() override;
 
