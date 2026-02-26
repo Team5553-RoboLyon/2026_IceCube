@@ -17,7 +17,8 @@ struct IndexerIOInputs
     double clodeCurrent = 0.0;
     double clodeTemperature = 0.0;
 
-    bool isTriggered = false;
+    bool isThereABall = false;
+    bool wasThereABall = false;
     int nbrOfBallShot = 0.0;
 };
 
