@@ -34,7 +34,7 @@ IndexerIOSpark::IndexerIOSpark()
 
 void IndexerIOSpark::UpdateInputs(IndexerIOInputs& inputs) 
 {
-        inputs.isindexerMotorConnected = (m_indexerMotor.GetBusVoltage() !=0.0) && !m_indexerMotor.GetFaults().can;
+    inputs.isindexerMotorConnected = (m_indexerMotor.GetBusVoltage() !=0.0) && !m_indexerMotor.GetFaults().can;
 
     inputs.indexerMotorAppliedVoltage = m_indexerMotor.GetAppliedOutput() * IndexerConstants::indexerMotor::VOLTAGE_COMPENSATION;
     inputs.indexerMotorBusVoltage = m_indexerMotor.GetBusVoltage();
@@ -49,13 +49,8 @@ void IndexerIOSpark::UpdateInputs(IndexerIOInputs& inputs)
     inputs.clodeCurrent = m_clodeMotor.GetOutputCurrent();
     inputs.clodeTemperature = m_clodeMotor.GetMotorTemperature();
 
-    if(m_bestSensor.Get() == IndexerConstants::theMostImportantSensorOfTheRobot::IS_TRIGERED && !inputs.isTriggered)
-    {
-        inputs.nbrOfBallShot++;
-    }
-
-    inputs.isTriggered = m_bestSensor.Get() == IndexerConstants::theMostImportantSensorOfTheRobot::IS_TRIGERED;
-
+    inputs.wasThereABall = inputs.isThereABall;
+    inputs.isThereABall = m_bestSensor.Get() == IndexerConstants::theMostImportantSensorOfTheRobot::IS_TRIGERED;
 
     frc::SmartDashboard::PutNumber("indexer/IndexerVelocity", m_indexerMotor.GetEncoder().GetVelocity()/3);
 }

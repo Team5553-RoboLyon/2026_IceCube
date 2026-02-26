@@ -236,7 +236,7 @@ void IndexerSubsystem::Periodic()
     frc::SmartDashboard::PutNumber("indexer/SystemState", (int)m_systemState);
     frc::SmartDashboard::PutNumber("indexer/ControlMode", (int)m_controlMode);
     frc::SmartDashboard::PutBoolean("indexer/isInit", m_isInitialized);
-    frc::SmartDashboard::PutBoolean("indexer/IRBreaker", inputs.isTriggered);
+    frc::SmartDashboard::PutBoolean("indexer/IRBreaker", inputs.isThereABall);
     frc::SmartDashboard::PutNumber("indexer/Motor Voltage", m_output);
     frc::SmartDashboard::PutNumber("indexer/Target Velocity", m_targetVelocity);
     frc::SmartDashboard::PutNumber("indexer/Clode Voltage ", m_clodeOutput);
@@ -249,7 +249,7 @@ void IndexerSubsystem::RunStateMachine()
     switch (m_currentWantedState) //Handle State transition
     {
         case WantedState::STAND_BY :
-            if (m_systemState != SystemState::SLEEPING)
+            if (m_systemState != SystemState::SLEEPING && m_systemState != SystemState::READY_TO_SHOOT)
                 m_systemState = SystemState::SLEEPING;
             break; //end of Others States
 
@@ -280,16 +280,33 @@ void IndexerSubsystem::RunStateMachine()
     switch (m_systemState) // Change System State
     {
         case SystemState::IDLE:
+            if (inputs.isThereABall)
+            {
+                m_systemState = SystemState::READY_TO_SHOOT;
+            }
+            else
+            {
+                m_systemState = SystemState::SLEEPING;
+            }
+
         case SystemState::SLEEPING:
         case SystemState::FEEDING_SHOOTER:
-        case SystemState::EVACUATING_SHOOTER:
         case SystemState::READY_TO_SHOOT:
             break;
 
+        case SystemState::EVACUATING_SHOOTER:
+            if (!inputs.isThereABall && inputs.wasThereABall)
+            {
+                m_systemState = SystemState::IDLE;
+            }
+            break;
+
         case SystemState::PREPARING_SHOOT:
-            if (inputs.isTriggered)
+            if (inputs.isThereABall)
             {
                 m_systemState = SystemState::READY_TO_SHOOT;
+                m_wantedState = WantedState::STAND_BY;
+                m_currentWantedState = m_wantedState;
             }
             break;
 
