@@ -34,6 +34,51 @@ void Superstructure::SetAlliance()
     m_shootParameterCalculator.SetAlliance(frc::DriverStation::GetAlliance().value());
 }
 
+void Superstructure::EnableSubsystems()
+{
+    m_pIntake->SetControlMode(PivotConstants::MainControlMode, RollerConstants::MainControlMode);
+    m_pIndexer->SetControlMode(IndexerConstants::MainControlMode);
+    m_pTurret->SetControlMode(TurretConstants::MainControlMode);
+    m_pShooter->SetControlMode(FlywheelConstants::MainControlMode, HoodConstants::MainControlMode);
+    m_pClimber->SetControlMode(ClimberConstants::MainControlMode);
+}
+
+void Superstructure::DisableSubsystems()
+{
+    m_pIntake->SetControlMode(ControlMode::DISABLED, ControlMode::DISABLED);
+    m_pIndexer->SetControlMode(ControlMode::DISABLED);
+    m_pTurret->SetControlMode(ControlMode::DISABLED);
+    m_pShooter->SetControlMode(ControlMode::DISABLED, ControlMode::DISABLED);
+    m_pClimber->SetControlMode(ControlMode::DISABLED);
+}
+
+void Superstructure::ToggleIntakeControlMode()
+{
+    m_pIntake->TogglePivotControlMode();
+    m_pIntake->ToggleRollerControlMode();
+}
+
+void Superstructure::ToggleIndexerControlMode()
+{
+    m_pIndexer->ToggleControlMode();
+}
+
+void Superstructure::ToggleTurretControlMode()
+{
+    m_pTurret->ToggleControlMode();
+}
+
+void Superstructure::ToggleShooterControlMode()
+{
+    m_pShooter->ToggleHoodControlMode();
+    m_pShooter->ToggleFlywheelControlMode();
+}
+
+void Superstructure::ToggleClimberControlMode()
+{
+    m_pClimber->ToggleControlMode();
+}
+
 void Superstructure::Periodic()
 {
     m_currentWantedSuperState = m_wantedSuperState;

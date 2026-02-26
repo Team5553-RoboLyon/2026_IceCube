@@ -42,11 +42,19 @@ void IntakeSubsystem::SetPivotControlMode(ControlMode mode)
             m_pivotTargetPos = pivotInputs.pivotPos;
 
             m_pivotControlMode = mode;
+
+            m_wantedState = WantedState::STAND_BY;
+            m_currentWantedState = m_wantedState;
+            m_systemState = SystemState::IDLE;
             break; //end of ControlMode::POSITION_DUTYCYCLE_PID
 
         case ControlMode::MANUAL_DUTY_CYCLE:
             m_pivotOutput = PivotConstants::DutyCycle::REST;
             m_pivotManualControlInput = 0.0;
+
+            m_wantedState = WantedState::STAND_BY;
+            m_currentWantedState = m_wantedState;
+            m_systemState = SystemState::IDLE;
 
             m_pivotControlMode = mode;
             break; //end of ControlMode::MANUAL_DUTY_CYCLE

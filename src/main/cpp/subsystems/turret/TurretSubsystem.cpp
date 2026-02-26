@@ -40,6 +40,10 @@ void TurretSubsystem::SetControlMode(const ControlMode mode)
             m_output = TurretConstants::DutyCycle::REST;
             m_targetPos = inputs.orientation;
 
+            m_wantedState = WantedState::STAND_BY;
+            m_currentWantedState = m_wantedState;
+            m_systemState = SystemState::IDLE;
+
             m_controlMode = mode;
             break; //end of ControlMode::MANUAL_DUTY_CYCLE
 
@@ -47,6 +51,10 @@ void TurretSubsystem::SetControlMode(const ControlMode mode)
             m_output = TurretConstants::DutyCycle::REST;
             m_manualControlInput = TurretConstants::DutyCycle::REST;
             m_targetPos = inputs.orientation;
+
+            m_wantedState = WantedState::STAND_BY;
+            m_currentWantedState = m_wantedState;
+            m_systemState = SystemState::IDLE;
 
             m_controlMode = mode;
             break; //end of ControlMode::MANUAL_POSITION

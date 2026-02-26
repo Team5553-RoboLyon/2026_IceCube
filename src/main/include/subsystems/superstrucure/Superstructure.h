@@ -87,6 +87,15 @@ class Superstructure final : public frc2::SubsystemBase
 
     void SetAlliance();
 
+    void EnableSubsystems();
+    void DisableSubsystems();
+
+    void ToggleIntakeControlMode();
+    void ToggleIndexerControlMode();
+    void ToggleTurretControlMode();
+    void ToggleShooterControlMode();
+    void ToggleClimberControlMode();
+
     void Periodic() override;
 
     void SetRobotPos(frc::Pose2d robotPos);
