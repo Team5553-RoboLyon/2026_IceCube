@@ -27,12 +27,16 @@
 #include "subsystems/turret/TurretIOSpark.h"
 #include "subsystems/turret/TurretIOSim.h"
 #include "subsystems/turret/TurretSubsystem.h"
+#include "subsystems/ShootParametersCalculator.h"
 
 #include "subsystems/superstrucure/Superstructure.h"
 
 class RobotContainer {
  public:
   RobotContainer();
+  ShootParameters* pShootParameter{new ShootParameters};
+  ShootParametersCalculator ShootParamCalculator{};
+  double robotOrientation{0.0};
 
   Operator operatorGamepad{ControlPanelConstants::OPERATOR_GAMEPAD_PORT, ControlPanelConstants::OPERATOR_GAMEPAD_THRESHOLD};
   frc::Joystick forwardJoystick{ControlPanelConstants::JOYSTICK_FORWARD_ID};

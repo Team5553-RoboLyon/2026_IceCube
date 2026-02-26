@@ -40,7 +40,7 @@ void Superstructure::Periodic()
     m_currentWantedSuperState = m_wantedSuperState;
     m_timestamp = TimerRBL::GetFPGATimestampInSeconds();
 
-    m_shootParameterCalculator.CalculateNewParameters(*m_pShootParameters, m_robotPos, m_timestamp);
+    m_shootParameterCalculator.CalculateHubNewParameters(*m_pShootParameters, m_robotPos, m_timestamp);
 
     RunSuperStateMachine();
 

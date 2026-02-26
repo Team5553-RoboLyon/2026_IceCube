@@ -20,12 +20,15 @@ class ShootParametersCalculator
 
      void SetAlliance(frc::DriverStation::Alliance alliance);
      void SetRobotPos(frc::Pose2d robotPos, double timestamp);
-     void CalculateNewParameters(ShootParameters& params, frc::Pose2d robotPos, double timestamp);
+     void CalculateHubNewParameters(ShootParameters& params, frc::Pose2d robotPos, double timestamp);
+     void CalculateAllianceZoneNewParameters(ShootParameters& params, frc::Pose2d robotPos, double timestamp);
+
 
     private:
 
      frc::Pose2d m_lastRobotPos;
-     frc::Pose2d m_targetPos;
+     frc::Pose2d m_hubTargetPos;
+     frc::Pose2d m_allianceZoneTargetPose;
      double m_lastTimestamp = 0.0;
      wpi::interpolating_map<double,double> m_hoodPosMap; //TODO : do tests to get at least 10 values for each interpolating map
      wpi::interpolating_map<double,double> m_flywheelSpeedMap;

@@ -6,6 +6,7 @@
 
 #include <frc2/command/ConditionalCommand.h>
 #include <frc2/command/InstantCommand.h>
+#include <frc2/command/ParallelCommandGroup.h>
 #include <frc2/command/Commands.h>
 
 #include "commands/SetWantedSuperstructureSuperStateCmd.h"

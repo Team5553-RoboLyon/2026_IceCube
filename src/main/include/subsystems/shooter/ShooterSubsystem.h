@@ -30,7 +30,9 @@ class ShooterSubsystem : public frc2::SubsystemBase {
       FEED_ALLY = 2,
       STOP = 3,
       REVERSE = 4,
-      KEEP_ALL_FOR_YOU = 5
+      KEEP_ALL_FOR_YOU = 5,
+      PREPARE_HUB_SHOOTING = 6,
+      PREPARE_TO_KEEP_ALL = 7,
     };
 
     enum class SystemState

@@ -56,16 +56,6 @@ public:
     Operator(int port, double threshold) : XboxGamepad(port, threshold){};
     ~Operator() override = default;
 
-    
-    frc2::Trigger STAND_BY{_YButton};
-    frc2::Trigger REFUEL{_R2AsButton};
-    frc2::Trigger EJECT{_L2AsButton};
-    frc2::Trigger BECOME_AN_INDEXER{_XButton};
-    frc2::Trigger EXTEND{_L1Button};
-    frc2::Trigger RETURN_AT_HOME{_R1Button};
-    frc2::Trigger PROTECT_YOURSELF{_optionsButton};
-
-
     void SetRumble(RumbleType type, double value)
     {
         XboxGamepad::SetRumble(type, value);
@@ -81,6 +71,5 @@ public:
         XboxGamepad::SetRumble(type, 1.0);
         XboxGamepad::SetRumble(type, 1.0);
     }
-
-};
 #endif
+};
