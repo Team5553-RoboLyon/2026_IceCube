@@ -23,7 +23,8 @@ void IndexerIOSim::UpdateInputs(IndexerIOInputs &inputs)
     inputs.clodeCurrent = m_clodeSim.GetCurrentDraw().value();
     inputs.clodeTemperature = 24.0;
 
-    inputs.isTriggered = m_IRBreakerSim.GetValue();
+    inputs.wasThereABall = inputs.isThereABall;
+    inputs.isThereABall = m_IRBreakerSim.GetValue();
 }
 
 void IndexerIOSim::SetVoltage(double voltage, double clodeVoltage)

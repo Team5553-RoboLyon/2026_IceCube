@@ -29,7 +29,7 @@ class Superstructure final : public frc2::SubsystemBase
         // INIT = 1,
         //Priority states : If they have been used it's because we need to use them (mostly emergency states)
         PROTECT_INTAKE = 2,
-        // EVACUATE_SHOOTER = 3,
+        EVACUATE_SHOOTER = 3,
         // EJECT_FROM_INTAKE = 4,
         STOP_SHOOT = 5,
         STOP_INTAKE = 6,
@@ -48,7 +48,7 @@ class Superstructure final : public frc2::SubsystemBase
         // PREPARE_CLIMB_REFUELING = 16+1,
         // PREPARE_CLIMB_SHOOTING_AT_HUB = 17+1,
         // PREPARE_CLIMB_FEEDING_ALLY = 18+1,
-        // SHOOT_AT_HUB_REFUELING = 19+1,
+        SHOOT_AT_HUB_REFUELING = 20,
         // SHOOT_AT_ALLIANCE_ZONE_REFUELING = 21,
         // FEED_ALLY_REFUELING = 21+1,
         //Optional states : States that are not necessary for the functioning of the robot but prepare for future actions
@@ -71,15 +71,20 @@ class Superstructure final : public frc2::SubsystemBase
         READY_TO_CLIMB = 5+1,
         CLIMBED = 6+1,
         AT_HOME = 7+1,
+        SHOOTING_TO_HUB_WHILE_REFUELING = 9,
         //transition states
-        EXTENDING_INTAKE = 8+1,
-        PREPARING_ALLIANCE_ZONE_SHOOT = 9+1,
-        PREPARING_TO_SHOOT = 10+1,
-        MOVING_INTAKE_TO_SAFE_POS = 11+1,
-        PREPARING_CLIMB = 12+1,
-        CLIMBING = 13+1,
-        RETRACTING_INTAKE = 14+1,
-        RETRACTING_CLIMBER = 1+15,
+        EXTENDING_INTAKE = 8+1+1,
+        PREPARING_ALLIANCE_ZONE_SHOOT = 9+1+1,
+        PREPARING_TO_SHOOT = 10+1+1,
+        MOVING_INTAKE_TO_SAFE_POS = 11+1+1,
+        PREPARING_CLIMB = 12+1+1,
+        CLIMBING = 13+1+1,
+        RETRACTING_INTAKE = 14+1+1,
+        RETRACTING_CLIMBER = 16+1,
+        EVACUATING_SHOOTER = 1+17,
+        PREPARING_TO_SHOOT_WHILE_REFUELING,
+        PREPARING_TO_SHOOT_WHILE_EXTENDING,
+        SHOOTING_TO_HUB_WHILE_EXTENDING
     };
 
     void SetWantedSuperState(WantedSuperState wantedSuperState);

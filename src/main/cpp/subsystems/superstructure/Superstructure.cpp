@@ -239,6 +239,14 @@ void Superstructure::Periodic()
             m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STOWED);
             break;
 
+        case SystemSuperState::EVACUATING_SHOOTER:
+            m_pIntake->SetWantedState(IntakeSubsystem::WantedState::EXTEND);
+            m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::EVACUATE_SHOOTER);
+            m_pTurret->SetWantedState(TurretSubsystem::WantedState::STAND_BY);
+            m_pShooter->SetWantedState(ShooterSubsystem::WantedState::REVERSE);
+            m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STOWED);
+            break;
+
         default:
             DEBUG_ASSERT(false,"Superstructure : unknwon system super state used");
             break;
@@ -383,10 +391,22 @@ void Superstructure::RunSuperStateMachine()
             }
             break;
 
+        case WantedSuperState::EVACUATE_SHOOTER:
+            m_systemSuperState = SystemSuperState::EVACUATING_SHOOTER;
+            break;
+
+        case WantedSuperState::SHOOT_AT_HUB_REFUELING:
+            if(m_systemSuperState != SystemSuperState::SHOOTING_TO_HUB_WHILE_REFUELING)
+            {
+                m_systemSuperState = SystemSuperState::PREPARING_TO_SHOOT_WHILE_EXTENDING;
+            }
+            break;
+
         default:
             DEBUG_ASSERT(false, "Superstructure : unknown wanted super state used");
             break;
     }
+
 
     switch (m_systemSuperState)
     {
@@ -502,6 +522,53 @@ void Superstructure::RunSuperStateMachine()
             if(m_pClimber->GetSystemState() == ClimberSubsystem::SystemState::STOWED_HOME)
             {
                 m_systemSuperState = SystemSuperState::IDLE;
+            }
+            break;
+
+        case SystemSuperState::EVACUATING_SHOOTER:
+            if(m_pIndexer->GetSystemState() == IndexerSubsystem::SystemState::SLEEPING &&
+               (m_pShooter->GetSystemState() == ShooterSubsystem::SystemState::RAMPING_BACKWARD
+                 || m_pShooter->GetSystemState() == ShooterSubsystem::SystemState::SHOOTING_BACKWARD))
+                {
+                    m_systemSuperState = SystemSuperState::IDLE;
+                    m_wantedSuperState = WantedSuperState::STAND_BY;
+                    m_currentWantedSuperState = m_wantedSuperState;
+                }
+                break;
+
+        case SystemSuperState::SHOOTING_TO_HUB_WHILE_EXTENDING:
+        case SystemSuperState::PREPARING_TO_SHOOT_WHILE_EXTENDING:
+            if(m_pIntake->GetSystemState() == IntakeSubsystem::SystemState::REFUELING
+               && m_pShooter->GetSystemState() == ShooterSubsystem::SystemState::AT_SHOOT_SPEED
+               && m_pTurret->GetSystemState() == TurretSubsystem::SystemState::ALIGNED_WITH_HUB)
+            {
+                m_systemSuperState = SystemSuperState::SHOOTING_TO_HUB_WHILE_REFUELING;
+            }
+            else if (m_pIntake->GetSystemState() == IntakeSubsystem::SystemState::REFUELING)
+            {
+                m_systemSuperState = SystemSuperState::PREPARING_TO_SHOOT_WHILE_REFUELING;
+            }
+            else if (m_pShooter->GetSystemState() == ShooterSubsystem::SystemState::AT_SHOOT_SPEED
+                     && m_pTurret->GetSystemState() == TurretSubsystem::SystemState::ALIGNED_WITH_HUB)
+            {
+                m_systemSuperState = SystemSuperState::SHOOTING_TO_HUB_WHILE_EXTENDING;
+            }
+            else
+            {
+                m_systemSuperState = SystemSuperState::PREPARING_TO_SHOOT_WHILE_EXTENDING;
+            }
+            break;
+
+        case SystemSuperState::SHOOTING_TO_HUB_WHILE_REFUELING:
+        case SystemSuperState::PREPARING_TO_SHOOT_WHILE_REFUELING:
+            if(m_pShooter->GetSystemState() == ShooterSubsystem::SystemState::AT_SHOOT_SPEED
+                                && m_pTurret->GetSystemState() == TurretSubsystem::SystemState::ALIGNED_WITH_HUB)
+            {
+                m_systemSuperState = SystemSuperState::SHOOTING_TO_HUB_WHILE_REFUELING;
+            }
+            else
+            {
+                m_systemSuperState = SystemSuperState::PREPARING_TO_SHOOT_WHILE_REFUELING;
             }
             break;
 
