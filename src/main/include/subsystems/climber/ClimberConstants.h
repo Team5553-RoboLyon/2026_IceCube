@@ -32,7 +32,7 @@ namespace ClimberConstants
     {
         constexpr double GEAR_RATIO = 125.0; //ul
         constexpr double FREE_SPEED = Motor::VOLTAGE_COMPENSATION * Motor::KV; //RPM
-        constexpr double DRUM_RADIUS = 0.024; //in m
+        constexpr double GEAR_RADIUS = 0.024; //in m
     }
 
     namespace Simulation
@@ -49,7 +49,7 @@ namespace ClimberConstants
         constexpr int ID_CHANNEL_B = 6;
         constexpr bool INVERTED = false;
         
-        constexpr double DISTANCE_PER_PULSE = Specifications::DRUM_RADIUS*2.0*NF64_PI/ENCODER_TICKS_PER_REVOLUTION_K2X; //in mm
+        constexpr double DISTANCE_PER_PULSE = Specifications::GEAR_RADIUS*2.0*NF64_PI/ENCODER_TICKS_PER_REVOLUTION_K2X; //in mm
     }
     namespace LimitSwitch
     {
@@ -105,7 +105,7 @@ namespace ClimberConstants
         constexpr double MAX = 1.0; 
         constexpr double MIN = -1.0;
         constexpr double REST = 0.0;
-        constexpr double CALIBRATION = -0.01; //TUNEME
+        constexpr double CALIBRATION = -0.02; //TUNEME
     }
     
     namespace Settings

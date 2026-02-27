@@ -214,14 +214,10 @@ void ClimberSubsystem::Periodic()
 
 
      // ----------------- Limits -----------------
-    if (inputs.hammerHeight >= ClimberConstants::Settings::TOP_LIMIT && m_output > 0.0)
-        m_output = 0.0;
-    else if (inputs.hammerHeight <= ClimberConstants::Settings::BOTTOM_LIMIT && m_output < 0.0)
-        m_output = 0.0;
-    
-    if(inputs.bottomLimitSwitchValue)
+    if(inputs.bottomLimitSwitchValue == ClimberConstants::LimitSwitch::IS_TRIGGERED ||
+       inputs.irbreakerValue == ClimberConstants::IRbreaker::IS_TRIGGERED)
     {
-        m_output = NMAX(0.0, m_output); // prevent the elevator to go through the bottom
+        m_output = NMAX(0.0, m_output); // prevent the hammer to go through the bottom
         if(!m_isEncoderAlreadyReset)
         {
             m_pClimberIO->ResetPosition();
@@ -234,9 +230,13 @@ void ClimberSubsystem::Periodic()
             }
         }
     }
-    else if (inputs.hammerHeight > ClimberConstants::Settings::TOP_LIMIT)
+    else if (inputs.hammerHeight >= ClimberConstants::Settings::TOP_LIMIT)
     {
-        m_output = NMIN(0.0, m_output); // prevent the straffer to go through the right side
+        m_output = NMIN(0.0, m_output); // prevent the hammer to go through the top
+    }
+    else if (inputs.hammerHeight <= ClimberConstants::Settings::BOTTOM_LIMIT)
+    {
+        m_output = NMAX(0.0, m_output); // prevent the hammer to go through the bottom
     }
     else 
     {

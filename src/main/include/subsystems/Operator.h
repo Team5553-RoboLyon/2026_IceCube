@@ -13,12 +13,10 @@ public:
     Operator(int port, double threshold) : RevGamepad(port, threshold){};
     ~Operator() override = default;
 
-<<<<<<< HEAD
     frc2::Trigger STOWED{_crossButton };
     frc2::Trigger ARMED_TO_CLIMB{_optionsButton };
     frc2::Trigger CLIMBED{_circleButton };
     frc2::Trigger toggle{_triangleButton };
-=======
 
     void SetRumble(RumbleType type, double value)
     {
@@ -35,7 +33,6 @@ public:
 
 };
 
->>>>>>> dev
 #elif (OPERATOR == (VICTOR))
 #include "LyonLib/gamepads/XboxGamepad.h"
 class Operator final : public XboxGamepad

@@ -14,10 +14,10 @@ class ClimberIOSim  final : public ClimberIO
     frc::sim::ElevatorSim m_climberSim{m_motorModel, 
                                       ClimberConstants::Specifications::GEAR_RATIO, 
                                       units::kilogram_t{ClimberConstants::Simulation::CARRIAGE_MASSE}, 
-                                      units::meter_t{ClimberConstants::Specifications::DRUM_RADIUS},
+                                      units::meter_t{ClimberConstants::Specifications::GEAR_RADIUS},
                                       units::meter_t{ClimberConstants::Settings::BOTTOM_LIMIT}, 
                                       units::meter_t{ClimberConstants::Settings::TOP_LIMIT},
-                                      true,
+                                      false,
                                       units::meter_t{ClimberConstants::Settings::BOTTOM_LIMIT}};
   public:
     ClimberIOSim();

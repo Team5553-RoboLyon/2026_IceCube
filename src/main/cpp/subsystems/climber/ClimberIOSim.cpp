@@ -19,8 +19,8 @@ void ClimberIOSim::UpdateInputs(ClimberIOInputs& inputs)
     inputs.motorTemperature = 23.0;
     
     inputs.hammerHeight = m_climberSim.GetPosition().value();
-    inputs.irbreakerValue = m_climberSim.GetPosition().value() <= ClimberConstants::Settings::IRBREAKER_TRIGGER_HEIGHT;
-    inputs.bottomLimitSwitchValue = m_climberSim.HasHitLowerLimit();
+    inputs.irbreakerValue = !m_climberSim.GetPosition().value() <= ClimberConstants::Settings::IRBREAKER_TRIGGER_HEIGHT;
+    inputs.bottomLimitSwitchValue = !m_climberSim.HasHitLowerLimit();
 
     frc::SmartDashboard::PutBoolean("climber/Motor/isMotorConnected", inputs.isMotorConnected);
     frc::SmartDashboard::PutNumber("climber/Motor/motorAppliedVoltage", inputs.motorAppliedVoltage);

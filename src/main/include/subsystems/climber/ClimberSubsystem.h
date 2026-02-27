@@ -72,7 +72,7 @@ class ClimberSubsystem : public frc2::SubsystemBase {
       frc::MechanismRoot2d* m_root{m_mechanism.GetRoot("climber", ClimberConstants::Settings::TOP_LIMIT/2, ClimberConstants::Settings::BOTTOM_LIMIT)};
       frc::MechanismLigament2d* m_hammer{m_root->Append<frc::MechanismLigament2d>("Hammer", 1, 90_deg)};
     // === Status Flags ===
-      bool m_isInitialized = true;
+      bool m_isInitialized = false;
       bool m_isEncoderAlreadyReset = false; // Flag to prevent multiple encoder resets when hitting the bottom limit switch
     // === System Alerts ===
       Alert m_climberMotorDisconnected{"Climber Motor: Disconnected", Alert::AlertType::ERROR};
