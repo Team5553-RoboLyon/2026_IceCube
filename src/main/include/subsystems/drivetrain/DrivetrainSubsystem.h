@@ -83,7 +83,7 @@ class DrivetrainSubsystem : public frc2::SubsystemBase
   std::function<double()> m_fxRotationAxis;
   std::function<bool()> m_fxSlowDriveButton;
   std::function<bool()> m_fxDriveActionButton; //Reverse in Arcade | QuickTurn in Curve
-  bool m_axisAreActive;
+  bool m_axesAreActive;
 
   RateLimiter m_forwardLimitedAxis;
   RateLimiter m_rotationLimitedAxis;
@@ -96,7 +96,7 @@ class DrivetrainSubsystem : public frc2::SubsystemBase
   double m_previousRotation{0.0};
   double m_negInertiaAccumulator{0.0};
   double m_quickStopAccumulator{0.0};
-  const frc::ChassisSpeeds restSpeeds;
+  const frc::ChassisSpeeds restSpeeds{0_mps, 0_mps, 0_rad_per_s};
 
   //AUTO
   choreo::Trajectory<choreo::DifferentialSample> m_desiredAutoTrajectory;

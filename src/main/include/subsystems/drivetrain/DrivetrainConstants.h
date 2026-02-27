@@ -38,10 +38,10 @@ namespace driveConstants
         //BOTH
         constexpr IdleMode IDLE_MODE = IdleMode::kBrake;
         constexpr double VOLTAGE_COMPENSATION = 12.0;
-        constexpr int CURRENT_LIMIT = 40;
-        constexpr double RAMP_RATE = 0.0; //TUNEME
-        constexpr int HOT_THRESHOLD = 60; //TUNEME
-        constexpr int OVERHEATING_THRESHOLD = 75; //TUNEME
+        constexpr int CURRENT_LIMIT = 40; //TUNEME ? : En fonction de la batterie
+        constexpr double RAMP_RATE = 0.0;
+        constexpr int HOT_THRESHOLD = 60;
+        constexpr int OVERHEATING_THRESHOLD = 75;
     }
 
     namespace Specifications
@@ -51,7 +51,7 @@ namespace driveConstants
         constexpr double MOTOR_FREE_SPEED = Motors::VOLTAGE_COMPENSATION * KV; //RPM
         
         constexpr double WHEEL_RADIUS = 2.5 * 0.0254; //m
-        constexpr double TRACKWIDTH = 0.6008685; //m //TUNEME
+        constexpr double TRACKWIDTH = 0.6008685; //m //TUNEME ? : A mesurer précisément ?
         constexpr double BASE_TRACK_RADIUS = TRACKWIDTH/2.0; //m
 
         constexpr double MAX_LINEAR_SPEED = WHEEL_RADIUS * (2.0 * NF64_PI) * ((MOTOR_FREE_SPEED / GEAR_RATIO) / 60.0); // m.s-1

@@ -40,7 +40,7 @@ struct DrivetrainIOInputs
     units::meter_t rightSideTraveledDistance = 0.0_m;
     units::meters_per_second_t rightSideVelocity = 0.0_mps;
 
-    frc::Pose2d robotPosition;
+    frc::Pose2d odometryPosition;
 };
 
 
@@ -55,5 +55,5 @@ public:
     
     virtual void SetChassisSpeed(const frc::ChassisSpeeds &speeds) = 0;
 
-    virtual void ResetPosition(const frc::Pose2d position) = 0;
+    virtual void ResetPosition(const frc::Pose2d& position) = 0;
 };

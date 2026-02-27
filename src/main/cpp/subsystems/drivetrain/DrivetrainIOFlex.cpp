@@ -79,11 +79,9 @@ void DrivetrainIOFlex::UpdateInputs(DrivetrainIOInputs& inputs)
     m_realLeftSideSpeed = inputs.leftSideVelocity.value();
     m_realRightSideSpeed = inputs.rightSideVelocity.value();
 
-    inputs.robotPosition = m_odometry.UpdateUsingFusionTwistExp(inputs.leftSideTraveledDistance.value(), inputs.rightSideTraveledDistance.value(), TIME_PER_CYCLE);
+    inputs.odometryPosition = m_odometry.UpdateUsingFusionTwistExp(inputs.leftSideTraveledDistance.value(), inputs.rightSideTraveledDistance.value(), TIME_PER_CYCLE);
 
-    #ifndef DRIVETRAIN_SMARTDASHBOARD_LOG
-    m_logger.Log(inputs);
-    #else
+    #ifdef DRIVETRAIN_SMARTDASHBOARD_LOG
     frc::SmartDashboard::PutBoolean("Drivetrain/Motors/BackLeft/isConnected", inputs.isBackLeftMotorConnected);
     frc::SmartDashboard::PutBoolean("Drivetrain/Motors/BackRight/isConnected", inputs.isBackRightMotorConnected);
     frc::SmartDashboard::PutBoolean("Drivetrain/Motors/FrontLeft/isConnected", inputs.isFrontLeftMotorConnected);
@@ -108,9 +106,11 @@ void DrivetrainIOFlex::UpdateInputs(DrivetrainIOInputs& inputs)
     frc::SmartDashboard::PutNumber("Drivetrain/LeftSide/Velocity", inputs.leftSideVelocity.value());
     frc::SmartDashboard::PutNumber("Drivetrain/RightSide/TraveledDistance", inputs.rightSideTraveledDistance.value());
     frc::SmartDashboard::PutNumber("Drivetrain/RightSide/Velocity", inputs.rightSideVelocity.value());
+    #else
+    m_logger.Log(inputs);
     #endif
 
-     robotPoseLogger.Log(inputs.robotPosition);
+    m_odometryPoseLogger.Log(inputs.odometryPosition);
 
 }
 
@@ -168,7 +168,7 @@ void DrivetrainIOFlex::SetChassisSpeed(const frc::ChassisSpeeds &speeds)
                                             * driveConstants::Motors::VOLTAGE_COMPENSATION));
 }
 
-void DrivetrainIOFlex::ResetPosition(const frc::Pose2d position)
+void DrivetrainIOFlex::ResetPosition(const frc::Pose2d& position)
 {
     m_encoderLeft.Reset();
     m_encoderRight.Reset();

@@ -19,14 +19,16 @@ void DrivetrainIOSim::UpdateInputs(DrivetrainIOInputs& inputs)
     inputs.frontRightMotorAppliedVoltage = m_rightVoltage;
 
     inputs.backLeftMotorBusVoltage = 12_V;
-    inputs.backRightMotorBusVoltage =12_V;
-    inputs.frontLeftMotorBusVoltage =12_V;
-    inputs.frontRightMotorBusVoltage =12_V;
+    inputs.backRightMotorBusVoltage = 12_V;
+    inputs.frontLeftMotorBusVoltage = 12_V;
+    inputs.frontRightMotorBusVoltage = 12_V;
 
-    inputs.backLeftMotorCurrent = m_drivetrainSim.GetLeftCurrentDraw();
-    inputs.backRightMotorCurrent =  m_drivetrainSim.GetRightCurrentDraw();
-    inputs.frontLeftMotorCurrent =  m_drivetrainSim.GetLeftCurrentDraw();
-    inputs.frontRightMotorCurrent = m_drivetrainSim.GetRightCurrentDraw();
+    auto leftCurrentDraw = m_drivetrainSim.GetLeftCurrentDraw();
+    auto rightCurrentDraw = m_drivetrainSim.GetRightCurrentDraw();
+    inputs.backLeftMotorCurrent = leftCurrentDraw;
+    inputs.backRightMotorCurrent = rightCurrentDraw;
+    inputs.frontLeftMotorCurrent = leftCurrentDraw;
+    inputs.frontRightMotorCurrent = rightCurrentDraw;
 
     inputs.backLeftMotorTemperature = 23.0_degC;
     inputs.backRightMotorTemperature =  23.0_degC;
@@ -38,10 +40,7 @@ void DrivetrainIOSim::UpdateInputs(DrivetrainIOInputs& inputs)
     inputs.rightSideTraveledDistance = m_drivetrainSim.GetRightPosition();
     inputs.rightSideVelocity = m_drivetrainSim.GetRightVelocity();
 
-    // m_realLeftSideSpeed = inputs.leftSideVelocity.value();
-    // m_realRightSideSpeed = inputs.rightSideVelocity.value();
-    // inputs.robotPosition = m_odometry.UpdateUsingFusionTwistExp(inputs.leftSideTraveledDistance.value(), inputs.rightSideTraveledDistance.value(), TIME_PER_CYCLE);
-    inputs.robotPosition = m_drivetrainSim.GetPose();
+    inputs.odometryPosition = m_drivetrainSim.GetPose();
     frc::SmartDashboard::PutBoolean("Drivetrain/Motors/BackLeft/isConnected", inputs.isBackLeftMotorConnected);
     frc::SmartDashboard::PutBoolean("Drivetrain/Motors/BackRight/isConnected", inputs.isBackRightMotorConnected);
     frc::SmartDashboard::PutBoolean("Drivetrain/Motors/FrontLeft/isConnected", inputs.isFrontLeftMotorConnected);
@@ -66,7 +65,7 @@ void DrivetrainIOSim::UpdateInputs(DrivetrainIOInputs& inputs)
     frc::SmartDashboard::PutNumber("Drivetrain/LeftSide/Velocity", inputs.leftSideVelocity.value());
     frc::SmartDashboard::PutNumber("Drivetrain/RightSide/TraveledDistance", inputs.rightSideTraveledDistance.value());
     frc::SmartDashboard::PutNumber("Drivetrain/RightSide/Velocity", inputs.rightSideVelocity.value());
-    robotPoseLogger.Log(inputs.robotPosition);
+    m_odometryPoseLogger.Log(inputs.odometryPosition);
 }
 
 void DrivetrainIOSim::SetVoltage(const units::volt_t leftSideVoltage, const units::volt_t rightSideVoltage)
@@ -91,11 +90,14 @@ void DrivetrainIOSim::SetDutyCycle(const double leftSideDutyCycle, const double 
 
     DEBUG_ASSERT((rightSideDutyCycle <= 1.0) && (rightSideDutyCycle >= -1.0) 
             ,"Drivetrain right side Duty Cycle out of range");
-    
-    m_drivetrainSim.SetInputs(units::volt_t(leftSideDutyCycle * driveConstants::Motors::VOLTAGE_COMPENSATION), 
-                            units::volt_t(rightSideDutyCycle * driveConstants::Motors::VOLTAGE_COMPENSATION));
-    m_leftVoltage = units::volt_t(leftSideDutyCycle * driveConstants::Motors::VOLTAGE_COMPENSATION);
-    m_rightVoltage = units::volt_t(rightSideDutyCycle * driveConstants::Motors::VOLTAGE_COMPENSATION);       
+
+    auto leftVoltageValue = leftSideDutyCycle * driveConstants::Motors::VOLTAGE_COMPENSATION;
+    auto rightVoltageValue = rightSideDutyCycle * driveConstants::Motors::VOLTAGE_COMPENSATION;
+
+    m_drivetrainSim.SetInputs(units::volt_t(leftVoltageValue), 
+                             units::volt_t(rightVoltageValue));
+    m_leftVoltage = units::volt_t(leftVoltageValue);
+    m_rightVoltage = units::volt_t(rightVoltageValue);       
 }
 
 void DrivetrainIOSim::SetChassisSpeed(const frc::ChassisSpeeds &speeds)
@@ -125,8 +127,7 @@ void DrivetrainIOSim::SetChassisSpeed(const frc::ChassisSpeeds &speeds)
     m_drivetrainSim.SetInputs(m_leftVoltage, m_rightVoltage);
 }
 
-void DrivetrainIOSim::ResetPosition(const frc::Pose2d position)
+void DrivetrainIOSim::ResetPosition(const frc::Pose2d& position)
 {
     m_drivetrainSim.SetPose(position);
-    // m_odometry.ResetPose2D(position);
 }

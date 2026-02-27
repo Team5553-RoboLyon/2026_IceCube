@@ -6,13 +6,14 @@
 
 
 DrivetrainSubsystem::DrivetrainSubsystem(DrivetrainIO *pIO) 
-                    : m_pTankDriveIO(pIO), 
-                    m_fxForwardAxis([]() { return 0.0; }),
-                    m_fxRotationAxis([]() { return 0.0; }),
-                    m_fxSlowDriveButton([]() { return false; }),
-                    m_fxDriveActionButton([]() { return false; }),
-                    m_axisAreActive(false)
-{}
+: DrivetrainSubsystem(pIO,
+                    []() { return 0.0; },
+                    []() { return 0.0; },
+                    []() { return false; },
+                    []() { return false; })
+{
+    m_axesAreActive = false;
+}
 
 DrivetrainSubsystem::DrivetrainSubsystem(DrivetrainIO *pIO, 
                     std::function<double()> fxForwardAxis,
@@ -24,7 +25,7 @@ DrivetrainSubsystem::DrivetrainSubsystem(DrivetrainIO *pIO,
                     m_fxRotationAxis(fxRotationAxis),
                     m_fxSlowDriveButton(fxSlowDriveButton),
                     m_fxDriveActionButton(fxDriveActionButton),
-                    m_axisAreActive(true)
+                    m_axesAreActive(true)
 {
 }
 void DrivetrainSubsystem::SetWantedDrive(const DriveMode wantedDrive)
@@ -46,7 +47,7 @@ void DrivetrainSubsystem::ConfigureManualControlInputsAxis(const std::function<d
     m_fxRotationAxis = fxRotationAxis;
     m_fxSlowDriveButton = fxSlowDriveButton;
     m_fxDriveActionButton = fxDriveActionButton;
-    m_axisAreActive = true;
+    m_axesAreActive = true;
 }
 
 void DrivetrainSubsystem::SetAlliance(frc::DriverStation::Alliance alliance)
@@ -266,10 +267,10 @@ frc::ChassisSpeeds DrivetrainSubsystem::FollowPath()
     const choreo::DifferentialSample& currentSample = m_autoSampleToBeApplied.value();
     const frc::ChassisSpeeds targetSpeeds = currentSample.GetChassisSpeeds();
     const frc::Pose2d targetPose = currentSample.GetPose();
-    m_ErreurLogger.Log(inputs.robotPosition.RelativeTo(targetPose));
+    m_ErreurLogger.Log(inputs.odometryPosition.RelativeTo(targetPose));
     m_theoriticalLogger.Log(targetPose);
      
-    output = m_ltvController.Calculate(inputs.robotPosition, targetPose, targetSpeeds.vx, targetSpeeds.omega);
+    output = m_ltvController.Calculate(inputs.odometryPosition, targetPose, targetSpeeds.vx, targetSpeeds.omega);
     return output;
 }
 

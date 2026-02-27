@@ -37,5 +37,5 @@ private:
     wpi::log::DoubleLogEntry rightSideTraveledDistance;
     wpi::log::DoubleLogEntry rightSideVelocity;
 
-    wpi::log::StructLogEntry<frc::Pose2d> robotPosition;
+    wpi::log::StructLogEntry<frc::Pose2d> odometryPosition;
 };
