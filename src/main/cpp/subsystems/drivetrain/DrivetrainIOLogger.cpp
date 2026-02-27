@@ -25,7 +25,7 @@ DrivetrainIOLogger::DrivetrainIOLogger(wpi::log::DataLog& log, const std::string
           leftSideVelocity(log, path + "/LeftSide/velocity"),
           rightSideTraveledDistance(log, path + "/RightSide/traveledDistance"),
           rightSideVelocity(log, path + "/RightSide/velocity"),
-          robotPosition(log, path + "/Robot/position")
+          odometryPosition(log, path + "/Robot/position")
 {}
 
 void DrivetrainIOLogger::Log(const DrivetrainIOInputs& inputs) {
@@ -53,5 +53,5 @@ void DrivetrainIOLogger::Log(const DrivetrainIOInputs& inputs) {
     leftSideVelocity.Append(inputs.leftSideVelocity.value());
     rightSideTraveledDistance.Append(inputs.rightSideTraveledDistance.value());
     rightSideVelocity.Append(inputs.rightSideVelocity.value());
-    robotPosition.Append(inputs.robotPosition);
+    odometryPosition.Append(inputs.odometryPosition);
 }

@@ -51,7 +51,7 @@ class DrivetrainSubsystem : public frc2::SubsystemBase
                           const std::function<bool()> fxDriveActionButton);
   
   void ResetOdometryPose(const frc::Pose2d pose);
-  frc::Pose2d GetOdometryPose() const { return inputs.robotPosition; };
+  frc::Pose2d GetOdometryPose() const { return inputs.odometryPosition; };
   
   void Periodic() override;
 
@@ -83,7 +83,7 @@ class DrivetrainSubsystem : public frc2::SubsystemBase
   std::function<double()> m_fxRotationAxis;
   std::function<bool()> m_fxSlowDriveButton;
   std::function<bool()> m_fxDriveActionButton; //Reverse in Arcade | QuickTurn in Curve
-  bool m_axisAreActive;
+  bool m_axesAreActive;
 
   RateLimiter m_forwardLimitedAxis;
   RateLimiter m_rotationLimitedAxis;
@@ -96,7 +96,7 @@ class DrivetrainSubsystem : public frc2::SubsystemBase
   double m_previousRotation{0.0};
   double m_negInertiaAccumulator{0.0};
   double m_quickStopAccumulator{0.0};
-  const frc::ChassisSpeeds restSpeeds;
+  const frc::ChassisSpeeds restSpeeds{0_mps, 0_mps, 0_rad_per_s};
 
   //AUTO
   TimerRBL m_autoTimer;

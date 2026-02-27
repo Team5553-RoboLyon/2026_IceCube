@@ -6,7 +6,6 @@
 #include "frc/simulation/DifferentialDrivetrainSim.h"
 #include "frc/system/plant/DCMotor.h"
 
-// #include "LyonLib/localization/TankOdometryTracker.h"
 #include "LyonLib/logging/ComplexStructLogger.h"
 
 class DrivetrainIOSim  final : public DrivetrainIO
@@ -22,13 +21,9 @@ class DrivetrainIOSim  final : public DrivetrainIO
     units::meter_t{driveConstants::Specifications::TRACKWIDTH}
   };
 
-  // double m_realLeftSideSpeed{0.0};
-  // double m_realRightSideSpeed{0.0};
-  // TankOdometryTracker m_odometry{&m_realLeftSideSpeed, &m_realRightSideSpeed, driveConstants::Specifications::TRACKWIDTH};
-
   units::volt_t m_leftVoltage{0_V};
   units::volt_t m_rightVoltage{0_V};
-  StructLogger<frc::Pose2d> robotPoseLogger{"Drivetrain/Odometry/Pose2d"};
+  StructLogger<frc::Pose2d> m_odometryPoseLogger{"Drivetrain/Odometry/Pose2d"};
 
   public:
     DrivetrainIOSim();
@@ -42,5 +37,5 @@ class DrivetrainIOSim  final : public DrivetrainIO
 
     frc::ChassisSpeeds GetChassisSpeed() const override;
     
-    void ResetPosition(const frc::Pose2d position) override;
+    void ResetPosition(const frc::Pose2d& position) override;
 };

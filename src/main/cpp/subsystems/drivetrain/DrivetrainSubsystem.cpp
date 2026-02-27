@@ -12,7 +12,7 @@ DrivetrainSubsystem::DrivetrainSubsystem(DrivetrainIO *pIO)
                     []() { return false; },
                     []() { return false; })
 {
-    m_axisAreActive = false;
+    m_axesAreActive = false;
 }
 
 DrivetrainSubsystem::DrivetrainSubsystem(DrivetrainIO *pIO, 
@@ -25,7 +25,7 @@ DrivetrainSubsystem::DrivetrainSubsystem(DrivetrainIO *pIO,
                     m_fxRotationAxis(fxRotationAxis),
                     m_fxSlowDriveButton(fxSlowDriveButton),
                     m_fxDriveActionButton(fxDriveActionButton),
-                    m_axisAreActive(true)
+                    m_axesAreActive(true)
 {
     pathplanner::RobotConfig config = pathplanner::RobotConfig::fromGUISettings();
     pathplanner::AutoBuilder::configure(
@@ -64,7 +64,7 @@ void DrivetrainSubsystem::ConfigureManualControlInputsAxis(const std::function<d
     m_fxRotationAxis = fxRotationAxis;
     m_fxSlowDriveButton = fxSlowDriveButton;
     m_fxDriveActionButton = fxDriveActionButton;
-    m_axisAreActive = true;
+    m_axesAreActive = true;
 }
 
 void DrivetrainSubsystem::ResetOdometryPose(const frc::Pose2d pose)

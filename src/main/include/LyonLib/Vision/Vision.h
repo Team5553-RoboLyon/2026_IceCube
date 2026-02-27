@@ -22,26 +22,14 @@
 
 
 #include <frc/SmartDashboard/SmartDashboard.h>
-// #include "networktables/NetworkTableInstance.h"
-// #include "networktables/StructArrayTopic.h"
-// #include "networktables/StructTopic.h"
-// #include "networktables/DoubleTopic.h"
-
-// #include <wpi/math>
-// #include <wpi/ArrayRef.h>
 
 #include <array>
 #include <functional>
-// #include <memory>
 #include <vector>
 
 #include "VisionFilterParameters.h"
 #include "VisionIO.h"
 #include "VisionMeasurement.h"
-
-#include <Eigen/Core>
-// #include <frc/MatBuilder.h>
-// #include <frc/Numbers.h>
 
 #include "LyonLib/logging/Alert.h"
 #include "LyonLib/Vision/VisionIOLogger.h"
@@ -108,7 +96,7 @@ class Vision : public frc2::SubsystemBase {
      * @param tagCount The number of tags visible.
      * @return The standard deviation of the measurement.
      */
-  Eigen::Vector3d DetermineStandardDeviation(double tagDistance,
+   const wpi::array<double, 3U> DetermineStandardDeviation(double tagDistance,
                                                bool isMultiPose,
                                                int tagCount);
 

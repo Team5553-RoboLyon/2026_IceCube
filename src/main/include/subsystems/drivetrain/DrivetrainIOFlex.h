@@ -7,7 +7,6 @@
 #include "DrivetrainConstants.h"
 #include "DrivetrainIOLogger.h"
 
-
 #include "LyonLib/localization/TankOdometryTracker.h"
 #include "LyonLib/logging/ComplexStructLogger.h"
 
@@ -42,7 +41,7 @@ class DrivetrainIOFlex  final : public DrivetrainIO
   #ifndef DRIVETRAIN_SMARTDASHBOARD_LOG
   DrivetrainIOLogger m_logger{frc::DataLogManager::GetLog(), "Drivetrain"};
   #endif
-  StructLogger<frc::Pose2d> robotPoseLogger{"Drivetrain/Odometry/Pose2d"};
+  StructLogger<frc::Pose2d> m_odometryPoseLogger{"Drivetrain/Odometry/Pose2d"};
 
   public:
     DrivetrainIOFlex();
@@ -56,5 +55,5 @@ class DrivetrainIOFlex  final : public DrivetrainIO
 
     frc::ChassisSpeeds GetChassisSpeed() const override;
     
-    void ResetPosition(const frc::Pose2d position) override;
+    void ResetPosition(const frc::Pose2d& position) override;
 };
