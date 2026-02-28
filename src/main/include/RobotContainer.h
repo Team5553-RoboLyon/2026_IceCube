@@ -11,10 +11,20 @@
 #include "subsystems/climber/ClimberIOSim.h"
 
 #include <frc/Joystick.h>
+#include <frc2/command/button/JoystickButton.h>
+#include "subsystems/drivetrain/DrivetrainSubsystem.h"
+#include "subsystems/drivetrain/DrivetrainIOFlex.h"
+#include "subsystems/drivetrain/DrivetrainIOSim.h"
 
 class RobotContainer {
  public:
   RobotContainer();
+
+  #if ROBOT_MODEL == SIMULATION
+  DrivetrainSubsystem drivetrain{new DrivetrainIOSim()};
+  #else
+  DrivetrainSubsystem drivetrain{new DrivetrainIOFlex()};
+  #endif
 
   Operator operatorGamepad{ControlPanelConstants::OPERATOR_GAMEPAD_PORT, ControlPanelConstants::OPERATOR_GAMEPAD_THRESHOLD};
   frc::Joystick forwardJoystick{ControlPanelConstants::JOYSTICK_FORWARD_ID};
@@ -29,4 +39,7 @@ class RobotContainer {
 
  private:
   void ConfigureBindings();
+  frc2::JoystickButton m_SlowDriveButton{&forwardJoystick, ControlPanelConstants::SLOW_DRIVE_BUTTON};
+  frc2::JoystickButton m_driveActionButton{&rotationJoystick, ControlPanelConstants::ACTION_DRIVE_BUTTON};
+
 };

@@ -49,6 +49,8 @@ inline constexpr const char* RobotToString()
         return "Simulation";
     #elif ROBOT_MODEL == BRICE
         return "Brice";
+    #elif ROBOT_MODEL == T_NOR
+        return "T-Nor";
     #else
         #error Invalid ROBOT_MODEL value
     #endif
@@ -97,4 +99,6 @@ namespace ControlPanelConstants
     constexpr int JOYSTICK_ROTATION_ID = 1;
     constexpr int OPERATOR_GAMEPAD_PORT = 2;
     constexpr double OPERATOR_GAMEPAD_THRESHOLD = 0.1;
+    constexpr int SLOW_DRIVE_BUTTON = 1; //TUNEME : ralentir
+    constexpr int ACTION_DRIVE_BUTTON = 2; //TUNEME : inveser forward et backward
 }  // namespace ControlPanelConstants

@@ -9,10 +9,15 @@
 #include <frc2/command/Commands.h>
 
 #include "commands/SetWantedStateClimberCmd.h"
+#include "LyonLib/utils/MacroUtilsRBL.h"
 
 RobotContainer::RobotContainer()
 {
     ConfigureBindings();
+    drivetrain.ConfigureManualControlInputsAxis([this] { return NDEADBAND(-forwardJoystick.GetY(), driveConstants::Settings::DEADBAND); },
+                                      [this] { return NDEADBAND(-rotationJoystick.GetZ(), driveConstants::Settings::DEADBAND); },
+                                      [this] { return m_SlowDriveButton.Get(); },
+                                      [this] { return m_driveActionButton.Get();});
 }
 
 void RobotContainer::ConfigureBindings() {
