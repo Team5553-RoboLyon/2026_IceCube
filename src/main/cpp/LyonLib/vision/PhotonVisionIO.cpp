@@ -23,13 +23,11 @@ void PhotonVisionIO::UpdateInputs(VisionInputs& inputs) {
 
     // Store camera name for logging / debugging
     inputs.cameraName = m_cameraName;
-
     // Check camera connection
     if (!m_camera.IsConnected()) {
-      DEBUG_ASSERT(false, "PhotonVisionIO: Camera is not connected!");
+      // DEBUG_ASSERT(false, "PhotonVisionIO: Camera is not connected!");
       return;
     }
-
     inputs.connected = true;
 
     // Get all unread vision results
