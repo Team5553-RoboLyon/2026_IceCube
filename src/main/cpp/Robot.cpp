@@ -11,6 +11,7 @@
 #include <frc/Filesystem.h>
 #include <wpinet/WebServer.h>
 
+
 Robot::Robot() {}
 void Robot::RobotInit() {
   //start data logging
@@ -72,10 +73,16 @@ void Robot::TeleopPeriodic() {
   {
     m_container.climber.SetManualControlInput(m_container.operatorGamepad.GetLeftY());
   }
+  if (m_container.operatorGamepad.GetAButtonPressed())
+  {
+    m_container.intakeSubsystem.ActualisePIDCoef();
+  }
 }
 void Robot::TeleopExit() {}
 
 void Robot::DisabledInit() {
+  m_container.intakeSubsystem.SetControlMode(ControlMode::DISABLED, ControlMode::DISABLED);
+
   m_container.climber.SetControlMode(ControlMode::DISABLED);
   m_container.drivetrain.SetWantedDrive(DriveMode::DISABLE);
 }
@@ -83,6 +90,7 @@ void Robot::DisabledPeriodic() {}
 void Robot::DisabledExit() {
   m_container.climber.SetControlMode(ClimberConstants::MainControlMode);
   m_container.climber.SetWantedState(ClimberSubsystem::WantedState::INITIALIZATION);
+  m_container.intakeSubsystem.SetControlMode(PivotConstants::MainControlMode, RollerConstants::MainControlMode);
 }
 
 void Robot::TestInit() {}
