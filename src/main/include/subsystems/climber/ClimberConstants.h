@@ -17,7 +17,7 @@ namespace ClimberConstants
     namespace Motor
     {
         constexpr int ID = 1;
-        constexpr bool INVERTED = false;
+        constexpr bool INVERTED = true;
 
         constexpr IdleMode IDLE_MODE = IdleMode::kBrake;
         constexpr double VOLTAGE_COMPENSATION = 10.0;
@@ -32,7 +32,7 @@ namespace ClimberConstants
     {
         constexpr double GEAR_RATIO = 125.0; //ul
         constexpr double FREE_SPEED = Motor::VOLTAGE_COMPENSATION * Motor::KV; //RPM
-        constexpr double GEAR_RADIUS = 0.024; //in m
+        constexpr double GEAR_RADIUS = 0.021; //in m
     }
 
     namespace Simulation
@@ -47,14 +47,15 @@ namespace ClimberConstants
     {
         constexpr int ID_CHANNEL_A = 5;
         constexpr int ID_CHANNEL_B = 6;
-        constexpr bool INVERTED = false;
+        constexpr bool INVERTED = true;
         
         constexpr double DISTANCE_PER_PULSE = Specifications::GEAR_RADIUS*2.0*NF64_PI/ENCODER_TICKS_PER_REVOLUTION_K2X; //in mm
     }
     namespace LimitSwitch
     {
         constexpr int BOTTOM_CHANNEL = 0;
-        constexpr bool IS_TRIGGERED = false;
+        constexpr bool IS_TRIGGERED = true;
+
     }
     namespace IRbreaker
     {
@@ -79,13 +80,13 @@ namespace ClimberConstants
         #else
         namespace POSITION_VOLTAGE_PID
         {
-            constexpr double KP = 5.0; //TUNEME
+            constexpr double KP = 450.0; //TUNEME
             constexpr double KI = 0.0; //TUNEME
             constexpr double KD = 0.0; //TUNEME
         }
         namespace MANUAL_SETPOINT_PID
         {
-            constexpr double KP = 5.0; //TUNEME
+            constexpr double KP = 300.0; //TUNEME
             constexpr double KI = 0.0; //TUNEME
             constexpr double KD = 0.0; //TUNEME
         }
@@ -95,8 +96,8 @@ namespace ClimberConstants
     namespace Setpoint
     {
         constexpr double HOME = 0.545; //TUNEME
-        constexpr double ARMED = 0.75; //TUNEME
-        constexpr double CLIMBED_LOCKED = 0.60; //TUNEME
+        constexpr double ARMED = 0.74; //TUNEME
+        constexpr double CLIMBED_LOCKED = 0.6; //TUNEME
         constexpr double TOLERANCE = 0.001; //TUNEME
     }
 
@@ -105,14 +106,15 @@ namespace ClimberConstants
         constexpr double MAX = 1.0; 
         constexpr double MIN = -1.0;
         constexpr double REST = 0.0;
-        constexpr double CALIBRATION = -0.02; //TUNEME
+        constexpr double CALIBRATION = -2.0; //TUNEME
     }
     
     namespace Settings
-    {
-        constexpr double BOTTOM_LIMIT = 0.545; // in m //TUNEME
-        constexpr double TOP_LIMIT = 0.76; // in m //TUNEME 
-        constexpr double MANUAL_SETPOINT_CHANGE_LIMIT = (TOP_LIMIT - BOTTOM_LIMIT) / (2.5/TIME_PER_CYCLE); //TUNEME
-        constexpr double IRBREAKER_TRIGGER_HEIGHT = 0.56; // in m //TUNEME
+    { 
+        constexpr double BOTTOM_LIMIT = 0.545; // in m
+        constexpr double TOP_LIMIT = 0.755; // in m
+        constexpr double SAFETY_POSITION = 0.553; //in m
+        constexpr double IRBREAKER_TRIGGER_HEIGHT = 0.61; // in m
+        constexpr double MANUAL_SETPOINT_CHANGE_LIMIT = (TOP_LIMIT - BOTTOM_LIMIT) / (2.5/TIME_PER_CYCLE);
     }
 }

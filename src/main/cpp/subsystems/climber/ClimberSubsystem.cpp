@@ -79,13 +79,6 @@ void ClimberSubsystem::SetControlMode(const ControlMode mode)
         m_controlMode = mode;
         break; //end of ControlMode::MANUAL_POSITION
     
-    case ControlMode::MANUAL_VOLTAGE:
-        m_output = ClimberConstants::Speed::REST;
-        m_manualControlInput = ClimberConstants::Speed::REST;
-
-        m_controlMode = mode;
-        break; //end of ControlMode::MANUAL_VOLTAGE
-    
     case ControlMode::DISABLED :
         m_output = ClimberConstants::Speed::REST;
 
@@ -126,9 +119,6 @@ void ClimberSubsystem::SetManualControlInput(const double value)
 
     switch(m_controlMode)
     {
-        case ControlMode::MANUAL_VOLTAGE:
-            m_manualControlInput = value * ClimberConstants::Motor::VOLTAGE_COMPENSATION;
-            break; //end of ControlMode::MANUAL_VOLTAGE
         case ControlMode::MANUAL_POSITION:
             m_manualControlInput = m_ClimberPIDController.GetSetpoint() + value * ClimberConstants::Settings::MANUAL_SETPOINT_CHANGE_LIMIT;
             break; //end of ControlMode::MANUAL_POSITION
@@ -136,6 +126,18 @@ void ClimberSubsystem::SetManualControlInput(const double value)
             DEBUG_ASSERT(false, "Climber : SetManualControlInput impossible with an unrecognized mode.");
             break; //end of default
     }
+}
+
+bool ClimberSubsystem::IsResting()
+{
+    return m_systemState == SystemState::ARMED ||
+            m_systemState == SystemState::CLIMBED_LOCKED ||
+            m_systemState == SystemState::STOWED_HOME;
+}
+
+bool ClimberSubsystem::IsInSafetyPosition()
+{
+    return inputs.hammerHeight <= ClimberConstants::Settings::SAFETY_POSITION;
 }
 
 // This method will be called once per scheduler run
@@ -167,13 +169,6 @@ void ClimberSubsystem::Periodic()
 
         switch (m_controlMode) //actualise motion
         {
-        case ControlMode::MANUAL_VOLTAGE:
-            #if ROBOT_MODEL == PROTOTYPE
-                m_output = m_tunableVoltage.Get();
-            #else
-                m_output = m_manualControlInput;
-            #endif
-            break; //end of ControlMode::MANUAL_VOLTAGE
         case ControlMode::POSITION_VOLTAGE_PID:
             switch (m_systemState)
             {
@@ -214,8 +209,7 @@ void ClimberSubsystem::Periodic()
 
 
      // ----------------- Limits -----------------
-    if(inputs.bottomLimitSwitchValue == ClimberConstants::LimitSwitch::IS_TRIGGERED ||
-       inputs.irbreakerValue == ClimberConstants::IRbreaker::IS_TRIGGERED)
+    if(inputs.bottomLimitSwitchValue == ClimberConstants::LimitSwitch::IS_TRIGGERED)
     {
         m_output = NMAX(0.0, m_output); // prevent the hammer to go through the bottom
         if(!m_isEncoderAlreadyReset)
@@ -230,15 +224,20 @@ void ClimberSubsystem::Periodic()
             }
         }
     }
-    else if (inputs.hammerHeight >= ClimberConstants::Settings::TOP_LIMIT)
+    else if(inputs.irbreakerValue == ClimberConstants::IRbreaker::IS_TRIGGERED)
+    {
+        //TODO : limit speed ?
+    }
+    
+    if(m_isInitialized && inputs.hammerHeight >= ClimberConstants::Settings::TOP_LIMIT)
     {
         m_output = NMIN(0.0, m_output); // prevent the hammer to go through the top
     }
-    else if (inputs.hammerHeight <= ClimberConstants::Settings::BOTTOM_LIMIT)
+    else if (m_isInitialized && inputs.hammerHeight <= ClimberConstants::Settings::BOTTOM_LIMIT)
     {
         m_output = NMAX(0.0, m_output); // prevent the hammer to go through the bottom
     }
-    else 
+    else if (m_isInitialized)
     {
         m_isEncoderAlreadyReset = false; // allow the encoder to be reset at the bottom if it goes up
     }
@@ -251,6 +250,7 @@ void ClimberSubsystem::Periodic()
     frc::SmartDashboard::PutNumber("climber/SystemState", (int)m_systemState);
     frc::SmartDashboard::PutNumber("climber/ControlMode", (int)m_controlMode);
     frc::SmartDashboard::PutBoolean("climber/isInit", m_isInitialized);
+    frc::SmartDashboard::PutNumber("climber/target", m_ClimberPIDController.GetSetpoint());
 }
 
 void ClimberSubsystem::RunStateMachine()

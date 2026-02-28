@@ -18,6 +18,8 @@ public:
     frc2::Trigger CLIMBED{_circleButton };
     frc2::Trigger toggle{_triangleButton };
 
+    
+
     void SetRumble(RumbleType type, double value)
     {
         RevGamepad::SetRumble(type, value);
