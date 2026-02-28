@@ -11,6 +11,7 @@
 #include <frc/Filesystem.h>
 #include <wpinet/WebServer.h>
 
+
 Robot::Robot() {}
 void Robot::RobotInit() {
   //start data logging
@@ -57,15 +58,19 @@ void Robot::AutonomousExit() {}
 
 void Robot::TeleopInit() {}
 void Robot::TeleopPeriodic() {
+  if (m_container.operatorGamepad.GetAButtonPressed())
+  {
+    m_container.intakeSubsystem.ActualisePIDCoef();
+  }
 }
 void Robot::TeleopExit() {}
 
 void Robot::DisabledInit() {
-
+  m_container.intakeSubsystem.SetControlMode(ControlMode::DISABLED, ControlMode::DISABLED);
 }
 void Robot::DisabledPeriodic() {}
 void Robot::DisabledExit() {
-
+  m_container.intakeSubsystem.SetControlMode(PivotConstants::MainControlMode, RollerConstants::MainControlMode);
 }
 
 void Robot::TestInit() {}

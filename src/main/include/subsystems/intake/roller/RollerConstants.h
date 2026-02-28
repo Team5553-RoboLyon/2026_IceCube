@@ -18,7 +18,7 @@ namespace RollerConstants
     namespace rollerMotor
     {
         constexpr int ID = 13;
-        constexpr bool INVERTED = true;
+        constexpr bool INVERTED = false;
 
         constexpr IdleMode IDLE_MODE = IdleMode::kCoast;
         constexpr double VOLTAGE_COMPENSATION = 12.0;
@@ -29,7 +29,7 @@ namespace RollerConstants
         constexpr int KV = 496.3; // RPM.V-1
     }
 
-    namespace Simulation //appramtive values
+    namespace Simulation //approximative values
     {
         constexpr units::kilogram_square_meter_t MOI = 0.36_kg_sq_m;
     }

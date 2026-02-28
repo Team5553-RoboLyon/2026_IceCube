@@ -59,6 +59,8 @@ class IntakeSubsystem : public frc2::SubsystemBase {
     void TogglePivotControlMode();
     void ToggleRollerControlMode();
 
+    void ActualisePIDCoef();
+
     bool IsOut();
     bool IsPivotMoving();
     bool IsInitialized() { return m_isInitialized; }
@@ -93,6 +95,9 @@ class IntakeSubsystem : public frc2::SubsystemBase {
     // std::function<double()> m_fxAxis; //temporary
       TunableValueLogger m_tunablePivotDutyCycleLogger{"Intake/PivotDutyCycle", 0.0}; //RPM
       TunableValueLogger m_tunableRollerVoltageLogger{"Intake/RollerVoltage", 0.0}; //RPM
+      TunableValueLogger m_tunableRollerP{"Intake/P", 0.0};
+      TunableValueLogger m_tunableRollerI{"Intake/i", 0.0};
+      TunableValueLogger m_tunableRollerD{"Intake/D", 0.0};
     // === Status Flags ===
       bool m_isInitialized = true;
     // === System Alerts ===

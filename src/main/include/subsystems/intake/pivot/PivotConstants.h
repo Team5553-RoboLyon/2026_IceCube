@@ -18,7 +18,7 @@ namespace PivotConstants
     namespace pivotMotor
     {
         constexpr int ID = 8;
-        constexpr bool INVERTED = true;
+        constexpr bool INVERTED = false;
 
         constexpr IdleMode IDLE_MODE = IdleMode::kBrake;
         constexpr double VOLTAGE_COMPENSATION = 12.0;
@@ -32,17 +32,17 @@ namespace PivotConstants
     namespace EncoderLeft
     {
        constexpr int ID = 8;
-       constexpr bool INVERTED = true;
+       constexpr bool INVERTED = false;
        constexpr double FULL_RANGE = 2.0*NF64_PI;
-       constexpr double EXPECTED_ZERO = 0.0;//TUNEME
+       constexpr double EXPECTED_ZERO = 3.753408;//TUNEME
     }
 
     namespace EncoderRight
     {
        constexpr int ID = 9;
-       constexpr bool INVERTED = false;
+       constexpr bool INVERTED = true;
        constexpr double FULL_RANGE = 2.0*NF64_PI;
-       constexpr double EXPECTED_ZERO = 0.0;//TUNEME
+       constexpr double EXPECTED_ZERO = 2.0*NF64_PI-2.488616;//TUNEME
     }
 
     namespace Specifications
@@ -73,9 +73,9 @@ namespace PivotConstants
     {
         namespace POSITION_DUTYCYCLE_PID
         {
-            constexpr double KP = 0.2; //TUNEME
+            constexpr double KP = 0.75; //TUNEME
             constexpr double KI = 0.0; //TUNEME
-            constexpr double KD = 0.0; //TUNEME
+            constexpr double KD = 0.08; //TUNEME
             constexpr double KG = 0.0; //TUNEME
         }
     }

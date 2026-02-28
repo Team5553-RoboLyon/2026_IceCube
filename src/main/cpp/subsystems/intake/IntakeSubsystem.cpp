@@ -33,6 +33,12 @@ void IntakeSubsystem::SetControlMode(const ControlMode pivotMode, const ControlM
     SetRollerControlMode(rollerMode);
 }
 
+void IntakeSubsystem::ActualisePIDCoef()
+{
+    m_pivotPIDController.SetGains(m_tunableRollerP.Get(), m_tunableRollerI.Get(), m_tunableRollerD.Get());
+    m_pivotPIDController.Reset();
+}
+
 void IntakeSubsystem::SetPivotControlMode(ControlMode mode)
 {
     switch (mode)
@@ -298,7 +304,7 @@ void IntakeSubsystem::Periodic()
         }
     }
 
-    frc::SmartDashboard::PutNumber("Pivot/TragtePos", m_pivotTargetPos);
+    frc::SmartDashboard::PutNumber("Pivot/TargetPos", m_pivotTargetPos);
 
     if (pivotInputs.pivotPos >= PivotConstants::Position::MAX && m_pivotOutput > 0.0)
         m_pivotOutput = 0.0;
@@ -339,6 +345,7 @@ void IntakeSubsystem::Periodic()
     frc::SmartDashboard::PutBoolean("intake/isInit", m_isInitialized);
     frc::SmartDashboard::PutNumber("intake/intakeOutput", m_rollerOutput);
     frc::SmartDashboard::PutNumber("intake/pivotVoltage", pivotInputs.pivotMotorAppliedVoltage);
+    frc::SmartDashboard::PutNumber("intake/pivotOutput", m_pivotOutput);
 }
 
 

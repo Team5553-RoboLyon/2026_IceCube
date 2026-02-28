@@ -48,8 +48,11 @@ void PivotIOSpark::UpdateInputs(PivotIOInputs& inputs)
         inputs.pivotPos = m_leftEncoder.Get();
     }
 
-    frc::SmartDashboard::PutNumber("intake/PivotPos", inputs.pivotPos);
-    frc::SmartDashboard::PutNumber("intake/PivotTargetPos", m_pivotMotorController.GetSetpoint());
+    frc::SmartDashboard::PutBoolean("Pivot/IsRightEncoderConnected", inputs.isRightEncoderConnected);
+    frc::SmartDashboard::PutNumber("Pivot/PivotPos", inputs.pivotPos);
+    frc::SmartDashboard::PutBoolean("Pivot/IsLeftEncoderConnected", inputs.isLeftEncoderConnected);
+    frc::SmartDashboard::PutNumber("Pivot/LeftEncoderPos", m_leftEncoder.Get());
+    frc::SmartDashboard::PutNumber("Pivot/RightEncoderPos", m_rightEncoder.Get());
 }
 
 void PivotIOSpark::SetVoltage(double voltage)
