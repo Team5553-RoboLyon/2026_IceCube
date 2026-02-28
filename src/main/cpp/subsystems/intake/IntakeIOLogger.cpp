@@ -11,7 +11,7 @@ IntakeIOLogger::IntakeIOLogger(wpi::log::DataLog& log, const std::string& path)
           pivotMotorAppliedVoltage(log, path + "/pivot/pivotMotor" + "/AppliedVoltage"),
           pivotMotorBusVoltage(log, path + "/pivot/pivotMotor" + "/BusVoltage"),
           pivotMotorTemperature(log, path + "pivot/pivotMotor" + "/Temperature"),
-          isRightEncoderConnected(log, path + "/pivot/RightEncoder" + "/isConnected"),
+        //   isRightEncoderConnected(log, path + "/pivot/RightEncoder" + "/isConnected"),
           isLeftEncoderConnected(log, path + "/pivot/LeftEncoder" + "/isConnected"),
           pivotPos(log, path + "/pivot" + "/PivotPos"),
           
@@ -30,6 +30,6 @@ void IntakeIOLogger::Log(const RollerIOInputs& rollerInputs, const PivotIOInputs
     pivotMotorCurrent.Append(pivotInputs.pivotMotorCurrent);
     pivotMotorTemperature.Append(pivotInputs.pivotMotorTemperature);
     isLeftEncoderConnected.Append(pivotInputs.isLeftEncoderConnected);
-    isRightEncoderConnected.Append(pivotInputs.isRightEncoderConnected);
+    // isRightEncoderConnected.Append(pivotInputs.isRightEncoderConnected);
     pivotPos.Append(pivotInputs.pivotPos);
 }

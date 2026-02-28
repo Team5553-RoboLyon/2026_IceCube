@@ -13,7 +13,7 @@ class PivotIOSpark  final : public PivotIO
     rev::spark::SparkBaseConfig m_pivotMotorConfig;
     rev::spark::SparkClosedLoopController m_pivotMotorController{m_pivotMotor.GetClosedLoopController()};
 
-    frc::DutyCycleEncoder m_rightEncoder{PivotConstants::EncoderRight::ID, PivotConstants::EncoderRight::FULL_RANGE, PivotConstants::EncoderRight::EXPECTED_ZERO};
+    // frc::DutyCycleEncoder m_rightEncoder{PivotConstants::EncoderRight::ID, PivotConstants::EncoderRight::FULL_RANGE, PivotConstants::EncoderRight::EXPECTED_ZERO};
     frc::DutyCycleEncoder m_leftEncoder{PivotConstants::EncoderLeft::ID, PivotConstants::EncoderLeft::FULL_RANGE, PivotConstants::EncoderLeft::EXPECTED_ZERO};
 
   public:

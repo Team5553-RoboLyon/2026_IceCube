@@ -19,7 +19,7 @@ PivotIOSpark::PivotIOSpark()
                             rev::PersistMode::kPersistParameters);
     m_pivotMotor.ClearFaults();
 
-    m_rightEncoder.SetInverted(PivotConstants::EncoderRight::INVERTED);
+    // m_rightEncoder.SetInverted(PivotConstants::EncoderRight::INVERTED);
     m_leftEncoder.SetInverted(PivotConstants::EncoderLeft::INVERTED);
 }
 
@@ -33,26 +33,27 @@ void PivotIOSpark::UpdateInputs(PivotIOInputs& inputs)
     inputs.pivotMotorTemperature = m_pivotMotor.GetMotorTemperature();
 
     inputs.isLeftEncoderConnected = m_leftEncoder.IsConnected();
-    inputs.isRightEncoderConnected = m_rightEncoder.IsConnected();
+    inputs.pivotPos = m_leftEncoder.Get();
+    // inputs.isRightEncoderConnected = m_rightEncoder.IsConnected();
 
-    if (inputs.isLeftEncoderConnected && inputs.isLeftEncoderConnected)
-    {
-        inputs.pivotPos = (m_leftEncoder.Get()+m_rightEncoder.Get())/2;
-    }
-    else if (!inputs.isLeftEncoderConnected && inputs.isLeftEncoderConnected)
-    {
-        inputs.pivotPos = m_rightEncoder.Get();
-    }
-    else if (inputs.isLeftEncoderConnected && !inputs.isLeftEncoderConnected)
-    {
-        inputs.pivotPos = m_leftEncoder.Get();
-    }
+    // if (inputs.isLeftEncoderConnected && inputs.isLeftEncoderConnected)
+    // {
+    //     inputs.pivotPos = (m_leftEncoder.Get()+m_rightEncoder.Get())/2;
+    // }
+    // else if (!inputs.isLeftEncoderConnected && inputs.isLeftEncoderConnected)
+    // {
+    //     inputs.pivotPos = m_rightEncoder.Get();
+    // }
+    // else if (inputs.isLeftEncoderConnected && !inputs.isLeftEncoderConnected)
+    // {
+    //     inputs.pivotPos = m_leftEncoder.Get();
+    // }
 
-    frc::SmartDashboard::PutBoolean("Pivot/IsRightEncoderConnected", inputs.isRightEncoderConnected);
+    // frc::SmartDashboard::PutBoolean("Pivot/IsRightEncoderConnected", inputs.isRightEncoderConnected);
     frc::SmartDashboard::PutNumber("Pivot/PivotPos", inputs.pivotPos);
     frc::SmartDashboard::PutBoolean("Pivot/IsLeftEncoderConnected", inputs.isLeftEncoderConnected);
     frc::SmartDashboard::PutNumber("Pivot/LeftEncoderPos", m_leftEncoder.Get());
-    frc::SmartDashboard::PutNumber("Pivot/RightEncoderPos", m_rightEncoder.Get());
+    // frc::SmartDashboard::PutNumber("Pivot/RightEncoderPos", m_rightEncoder.Get());
 }
 
 void PivotIOSpark::SetVoltage(double voltage)
