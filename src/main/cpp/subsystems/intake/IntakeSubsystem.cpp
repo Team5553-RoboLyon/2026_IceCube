@@ -18,8 +18,7 @@ IntakeSubsystem::IntakeSubsystem(RollerIO *pRollerIO, PivotIO *pPivotIO) :
 
 void IntakeSubsystem::SetWantedState(const WantedState wantedState)
 {
-    if (!(m_wantedState == WantedState::PROTECT_YOURSELF_AGAINST_EVIL_PILOT && wantedState != WantedState::STAND_BY))
-        m_wantedState = wantedState;
+    m_wantedState = wantedState;
 }
 
 IntakeSubsystem::SystemState IntakeSubsystem::GetSystemState()
@@ -273,11 +272,25 @@ void IntakeSubsystem::Periodic()
                     case SystemState::IDLE:
                     case SystemState::STAYING_AT_HOME:
                     case SystemState::CHILLING_OUT:
-                    case SystemState::EXTENDING:
                     case SystemState::COMING_BACK_HOME:
                     case SystemState::PROTECTED_AGAINST_EVIL_PILOT:
                     case SystemState::GOING_TO_SAFE_POS:
                         m_rollerOutput = RollerConstants::Voltage::REST;
+                        break;
+
+                    case SystemState::EXTENDING:
+                        if (m_currentWantedState == WantedState::REFUEL)
+                        {
+                            m_rollerOutput = RollerConstants::Voltage::REFUEL;
+                        }
+                        else if (m_currentWantedState == WantedState::EJECT)
+                        {
+                            m_rollerOutput = RollerConstants::Voltage::EJECT;
+                        }
+                        else
+                        {
+                            m_rollerOutput = RollerConstants::Voltage::REST;
+                        }
                         break;
 
                     case SystemState::REFUELING:
