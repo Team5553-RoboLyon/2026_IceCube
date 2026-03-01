@@ -68,7 +68,6 @@ class Superstructure final : public frc2::SubsystemBase
         SHOOTING_TO_HUB = 2+1,
         READY_TO_REFUEL = 3+1,
         INTAKE_SAFE = 4+1,
-        READY_TO_CLIMB = 5+1,
         CLIMBED = 6+1,
         AT_HOME = 7+1,
         SHOOTING_TO_HUB_WHILE_REFUELING = 9,
