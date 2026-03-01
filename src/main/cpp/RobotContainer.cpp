@@ -41,6 +41,6 @@ void RobotContainer::ConfigureBindings() {
                                           .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
     operatorGamepad.RETRACT_INTAKE.ToggleOnTrue(SetWantedSuperstructureSuperStateCmd(&superstructure,Superstructure::WantedSuperState::RETRACT_INTAKE)
                                           .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
-    operatorGamepad.TOGGLE_IRBREAKER_VALUE.ToggleOnTrue(ToggleIRBreakerValueCmd(indexerIOSim)
-                                          .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));                                  
+    // operatorGamepad.TOGGLE_IRBREAKER_VALUE.ToggleOnTrue(ToggleIRBreakerValueCmd(indexerIOSim)
+    //                                       .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));                                  
 }
