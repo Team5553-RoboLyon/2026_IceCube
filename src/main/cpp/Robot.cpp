@@ -64,18 +64,24 @@ void Robot::TeleopInit() {
   m_container.turretSubsystem.SetControlMode(TurretConstants::MainControlMode);
 }
 void Robot::TeleopPeriodic() {
-  m_container.robotOrientation = WRAP_ANGLE_0_TO_360(m_container.robotOrientation - NDEADBAND(m_container.operatorGamepad.GetLeftX(),0.05));
-  frc::SmartDashboard::PutNumber("robotOrientation", m_container.robotOrientation);
-  m_container.ShootParamCalculator.CalculateHubNewParameters(*m_container.pShootParameter,{0.0_m,0.0_m,{units::degree_t(m_container.robotOrientation)}},TimerRBL::GetFPGATimestampInSeconds());
+  // m_container.robotOrientation = WRAP_ANGLE_0_TO_360(m_container.robotOrientation - NDEADBAND(m_container.operatorGamepad.GetLeftX(),0.05));
+  // frc::SmartDashboard::PutNumber("robotOrientation", m_container.robotOrientation);
+  // m_container.ShootParamCalculator.CalculateHubNewParameters(*m_container.pShootParameter,{0.0_m,0.0_m,{units::degree_t(m_container.robotOrientation)}},TimerRBL::GetFPGATimestampInSeconds());
+  if(BYPASS_STATE_MACHINE(m_container.shooterSubsystem.GetHoodControlMode())) 
+  {
+    // m_container.shooterSubsystem.SetManualControlInput(m_container.operatorGamepad.GetRightY());
+  }
 }
 void Robot::TeleopExit() {}
 
 void Robot::DisabledInit() {
   m_container.turretSubsystem.SetControlMode(ControlMode::DISABLED);
+  m_container.shooterSubsystem.SetControlMode(ControlMode::DISABLED, ControlMode::DISABLED);
 }
 void Robot::DisabledPeriodic() {}
 void Robot::DisabledExit() {
   m_container.turretSubsystem.SetControlMode(TurretConstants::MainControlMode);
+  m_container.shooterSubsystem.SetControlMode(FlywheelConstants::MainControlMode, HoodConstants::MainControlMode);
 }
 
 void Robot::TestInit() {}

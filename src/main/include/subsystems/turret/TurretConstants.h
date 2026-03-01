@@ -17,7 +17,7 @@ namespace TurretConstants
 
     namespace Motor
     {
-        constexpr int ID = 3;
+        constexpr int ID = 2;
         constexpr bool INVERTED = false;
 
         constexpr IdleMode IDLE_MODE = IdleMode::kBrake;
@@ -42,12 +42,6 @@ namespace TurretConstants
         constexpr int B_ID = 23;
         constexpr bool REVERSED = false;
         constexpr double DISTANCE_PER_PULSE = 2*NF64_PI/Specifications::GEAR_RATIO/ENCODER_TICKS_PER_REVOLUTION_K2X;
-    }
-
-    namespace HallEffectSensor
-    {
-        constexpr int ID = 21;
-        constexpr double MIN_VALUE_WHEN_MAGNET = 2.5; //TUNEME
     }
 
     namespace TurretCamera

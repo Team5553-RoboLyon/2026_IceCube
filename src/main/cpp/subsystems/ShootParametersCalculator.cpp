@@ -17,6 +17,7 @@ ShootParametersCalculator::ShootParametersCalculator()
 
     m_timeToReachTargetMap.insert(0.0, 2.0);
     m_timeToReachTargetMap.insert(0.0, 6.0);
+    // m_hoodPosMap.insert()
 }
 
 void ShootParametersCalculator::SetAlliance(frc::DriverStation::Alliance alliance)

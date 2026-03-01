@@ -27,8 +27,9 @@ class TurretSubsystem : public frc2::SubsystemBase {
     {
       STAND_BY = 0, // no wanted state scheduled. (It's all good man, it's all good !)
       FOLLOW_HUB = 1,
-      POINT_AT_ALLIANCE_ZONE = 2,
-      PREPARE_EJECT = 3
+      // POINT_AT_ALLIANCE_ZONE = 2,
+      // PREPARE_EJECT = 3
+      
     };
     enum class SystemState
     {
