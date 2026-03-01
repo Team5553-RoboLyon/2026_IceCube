@@ -4,6 +4,12 @@
 
 #pragma once
 
+#include "subsystems/shooter/ShooterSubsystem.h"
+
+#include "subsystems/shooter/flywheel/FlywheelIOSpark.h"
+#include "subsystems/shooter/hood/HoodIOSpark.h"
+#include "subsystems/shooter/hood/HoodIOSim.h"
+#include "subsystems/shooter/flywheel/FlywheelIOSim.h"
 #include "subsystems/Operator.h"
 #include "Constants.h"
 #include "subsystems/climber/ClimberSubsystem.h"
@@ -24,9 +30,25 @@
 #include "subsystems/intake/pivot/PivotIOSim.h"
 #include "subsystems/intake/roller/RollerIOSim.h"
 
+#include "subsystems/turret/TurretIOSpark.h"
+#include "subsystems/turret/TurretIOSim.h"
+#include "subsystems/turret/TurretSubsystem.h"
+#include "subsystems/ShootParametersCalculator.h"
+
 class RobotContainer {
  public:
   RobotContainer();
+  ShootParameters* pShootParameter{new ShootParameters};
+  ShootParametersCalculator ShootParamCalculator{};
+  double robotOrientation{0.0};
+
+  #if ROBOT_MODEL == SIMULATION
+  ShooterSubsystem shooterSubsystem{new FlywheelIOSim{}, new HoodIOSim{}, pShootParameter};
+  TurretSubsystem turretSubsystem{new TurretIOSim, pShootParameter};
+  #else
+  ShooterSubsystem shooterSubsystem{new FlywheelIOSpark{}, new HoodIOSpark{}, pShootParameter};
+  TurretSubsystem turretSubsystem{new TurretIOSpark, pShootParameter};
+  #endif
 
   #if ROBOT_MODEL == SIMULATION
   ClimberSubsystem climber{new ClimberIOSim};

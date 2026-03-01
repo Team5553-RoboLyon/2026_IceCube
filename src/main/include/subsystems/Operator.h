@@ -41,6 +41,7 @@ public:
     }
 
 };
+    
 
 #elif (OPERATOR == (VICTOR))
 #include "LyonLib/gamepads/XboxGamepad.h"
@@ -67,6 +68,13 @@ public:
     frc2::Trigger ARMED_TO_CLIMB{_L3AsButton};
     frc2::Trigger CLIMBED{_startButton};
     // frc2::Trigger toggle{_triangleButton };
+    // frc2::Trigger STAND_BY{_YButton};
+    // frc2::Trigger SHOOT_TO_HUB{_R2AsButton};
+    // frc2::Trigger FEED_ALLY{_XButton};
+    // frc2::Trigger STOP{_BButton};
+    // frc2::Trigger REVERSE{_L2AsButton};
+    // frc2::Trigger KEEP_ALL_FOR_YOU{_AButton};
+#endif
 
 
     void SetRumble(RumbleType type, double value)
@@ -83,4 +91,3 @@ public:
     }
 
 };
-#endif

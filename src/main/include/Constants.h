@@ -1,5 +1,7 @@
 #pragma once
 #include "Lyonlib/utils/MacroUtilsRBL.h"
+#include "units/length.h"
+#include "frc/geometry/Pose2d.h"
 
 #define COMPETITON 0
 #define TRAINING 1
@@ -15,7 +17,7 @@
 #define LENA 3
 #define TEST 4
 
-#define ROBOT_MODEL (TRAINING) // Change this to the desired robot model
+#define ROBOT_MODEL (PROTOTYPE) // Change this to the desired robot model
 #define PILOT (ALEXIS)
 #define OPERATOR (VICTOR)
 
@@ -102,3 +104,24 @@ namespace ControlPanelConstants
     constexpr int SLOW_DRIVE_BUTTON = 1; //TUNEME : ralentir
     constexpr int ACTION_DRIVE_BUTTON = 2; //TUNEME : inveser forward et backward
 }  // namespace ControlPanelConstants
+
+namespace FieldConstants
+{
+    constexpr units::meter_t FIELD_LENGTH = 651.2_in;
+    constexpr units::meter_t FIELD_WIDTH = 317.7_in;
+
+    namespace AllianceZone
+    {
+        constexpr units::meter_t LENGTH = 158.6_in;
+        constexpr units::meter_t WIDTH = 317.7_in;
+        constexpr frc::Pose2d BLUE_CENTER_POSITION = {LENGTH/2.0, WIDTH/2.0, {180.0_deg}};
+        constexpr frc::Pose2d RED_CENTER_POSITION = {FIELD_LENGTH-LENGTH/2.0, WIDTH/2.0, {0.0_deg}};
+    }
+
+    namespace Hub
+    {
+        constexpr units::meter_t WIDTH = 47_in;
+        constexpr frc::Pose2d BLUE_PLACEMENT = {AllianceZone::LENGTH + WIDTH/2.0, (FIELD_WIDTH+WIDTH)/2.0,{0.0_deg}}; //placement of the center point of the blue hub
+        constexpr frc::Pose2d RED_PLACEMENT = {FIELD_LENGTH - (AllianceZone::LENGTH + WIDTH/2.0), (FIELD_WIDTH+WIDTH)/2.0,{180.0_deg}}; //placement of the center point of the red hub
+    }
+}

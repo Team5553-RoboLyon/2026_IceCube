@@ -10,6 +10,8 @@
 
 #include <frc/Filesystem.h>
 #include <wpinet/WebServer.h>
+#include "LyonLib/utils/TimerRBL.h"
+#include "frc/smartdashboard/SmartDashboard.h"
 
 
 Robot::Robot() {}
@@ -52,6 +54,8 @@ void Robot::RobotPeriodic() {
 void Robot::DriverStationConnected() {
   //link driver station to data logging
   frc::DriverStation::StartDataLog(frc::DataLogManager::GetLog());
+  m_container.ShootParamCalculator.SetAlliance(frc::DriverStation::GetAlliance().value());
+  m_container.turretSubsystem.SetAlliance(frc::DriverStation::GetAlliance().value());
 }
 
 void Robot::AutonomousInit() {
@@ -76,6 +80,9 @@ void Robot::TeleopPeriodic() {
   if (m_container.operatorGamepad.GetAButtonPressed())
   {
     m_container.intakeSubsystem.ActualisePIDCoef();
+  m_container.ShootParamCalculator.SetRobotPos({0.0_m,0.0_m,{}},TimerRBL::GetFPGATimestampInSeconds());
+  m_container.turretSubsystem.SetControlMode(TurretConstants::MainControlMode);
+  m_container.shooterSubsystem.SetControlMode(FlywheelConstants::MainControlMode, HoodConstants::MainControlMode);
   }
 }
 void Robot::TeleopExit() {}
@@ -85,12 +92,16 @@ void Robot::DisabledInit() {
 
   m_container.climber.SetControlMode(ControlMode::DISABLED);
   m_container.drivetrain.SetWantedDrive(DriveMode::DISABLE);
+  m_container.turretSubsystem.SetControlMode(ControlMode::DISABLED);
+  m_container.shooterSubsystem.SetControlMode(ControlMode::DISABLED, ControlMode::DISABLED);
 }
 void Robot::DisabledPeriodic() {}
 void Robot::DisabledExit() {
   m_container.climber.SetControlMode(ClimberConstants::MainControlMode);
   m_container.climber.SetWantedState(ClimberSubsystem::WantedState::INITIALIZATION);
   m_container.intakeSubsystem.SetControlMode(PivotConstants::MainControlMode, RollerConstants::MainControlMode);
+  m_container.turretSubsystem.SetControlMode(TurretConstants::MainControlMode);
+  m_container.shooterSubsystem.SetControlMode(FlywheelConstants::MainControlMode, HoodConstants::MainControlMode);
 }
 
 void Robot::TestInit() {}
