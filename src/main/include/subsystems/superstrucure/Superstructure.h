@@ -119,6 +119,10 @@ class Superstructure final : public frc2::SubsystemBase
     SystemSuperState m_systemSuperState = SystemSuperState::IDLE;
     bool m_IsInitialized = true;
 
+    // === Output wanted states (used for subsystems with important, ex : secure pos when approaching to trench)
+    IntakeSubsystem::WantedState m_intakeWantedState;
+    ShooterSubsystem::WantedState m_shooterWantedState;
+
     // === Calculator ===
     ShootParametersCalculator m_shootParameterCalculator;
     ShootParameters *m_pShootParameters;
@@ -129,4 +133,5 @@ class Superstructure final : public frc2::SubsystemBase
 
     // === Internal methods ===
     void RunSuperStateMachine();
+    bool IsRobotCloseToTrench();
 };

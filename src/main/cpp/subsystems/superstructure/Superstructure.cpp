@@ -104,98 +104,98 @@ void Superstructure::Periodic()
     switch(m_systemSuperState)
     {
         case SystemSuperState::IDLE:
-            m_pIntake->SetWantedState(IntakeSubsystem::WantedState::STAND_BY);
+            m_intakeWantedState = IntakeSubsystem::WantedState::STAND_BY;
+            m_shooterWantedState = ShooterSubsystem::WantedState::STOP;
             m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::STAND_BY);
             m_pTurret->SetWantedState(TurretSubsystem::WantedState::STAND_BY);
-            m_pShooter->SetWantedState(ShooterSubsystem::WantedState::STOP);
             m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STAND_BY);
             break;
 
         case SystemSuperState::REFUELING:
-            m_pIntake->SetWantedState(IntakeSubsystem::WantedState::REFUEL);
+            m_intakeWantedState = IntakeSubsystem::WantedState::REFUEL;
+            m_shooterWantedState = ShooterSubsystem::WantedState::STOP;
             m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::STAND_BY);
             m_pTurret->SetWantedState(TurretSubsystem::WantedState::STAND_BY);
-            m_pShooter->SetWantedState(ShooterSubsystem::WantedState::STOP);
             m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STAND_BY);
             break;
 
         case SystemSuperState::SHOOTING_TO_ALLIANCE_ZONE:
-            m_pIntake->SetWantedState(IntakeSubsystem::WantedState::BECOME_AN_INDEXER);
+            m_intakeWantedState = IntakeSubsystem::WantedState::BECOME_AN_INDEXER;
+            m_shooterWantedState = ShooterSubsystem::WantedState::KEEP_ALL_FOR_YOU;
             m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::FEED_SHOOTER);
             m_pTurret->SetWantedState(TurretSubsystem::WantedState::POINT_AT_ALLIANCE_ZONE);
-            m_pShooter->SetWantedState(ShooterSubsystem::WantedState::KEEP_ALL_FOR_YOU);
             m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STAND_BY);
             break;
 
         case SystemSuperState::SHOOTING_TO_HUB:
-            m_pIntake->SetWantedState(IntakeSubsystem::WantedState::BECOME_AN_INDEXER);
+            m_intakeWantedState = IntakeSubsystem::WantedState::BECOME_AN_INDEXER;
+            m_shooterWantedState = ShooterSubsystem::WantedState::SHOOT_TO_HUB;
             m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::FEED_SHOOTER);
             m_pTurret->SetWantedState(TurretSubsystem::WantedState::FOLLOW_HUB);
-            m_pShooter->SetWantedState(ShooterSubsystem::WantedState::SHOOT_TO_HUB);
             m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STAND_BY);
             break;
 
         case SystemSuperState::READY_TO_REFUEL:
-            m_pIntake->SetWantedState(IntakeSubsystem::WantedState::EXTEND);
+            m_intakeWantedState = IntakeSubsystem::WantedState::EXTEND;
+            m_shooterWantedState = ShooterSubsystem::WantedState::STOP;
             m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::STAND_BY);
             m_pTurret->SetWantedState(TurretSubsystem::WantedState::STAND_BY);
-            m_pShooter->SetWantedState(ShooterSubsystem::WantedState::STOP);
             m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STAND_BY);
             break;
 
         case SystemSuperState::INTAKE_SAFE:
-            m_pIntake->SetWantedState(IntakeSubsystem::WantedState::PROTECT_YOURSELF_AGAINST_EVIL_PILOT);
+            m_intakeWantedState = IntakeSubsystem::WantedState::PROTECT_YOURSELF_AGAINST_EVIL_PILOT;
+            m_shooterWantedState = ShooterSubsystem::WantedState::STOP;
             m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::STAND_BY);
             m_pTurret->SetWantedState(TurretSubsystem::WantedState::STAND_BY);
-            m_pShooter->SetWantedState(ShooterSubsystem::WantedState::STOP);
             m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STAND_BY);
             break;
 
         case SystemSuperState::CLIMBED:
-            m_pIntake->SetWantedState(IntakeSubsystem::WantedState::RETURN_AT_HOME);
+            m_intakeWantedState = IntakeSubsystem::WantedState::RETURN_AT_HOME;
+            m_shooterWantedState = ShooterSubsystem::WantedState::STOP;
             m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::STAND_BY);
             m_pTurret->SetWantedState(TurretSubsystem::WantedState::STAND_BY);
-            m_pShooter->SetWantedState(ShooterSubsystem::WantedState::STOP);
             m_pClimber->SetWantedState(ClimberSubsystem::WantedState::CLIMBED);
             break;
 
         case SystemSuperState::AT_HOME:
-            m_pIntake->SetWantedState(IntakeSubsystem::WantedState::RETURN_AT_HOME);
+            m_intakeWantedState = IntakeSubsystem::WantedState::RETURN_AT_HOME;
+            m_shooterWantedState = ShooterSubsystem::WantedState::STOP;
             m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::STAND_BY);
             m_pTurret->SetWantedState(TurretSubsystem::WantedState::STAND_BY);
-            m_pShooter->SetWantedState(ShooterSubsystem::WantedState::STOP);
             m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STAND_BY);
             break;
 
         case SystemSuperState::EXTENDING_INTAKE:
-            m_pIntake->SetWantedState(IntakeSubsystem::WantedState::EXTEND);
+            m_intakeWantedState = IntakeSubsystem::WantedState::EXTEND;
+            m_shooterWantedState = ShooterSubsystem::WantedState::STOP;
             m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::STAND_BY);
             m_pTurret->SetWantedState(TurretSubsystem::WantedState::STAND_BY);
-            m_pShooter->SetWantedState(ShooterSubsystem::WantedState::STOP);
             m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STAND_BY);
             break;
 
         case SystemSuperState::PREPARING_ALLIANCE_ZONE_SHOOT:
-            m_pIntake->SetWantedState(IntakeSubsystem::WantedState::STAND_BY);
+            m_intakeWantedState = IntakeSubsystem::WantedState::STAND_BY;
+            m_shooterWantedState = ShooterSubsystem::WantedState::PREPARE_TO_KEEP_ALL;
             m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::PREPARE_SHOOT);
             m_pTurret->SetWantedState(TurretSubsystem::WantedState::POINT_AT_ALLIANCE_ZONE);
-            m_pShooter->SetWantedState(ShooterSubsystem::WantedState::PREPARE_TO_KEEP_ALL);
             m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STAND_BY);
             break;
 
         case SystemSuperState::PREPARING_TO_SHOOT:
-            m_pIntake->SetWantedState(IntakeSubsystem::WantedState::STAND_BY);
+            m_intakeWantedState = IntakeSubsystem::WantedState::STAND_BY;
+            m_shooterWantedState = ShooterSubsystem::WantedState::PREPARE_HUB_SHOOTING;
             m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::PREPARE_SHOOT);
             m_pTurret->SetWantedState(TurretSubsystem::WantedState::FOLLOW_HUB);
-            m_pShooter->SetWantedState(ShooterSubsystem::WantedState::PREPARE_HUB_SHOOTING);
             m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STAND_BY);
             break;
 
         case SystemSuperState::MOVING_INTAKE_TO_SAFE_POS:
-            m_pIntake->SetWantedState(IntakeSubsystem::WantedState::PROTECT_YOURSELF_AGAINST_EVIL_PILOT);
+            m_intakeWantedState = IntakeSubsystem::WantedState::PROTECT_YOURSELF_AGAINST_EVIL_PILOT;
+            m_shooterWantedState = ShooterSubsystem::WantedState::STOP;
             m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::STAND_BY);
             m_pTurret->SetWantedState(TurretSubsystem::WantedState::STAND_BY);
-            m_pShooter->SetWantedState(ShooterSubsystem::WantedState::STOP);
             m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STAND_BY);
             break;
 
@@ -204,18 +204,18 @@ void Superstructure::Periodic()
             break;
 
         case SystemSuperState::CLIMBING:
-            m_pIntake->SetWantedState(IntakeSubsystem::WantedState::RETURN_AT_HOME);
+            m_intakeWantedState = IntakeSubsystem::WantedState::RETURN_AT_HOME;
+            m_shooterWantedState = ShooterSubsystem::WantedState::STOP;
             m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::STAND_BY);
             m_pTurret->SetWantedState(TurretSubsystem::WantedState::STAND_BY);
-            m_pShooter->SetWantedState(ShooterSubsystem::WantedState::STOP);
             m_pClimber->SetWantedState(ClimberSubsystem::WantedState::CLIMBED);
             break;
 
         case SystemSuperState::RETRACTING_INTAKE:
-            m_pIntake->SetWantedState(IntakeSubsystem::WantedState::RETURN_AT_HOME);
+            m_intakeWantedState = IntakeSubsystem::WantedState::RETURN_AT_HOME;
+            m_shooterWantedState = ShooterSubsystem::WantedState::STOP;
             m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::STAND_BY);
             m_pTurret->SetWantedState(TurretSubsystem::WantedState::STAND_BY);
-            m_pShooter->SetWantedState(ShooterSubsystem::WantedState::STOP);
             m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STAND_BY);
             break;
 
@@ -224,42 +224,42 @@ void Superstructure::Periodic()
             break;
 
         case SystemSuperState::EVACUATING_SHOOTER:
-            m_pIntake->SetWantedState(IntakeSubsystem::WantedState::EXTEND);
+            m_intakeWantedState = IntakeSubsystem::WantedState::EJECT;
+            m_shooterWantedState = ShooterSubsystem::WantedState::REVERSE;
             m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::EVACUATE_SHOOTER);
             m_pTurret->SetWantedState(TurretSubsystem::WantedState::STAND_BY);
-            m_pShooter->SetWantedState(ShooterSubsystem::WantedState::REVERSE);
             m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STAND_BY);
             break;
 
         case SystemSuperState::SHOOTING_TO_HUB_WHILE_REFUELING:
-            m_pIntake->SetWantedState(IntakeSubsystem::WantedState::REFUEL);
+            m_intakeWantedState = IntakeSubsystem::WantedState::REFUEL;
+            m_shooterWantedState = ShooterSubsystem::WantedState::SHOOT_TO_HUB;
             m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::FEED_SHOOTER);
             m_pTurret->SetWantedState(TurretSubsystem::WantedState::FOLLOW_HUB);
-            m_pShooter->SetWantedState(ShooterSubsystem::WantedState::SHOOT_TO_HUB);
             m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STAND_BY);
             break;
 
         case SystemSuperState::PREPARING_TO_SHOOT_TO_HUB_WHILE_REFUELING:
-            m_pIntake->SetWantedState(IntakeSubsystem::WantedState::REFUEL);
+            m_intakeWantedState = IntakeSubsystem::WantedState::REFUEL;
+            m_shooterWantedState = ShooterSubsystem::WantedState::SHOOT_TO_HUB;
             m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::PREPARE_SHOOT);
             m_pTurret->SetWantedState(TurretSubsystem::WantedState::FOLLOW_HUB);
-            m_pShooter->SetWantedState(ShooterSubsystem::WantedState::SHOOT_TO_HUB);
             m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STAND_BY);
             break;
 
         case SystemSuperState::PREPARING_TO_SHOOT_TO_ALLIANCE_ZONE_WHILE_REFUELING:
-            m_pIntake->SetWantedState(IntakeSubsystem::WantedState::REFUEL);
+            m_intakeWantedState = IntakeSubsystem::WantedState::REFUEL;
+            m_shooterWantedState = ShooterSubsystem::WantedState::KEEP_ALL_FOR_YOU;
             m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::PREPARE_SHOOT);
             m_pTurret->SetWantedState(TurretSubsystem::WantedState::POINT_AT_ALLIANCE_ZONE);
-            m_pShooter->SetWantedState(ShooterSubsystem::WantedState::KEEP_ALL_FOR_YOU);
             m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STAND_BY);
             break;
 
         case SystemSuperState::SHOOTING_TO_ALLIANCE_ZONE_WHILE_REFUELING:
-            m_pIntake->SetWantedState(IntakeSubsystem::WantedState::REFUEL);
+            m_intakeWantedState = IntakeSubsystem::WantedState::REFUEL;
+            m_shooterWantedState = ShooterSubsystem::WantedState::KEEP_ALL_FOR_YOU;
             m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::FEED_SHOOTER);
             m_pTurret->SetWantedState(TurretSubsystem::WantedState::POINT_AT_ALLIANCE_ZONE);
-            m_pShooter->SetWantedState(ShooterSubsystem::WantedState::KEEP_ALL_FOR_YOU);
             m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STAND_BY);
             break;
 
@@ -267,6 +267,64 @@ void Superstructure::Periodic()
             DEBUG_ASSERT(false,"Superstructure : unknwon system super state used");
             break;
     }
+
+    if (IsRobotCloseToTrench())
+    {
+        switch(m_intakeWantedState)
+        {
+            case IntakeSubsystem::WantedState::STAND_BY:
+                if(m_pIntake->IsOut())
+                {
+                    m_intakeWantedState = IntakeSubsystem::WantedState::PROTECT_YOURSELF_AGAINST_EVIL_PILOT;
+                }
+                break;
+
+            case IntakeSubsystem::WantedState::REFUEL:
+            case IntakeSubsystem::WantedState::EJECT:
+            case IntakeSubsystem::WantedState::EXTEND:
+            case IntakeSubsystem::WantedState::PROTECT_YOURSELF_AGAINST_EVIL_PILOT:
+                break;
+
+            case IntakeSubsystem::WantedState::RETURN_AT_HOME:
+                m_intakeWantedState = IntakeSubsystem::WantedState::PROTECT_YOURSELF_AGAINST_EVIL_PILOT;
+                break;
+
+            case IntakeSubsystem::WantedState::BECOME_AN_INDEXER:
+                m_intakeWantedState = IntakeSubsystem::WantedState::EXTEND;
+                break;
+
+            default:
+                DEBUG_ASSERT(false,"Superstructure : unknown intake wanted state used");
+                break; 
+        }
+
+        switch(m_shooterWantedState)
+        {
+            case ShooterSubsystem::WantedState::STAND_BY:
+            case ShooterSubsystem::WantedState::FEED_ALLY:
+            case ShooterSubsystem::WantedState::STOP:
+            case ShooterSubsystem::WantedState::REVERSE:
+            case ShooterSubsystem::WantedState::PREPARE_HUB_SHOOTING:
+            case ShooterSubsystem::WantedState::PREPARE_TO_KEEP_ALL:
+                break;
+
+            case ShooterSubsystem::WantedState::SHOOT_TO_HUB:
+                m_shooterWantedState = ShooterSubsystem::WantedState::PREPARE_HUB_SHOOTING;
+                break;
+
+            case ShooterSubsystem::WantedState::KEEP_ALL_FOR_YOU:
+                m_shooterWantedState = ShooterSubsystem::WantedState::PREPARE_TO_KEEP_ALL;
+                break;
+
+            default:
+                DEBUG_ASSERT(false,"Superstructure : unknown shooter wanted state used");
+                break; 
+        }
+
+    }
+
+    m_pIntake->SetWantedState(m_intakeWantedState);
+    m_pShooter->SetWantedState(m_shooterWantedState);
 
     frc::SmartDashboard::PutNumber("Superstructure/WantedSuperState", (int)m_wantedSuperState);
     frc::SmartDashboard::PutNumber("Superstructure/SystemSuperState", (int)m_systemSuperState);
@@ -589,4 +647,16 @@ void Superstructure::RunSuperStateMachine()
             DEBUG_ASSERT(false,"Superstrcture : unknown system super state");
             break;
     }
+}
+
+bool Superstructure::IsRobotCloseToTrench()
+{
+    return (IS_IN_RANGE(double(m_robotPos.X()),
+                        double(FieldConstants::AllianceZone::LENGTH - FieldConstants::Trench::LENGTH/2.0),
+                        double(FieldConstants::Trench::SECURITY_DISTANCE))
+            || IS_IN_RANGE(double(m_robotPos.X()),
+                          double(FieldConstants::FIELD_LENGTH - FieldConstants::AllianceZone::LENGTH + FieldConstants::Trench::LENGTH/2.0),
+                          double(FieldConstants::Trench::SECURITY_DISTANCE)))
+        &&  (m_robotPos.Y() >= (FieldConstants::FIELD_WIDTH-FieldConstants::Trench::WIDTH) 
+            || m_robotPos.Y() >= FieldConstants::Trench::WIDTH);
 }

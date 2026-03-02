@@ -241,16 +241,33 @@ void ShooterSubsystem::Periodic()
         {
             case ControlMode::VOLTAGE:
             case ControlMode::POSITION_VOLTAGE_PID:
-                if (m_wantedState == WantedState::PREPARE_HUB_SHOOTING || m_wantedState == WantedState::PREPARE_TO_KEEP_ALL)
+                switch (m_systemState)
                 {
-                    m_hoodOutput = units::volt_t{m_hoodPIDController.CalculateWithRealTime(0.0, hoodInputs.hoodAngle, m_timestamp)};
-                }
-                else
-                {
-                    m_hoodOutput = units::volt_t{m_hoodPIDController.CalculateWithRealTime(m_hoodTargetPos, hoodInputs.hoodAngle, m_timestamp)};
+                    case SystemState::IDLE:
+                    case SystemState::RESTING:
+                    case SystemState::SHOOTING_BACKWARD:
+                    case SystemState::RAMPING_TO_SHOOT:
+                    case SystemState::RAMPING_TO_FEED:
+                    case SystemState::SOON_MINE:
+                    case SystemState::RAMPING_BACKWARD:
+                        m_hoodOutput = units::volt_t{m_hoodPIDController.CalculateWithRealTime(0.0, hoodInputs.hoodAngle, m_timestamp)};
+                        break;
+
+                    case SystemState::AT_SHOOT_SPEED:
+                    case SystemState::THATS_ALL_MINE:
+                    case SystemState::READY_TO_FEED:
+                        if (m_wantedState == WantedState::PREPARE_HUB_SHOOTING || m_wantedState == WantedState::PREPARE_TO_KEEP_ALL)
+                        {
+                        m_hoodOutput = units::volt_t{m_hoodPIDController.CalculateWithRealTime(0.0, hoodInputs.hoodAngle, m_timestamp)};
+                        }
+                        else
+                        {
+                            m_hoodOutput = units::volt_t{m_hoodPIDController.CalculateWithRealTime(m_hoodTargetPos, hoodInputs.hoodAngle, m_timestamp)};
+                        }
+                        break;
                 }
                 break;
-
+                
             case ControlMode::DISABLED:
                 m_hoodOutput = HoodConstants::Voltage::REST;
                 break;

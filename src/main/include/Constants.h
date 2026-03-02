@@ -120,4 +120,11 @@ namespace FieldConstants
         constexpr frc::Pose2d BLUE_PLACEMENT = {AllianceZone::LENGTH + WIDTH/2.0, (FIELD_WIDTH+WIDTH)/2.0,{0.0_deg}}; //placement of the center point of the blue hub
         constexpr frc::Pose2d RED_PLACEMENT = {FIELD_LENGTH - (AllianceZone::LENGTH + WIDTH/2.0), (FIELD_WIDTH+WIDTH)/2.0,{180.0_deg}}; //placement of the center point of the red hub
     }
+
+    namespace Trench
+    {
+        constexpr units::meter_t WIDTH = 50.35_in;
+        constexpr units::meter_t LENGTH = 47.0_in;
+        constexpr units::meter_t SECURITY_DISTANCE = LENGTH/2.0;
+    }
 }
