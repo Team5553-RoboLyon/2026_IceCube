@@ -15,8 +15,7 @@
 #pragma once
 
 #include <frc/geometry/Pose2d.h>
-#include <Eigen/Dense>
-
+#include <wpi/array.h>
 /**
  * A vision measurement.
  *
@@ -27,13 +26,13 @@
 struct VisionMeasurement {
   frc::Pose2d robotPose;
   units::time::second_t timestamp;
-  Eigen::Vector3d stdDevs;
+  const wpi::array<double, 3U> stdDevs;
 
   VisionMeasurement() = default;
 
   VisionMeasurement(
       const frc::Pose2d &robotPose_,
       units::time::second_t timestamp_,
-      const Eigen::Vector3d &stdDevs_)
+      const wpi::array<double, 3U> &stdDevs_)
       : robotPose(robotPose_), timestamp(timestamp_), stdDevs(stdDevs_) {}
 };
