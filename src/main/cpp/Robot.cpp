@@ -13,6 +13,7 @@
 #include "LyonLib/utils/TimerRBL.h"
 #include "frc/smartdashboard/SmartDashboard.h"
 
+
 Robot::Robot() {}
 void Robot::RobotInit() {
   //start data logging
@@ -27,6 +28,8 @@ void Robot::RobotInit() {
   m_robot.Set(true);
   m_robot.SetText(std::string("Robot used : ") + RobotToString());
   m_isNotCompetitionRobot.Set(ROBOT_MODEL != COMPETITON);
+
+  LoadAutonomousTrajectories();
 }
 void Robot::RobotPeriodic() {
   frc2::CommandScheduler::GetInstance().Run();
@@ -54,29 +57,67 @@ void Robot::DriverStationConnected() {
   m_container.superstructure.SetAlliance();
 }
 
-void Robot::AutonomousInit() {}
+void Robot::AutonomousInit() {
+  //TODO : set pose
+  m_container.drivetrain.ResetOdometryPose(trajectory.GetInitialSample().value().GetPose());
+  m_container.drivetrain.SetWantedDrive(DriveMode::AUTO_PATH_FOLLOWER);
+  m_container.drivetrain.SetDesiredAutoTrajectory(trajectory);
+
+}
 void Robot::AutonomousPeriodic() {}
 void Robot::AutonomousExit() {}
 
-void Robot::TeleopInit() {}
+void Robot::TeleopInit() {
+  //TODO : set pose
+  m_container.drivetrain.SetWantedDrive(DriveMode::ARCADE_DRIVE);
+}
 void Robot::TeleopPeriodic() {
+  // if(BYPASS_STATE_MACHINE(m_container.climber.GetControlMode()))
+  // {
+  //   m_container.climber.SetManualControlInput(m_container.operatorGamepad.GetLeftY());
+  // }
+  // if (m_container.operatorGamepad.GetAButtonPressed())
+  // {
+  //   m_container.intakeSubsystem.ActualisePIDCoef();
+  // m_container.ShootParamCalculator.SetRobotPos({0.0_m,0.0_m,{}},TimerRBL::GetFPGATimestampInSeconds());
+  // m_container.turretSubsystem.SetControlMode(TurretConstants::MainControlMode);
+  // m_container.shooterSubsystem.SetControlMode(FlywheelConstants::MainControlMode, HoodConstants::MainControlMode);
+  // }
 }
 void Robot::TeleopExit() {}
 
 void Robot::DisabledInit() {
+  // m_container.intakeSubsystem.SetControlMode(ControlMode::DISABLED, ControlMode::DISABLED);
 
+  // m_container.climber.SetControlMode(ControlMode::DISABLED);
+  // m_container.drivetrain.SetWantedDrive(DriveMode::DISABLE);
+  // m_container.turretSubsystem.SetControlMode(ControlMode::DISABLED);
+  // m_container.shooterSubsystem.SetControlMode(ControlMode::DISABLED, ControlMode::DISABLED);
+  m_container.superstructure.DisableSubsystems();
 }
 void Robot::DisabledPeriodic() {}
 void Robot::DisabledExit() {
-
+  // m_container.climber.SetControlMode(ClimberConstants::MainControlMode);
+  // m_container.climber.SetWantedState(ClimberSubsystem::WantedState::INITIALIZATION);
+  // m_container.intakeSubsystem.SetControlMode(PivotConstants::MainControlMode, RollerConstants::MainControlMode);
+  // m_container.turretSubsystem.SetControlMode(TurretConstants::MainControlMode);
+  // m_container.shooterSubsystem.SetControlMode(FlywheelConstants::MainControlMode, HoodConstants::MainControlMode);
+  m_container.superstructure.EnableSubsystems();
 }
 
 void Robot::TestInit() {}
-void Robot::TestPeriodic() {}
+void Robot::TestPeriodic() {
+  m_container.drivetrain.SetWantedDrive(driveConstants::desiredDriveControl);
+}
 void Robot::TestExit() {}
 
 void Robot::SimulationInit() {}
 void Robot::SimulationPeriodic() {}
+
+void Robot::LoadAutonomousTrajectories() {
+ trajectory = choreo::Choreo::LoadTrajectory<choreo::DifferentialSample>("Virgule").value(); 
+ trajectoryLogger.Log(trajectory.GetPoses());
+}
 
 #ifndef RUNNING_FRC_TESTS
 int main() {

@@ -13,7 +13,7 @@ void PivotIOSim::UpdateInputs(PivotIOInputs& inputs)
 
     inputs.isLeftEncoderConnected = true;
     inputs.isPivotMotorConnected = true;
-    inputs.isRightEncoderConnected = true;
+    // inputs.isRightEncoderConnected = true;
 
     inputs.pivotMotorAppliedVoltage = m_pivotSim.GetInput(0);
     inputs.pivotMotorBusVoltage = 12.0;
@@ -24,7 +24,7 @@ void PivotIOSim::UpdateInputs(PivotIOInputs& inputs)
 
     frc::SmartDashboard::PutBoolean("Pivot motor connected", inputs.isPivotMotorConnected);
     frc::SmartDashboard::PutBoolean("Pivot left encoder connected", inputs.isLeftEncoderConnected);
-    frc::SmartDashboard::PutBoolean("Pivot right encoder connected", inputs.isRightEncoderConnected);
+    // frc::SmartDashboard::PutBoolean("Pivot right encoder connected", inputs.isRightEncoderConnected);
     frc::SmartDashboard::PutNumber("Pivot motor applied voltage", inputs.pivotMotorAppliedVoltage);
     frc::SmartDashboard::PutNumber("Pivot motor Bus Voltage", inputs.pivotMotorBusVoltage);
     frc::SmartDashboard::PutNumber("Pivot motor current", inputs.pivotMotorCurrent);

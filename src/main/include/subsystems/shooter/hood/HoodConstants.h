@@ -13,8 +13,8 @@ using IdleMode = rev::spark::SparkBaseConfig::IdleMode;
 
 namespace HoodConstants
 {
-    constexpr ControlMode MainControlMode = ControlMode::POSITION_VOLTAGE_PID;
-    constexpr ControlMode EmergencyControlMode = ControlMode::VOLTAGE;
+    constexpr ControlMode MainControlMode = ControlMode::DISABLED; //MANUAL_POSITION
+    constexpr ControlMode EmergencyControlMode = ControlMode::POSITION_VOLTAGE_PID;
     namespace HoodMotor
     {
         constexpr int ID = 3;
@@ -33,7 +33,7 @@ namespace HoodConstants
     {
         constexpr int ID_CHANNEL_A = 19;
         constexpr int ID_CHANNEL_B = 20;
-        constexpr bool INVERTED = false;
+        constexpr bool INVERTED = true;
         constexpr double RATIO = 215.0/14.0; 
         constexpr double DISTANCE_PER_PULSE = 2.0*NF64_PI/RATIO/ENCODER_TICKS_PER_REVOLUTION_K2X;
     }
@@ -55,9 +55,15 @@ namespace HoodConstants
     {
         namespace POSITION_VOLTAGE_PID
         {
-            constexpr double KP = 10.0; //TUNEME
+            constexpr double KP = 125.0; //TUNEME
             constexpr double KI = 0.0; //TUNEME
-            constexpr double KD = 0.2; //TUNEME
+            constexpr double KD = 0.0; //TUNEME
+        }
+        namespace MANUAL_POSITION
+        {
+            constexpr double KP = 125.0; //TUNEME
+            constexpr double KI = 0.0; //TUNEME
+            constexpr double KD = 0.0; //TUNEME
         }
     }
 
@@ -77,7 +83,7 @@ namespace HoodConstants
 
     namespace Position //in rad
     { 
-        constexpr double MAX = NDEGtoRAD(17.0); //TUNEME
+        constexpr double MAX = NDEGtoRAD(19.1); //TUNEME
         constexpr double MIN = 0.0; //TUNEME
         constexpr double TOLERANCE = NDEGtoRAD(0.1); //TUNEME
         constexpr double FEED = MAX;  //TUNEME
@@ -85,5 +91,6 @@ namespace HoodConstants
     
     namespace Settings
     {
+        constexpr double MANUAL_SETPOINT_CHANGE_LIMIT = (Position::MAX - Position::MIN) / (0.02/TIME_PER_CYCLE);
     }
 }

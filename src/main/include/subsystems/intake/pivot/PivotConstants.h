@@ -34,7 +34,7 @@ namespace PivotConstants
        constexpr int ID = 8;
        constexpr bool INVERTED = false;
        constexpr double FULL_RANGE = 2.0*NF64_PI;
-       constexpr double EXPECTED_ZERO = 3.753408;//TUNEME
+       constexpr double EXPECTED_ZERO = 3.753408+0.034906;//TUNEME
     }
 
     namespace EncoderRight
@@ -73,9 +73,9 @@ namespace PivotConstants
     {
         namespace POSITION_DUTYCYCLE_PID
         {
-            constexpr double KP = 0.75; //TUNEME
+            constexpr double KP = 0.5; //TUNEME
             constexpr double KI = 0.0; //TUNEME
-            constexpr double KD = 0.08; //TUNEME
+            constexpr double KD = 0.02; //TUNEME
             constexpr double KG = 0.0; //TUNEME
         }
     }

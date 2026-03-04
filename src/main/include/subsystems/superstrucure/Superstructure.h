@@ -36,7 +36,7 @@ class Superstructure final : public frc2::SubsystemBase
         //Basic states : Do only one action
         REFUEL = 7,
         // FEED_ALLY = 8,
-        SHOOT_TO_ALLIANCE_ZONE = 9,
+        // SHOOT_TO_ALLIANCE_ZONE = 9,
         SHOOT_TO_HUB = 10,
         PREPARE_CLIMB = 11,
         RETRACT_CLIMBER = 12,
@@ -49,11 +49,11 @@ class Superstructure final : public frc2::SubsystemBase
         // PREPARE_CLIMB_SHOOTING_AT_HUB = 17+1,
         // PREPARE_CLIMB_FEEDING_ALLY = 18+1,
         SHOOT_AT_HUB_REFUELING = 20,
-        SHOOT_AT_ALLIANCE_ZONE_REFUELING = 21,
+        // SHOOT_AT_ALLIANCE_ZONE_REFUELING = 21,
         // FEED_ALLY_REFUELING = 21+1,
         //Optional states : States that are not necessary for the functioning of the robot but prepare for future actions
-        PREPARE_SHOOT_TO_HUB = 23,
-        PREPARE_SHOOT_TO_ALLIANCE_ZONE = 24,
+        // PREPARE_SHOOT_TO_HUB = 23,
+        // PREPARE_SHOOT_TO_ALLIANCE_ZONE = 24,
         // PREPARE_ALLY_FEEDING = 24+1,
         PREPARE_REFUEL = 26,
         RETRACT_INTAKE = 27,
@@ -64,17 +64,17 @@ class Superstructure final : public frc2::SubsystemBase
         IDLE = 0,
         //steady states
         REFUELING = 1,
-        SHOOTING_TO_ALLIANCE_ZONE = 2,
+        // SHOOTING_TO_ALLIANCE_ZONE = 2,
         SHOOTING_TO_HUB = 2+1,
         READY_TO_REFUEL = 3+1,
         INTAKE_SAFE = 4+1,
         CLIMBED = 6+1,
         AT_HOME = 7+1,
         SHOOTING_TO_HUB_WHILE_REFUELING = 9,
-        SHOOTING_TO_ALLIANCE_ZONE_WHILE_REFUELING,
+        // SHOOTING_TO_ALLIANCE_ZONE_WHILE_REFUELING,
         //transition states
         EXTENDING_INTAKE = 11,
-        PREPARING_ALLIANCE_ZONE_SHOOT,
+        // PREPARING_ALLIANCE_ZONE_SHOOT,
         PREPARING_TO_SHOOT,
         MOVING_INTAKE_TO_SAFE_POS,
         PREPARING_CLIMB,
@@ -83,7 +83,7 @@ class Superstructure final : public frc2::SubsystemBase
         RETRACTING_CLIMBER,
         EVACUATING_SHOOTER,
         PREPARING_TO_SHOOT_TO_HUB_WHILE_REFUELING,
-        PREPARING_TO_SHOOT_TO_ALLIANCE_ZONE_WHILE_REFUELING,
+        // PREPARING_TO_SHOOT_TO_ALLIANCE_ZONE_WHILE_REFUELING,
     };
 
     void SetWantedSuperState(WantedSuperState wantedSuperState);

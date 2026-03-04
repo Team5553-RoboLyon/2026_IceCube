@@ -30,7 +30,7 @@ void ClimberIOSpark::UpdateInputs(ClimberIOInputs& inputs)
     inputs.motorCurrent = m_climberMotor.GetOutputCurrent();
     inputs.motorTemperature = m_climberMotor.GetMotorTemperature();
     
-    inputs.hammerHeight = m_climberEncoder.GetDistance();
+    inputs.hammerHeight = m_climberEncoder.GetDistance() + ClimberConstants::Settings::BOTTOM_LIMIT;
 
     inputs.irbreakerValue = m_irbreaker.Get();
     inputs.bottomLimitSwitchValue = m_bottomLimitSwitch.Get();

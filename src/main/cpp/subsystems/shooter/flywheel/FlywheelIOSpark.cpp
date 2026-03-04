@@ -4,6 +4,7 @@
 
 #include "LyonLib/logging/DebugUtils.h"
 
+
 FlywheelIOSpark::FlywheelIOSpark()
 {
         // Set the motor configs
@@ -90,5 +91,6 @@ void FlywheelIOSpark::SetVelocity(units::angular_velocity::revolutions_per_minut
         && (double(velocity) >= FlywheelConstants::Speed::MIN) 
         ,"Flywheel velocity out of range");
 
-    DEBUG_ASSERT(false, "I think you're not patient enough to wait for the velocity control to be implemented. Don't worry, it'll be there soon :)");
+    // m_leftClosedLoopController.SetSetpoint(double(velocity), rev::spark::SparkLowLevel::ControlType::kVelocity);
+    // m_rightClosedLoopController.SetSetpoint(double(velocity), rev::spark::SparkLowLevel::ControlType::kVelocity);
 }

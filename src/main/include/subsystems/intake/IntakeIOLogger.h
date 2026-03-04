@@ -22,7 +22,7 @@ private:
     wpi::log::DoubleLogEntry pivotMotorAppliedVoltage;
     wpi::log::DoubleLogEntry pivotMotorBusVoltage;
     wpi::log::DoubleLogEntry pivotMotorTemperature;
-    wpi::log::BooleanLogEntry isRightEncoderConnected;
+    // wpi::log::BooleanLogEntry isRightEncoderConnected;
     wpi::log::BooleanLogEntry isLeftEncoderConnected;
     wpi::log::DoubleLogEntry pivotPos;
 

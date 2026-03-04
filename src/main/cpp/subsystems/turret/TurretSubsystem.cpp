@@ -122,18 +122,18 @@ void TurretSubsystem::Periodic()
     
     if(!m_isInitialized)
     {
-        m_output = TurretConstants::DutyCycle::INIT;
-        if(inputs.hallEffectSensorValue > m_highestHallEffectSensorValue)
-        {
-            m_highestHallEffectSensorValue = inputs.hallEffectSensorValue;
-            m_pTurretIO->ResetOrientation();
-        }
-        else if (inputs.hallEffectSensorValue < TurretConstants::HallEffectSensor::MIN_VALUE_WHEN_MAGNET &&
-                 m_highestHallEffectSensorValue >= TurretConstants::HallEffectSensor::MIN_VALUE_WHEN_MAGNET)
-        {
-            m_isInitialized = true;
-            m_output = TurretConstants::DutyCycle::REST;
-        }
+        // m_output = TurretConstants::DutyCycle::INIT;
+        // if(inputs.hallEffectSensorValue > m_highestHallEffectSensorValue)
+        // {
+        //     m_highestHallEffectSensorValue = inputs.hallEffectSensorValue;
+        //     m_pTurretIO->ResetOrientation();
+        // }
+        // else if (inputs.hallEffectSensorValue < TurretConstants::HallEffectSensor::MIN_VALUE_WHEN_MAGNET &&
+        //          m_highestHallEffectSensorValue >= TurretConstants::HallEffectSensor::MIN_VALUE_WHEN_MAGNET)
+        // {
+        //     m_isInitialized = true;
+        //     m_output = TurretConstants::DutyCycle::REST;
+        // }
     }
     else 
     {
@@ -231,10 +231,10 @@ void TurretSubsystem::RunStateMachine()
                 m_systemState = SystemState::ALIGNING_WITH_ALLIANCE_ZONE;
             break;
 
-        case WantedState::PREPARE_EJECT:
-            if (m_systemState != SystemState::READY_TO_EJECT)
-                m_systemState = SystemState::SPINNING_TO_EJECT;
-            break;
+        // case WantedState::PREPARE_EJECT:
+        //     if (m_systemState != SystemState::READY_TO_EJECT)
+        //         m_systemState = SystemState::SPINNING_TO_EJECT;
+        //     break;
 
         default:
             DEBUG_ASSERT(false, "turret : impossible state");
@@ -251,23 +251,25 @@ void TurretSubsystem::RunStateMachine()
 
         case SystemState::ALIGNING_WITH_HUB:
         case SystemState::ALIGNED_WITH_HUB:
-            if(inputs.orientation < 0.0)
-            {
-                m_targetPos = m_pShootParams->lookAheadTargetTurretPos - 2.0*NF64_PI;
-            }
-            else
-            {
-                m_targetPos = m_pShootParams->lookAheadTargetTurretPos;
-            }
+            // if(inputs.orientation < 0.0)
+            // {
+            //     m_targetPos = m_pShootParams->lookAheadTargetTurretPos - 2.0*NF64_PI;
+            // }
+            // else
+            // {
+            //     m_targetPos = m_pShootParams->lookAheadTargetTurretPos;
+            // }
 
-            if (inputs.orientation >= 0.0 && m_targetPos - inputs.orientation > NF64_PI)
-            {
-                m_targetPos -= 2*NF64_PI;
-            }
-            else if (inputs.orientation <= 0.0 && m_targetPos - inputs.orientation < -NF64_PI)
-            {
-                m_targetPos += 2*NF64_PI;
-            }
+            // if (inputs.orientation >= 0.0 && m_targetPos - inputs.orientation > NF64_PI)
+            // {
+            //     m_targetPos -= 2*NF64_PI;
+            // }
+            // else if (inputs.orientation <= 0.0 && m_targetPos - inputs.orientation < -NF64_PI)
+            // {
+            //     m_targetPos += 2*NF64_PI;
+            // }
+
+            m_targetPos = m_pShootParams->lookAheadTargetTurretPos;
 
             if (IS_IN_RANGE(inputs.orientation, m_targetPos, TurretConstants::Setpoints::TOLERANCE))
                 m_systemState = SystemState::ALIGNED_WITH_HUB;
@@ -278,23 +280,25 @@ void TurretSubsystem::RunStateMachine()
         case SystemState::ALIGNING_WITH_ALLIANCE_ZONE:
         case SystemState::POINTING_AT_ALLIANCE_ZONE:
 
-            if (inputs.orientation < 0.0)
-            {
-                m_targetPos = m_pShootParams->lookAheadTargetTurretPos - 2.0*NF64_PI;
-            }
-            else
-            {
-                m_targetPos = m_pShootParams->lookAheadTargetTurretPos;
-            }
+            // if (inputs.orientation < 0.0)
+            // {
+            //     m_targetPos = m_pShootParams->lookAheadTargetTurretPos - 2.0*NF64_PI;
+            // }
+            // else
+            // {
+            //     m_targetPos = m_pShootParams->lookAheadTargetTurretPos;
+            // }
 
-            if (inputs.orientation >= 0.0 && m_targetPos - inputs.orientation > NF64_PI)
-            {
-                m_targetPos -= 2*NF64_PI;
-            }
-            else if (inputs.orientation <= 0.0 && m_targetPos - inputs.orientation < -NF64_PI)
-            {
-                m_targetPos += 2*NF64_PI;
-            }
+            // if (inputs.orientation >= 0.0 && m_targetPos - inputs.orientation > NF64_PI)
+            // {
+            //     m_targetPos -= 2*NF64_PI;
+            // }
+            // else if (inputs.orientation <= 0.0 && m_targetPos - inputs.orientation < -NF64_PI)
+            // {
+            //     m_targetPos += 2*NF64_PI;
+            // }
+
+            m_targetPos = m_pShootParams->lookAheadTargetTurretPos;
 
             if(IS_IN_RANGE(inputs.orientation, m_targetPos, TurretConstants::Setpoints::TOLERANCE))
                 m_systemState = SystemState::POINTING_AT_ALLIANCE_ZONE;

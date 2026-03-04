@@ -47,6 +47,7 @@ class ClimberSubsystem : public frc2::SubsystemBase {
     void ToggleControlMode();
 
     bool IsResting();
+    bool IsInSafetyPosition();
     bool IsInitialized() { return m_isInitialized; }
     void SetManualControlInput(const double value);
 

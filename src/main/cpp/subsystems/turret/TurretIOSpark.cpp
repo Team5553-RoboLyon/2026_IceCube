@@ -31,7 +31,7 @@ void TurretIOSpark::UpdateInputs(TurretIOInputs& inputs)
     inputs.motorTemperature = m_motor.GetMotorTemperature();
     
     inputs.orientation = m_encoder.GetDistance();
-    inputs.hallEffectSensorValue = m_hallEffectSensor.GetVoltage();
+    // inputs.hallEffectSensorValue = m_hallEffectSensor.GetVoltage();
 
     #ifndef TURRET_SMARTDASHBOARD_LOG
         m_logger.Log(inputs);

@@ -14,6 +14,12 @@ public:
     Operator(int port, double threshold) : XboxGamepad(port, threshold){};
     ~Operator() override = default;
 
+    frc2::Trigger STOWED{_crossButton };
+    frc2::Trigger ARMED_TO_CLIMB{_optionsButton };
+    frc2::Trigger CLIMBED{_circleButton };
+    frc2::Trigger toggle{_triangleButton };
+
+    
 
     void SetRumble(RumbleType type, double value)
     {
@@ -50,7 +56,7 @@ public:
     frc2::Trigger CLIMB{_L3AsButton};
     frc2::Trigger SHOOT_TO_AZ{_XButton};
     frc2::Trigger RETRACT_INTAKE{_BButton};
-    frc2::Trigger TOGGLE_IRBREAKER_VALUE{_R3AsButton};
+    // frc2::Trigger TOGGLE_IRBREAKER_VALUE{_R3AsButton};
     
     Operator(int port) : XboxGamepad(port){};
     Operator(int port, double threshold) : XboxGamepad(port, threshold){};
