@@ -44,11 +44,6 @@ namespace TurretConstants
         constexpr double DISTANCE_PER_PULSE = 2*NF64_PI/Specifications::GEAR_RATIO/ENCODER_TICKS_PER_REVOLUTION_K2X;
     }
 
-    namespace TurretCamera
-    {
-        const std::string NAME = "Big brother"; //TUNEME
-    }
-
     namespace Simulation
     {
         constexpr double MASS = 6.5; //kg, TUNEME

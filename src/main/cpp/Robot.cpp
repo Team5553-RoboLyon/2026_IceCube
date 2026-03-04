@@ -49,6 +49,9 @@ void Robot::RobotPeriodic() {
   } else {
     //Code for no data received yet
   }
+
+  frc::SmartDashboard::PutBoolean("Robot X", m_container.ahrs.IsConnected());
+  frc::SmartDashboard::PutNumber("Robot Yaw", m_container.ahrs.GetAngle());
 }
 
 void Robot::DriverStationConnected() {

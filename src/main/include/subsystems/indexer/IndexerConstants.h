@@ -13,7 +13,7 @@ namespace IndexerConstants
 
         namespace indexerMotor
     {
-        constexpr int ID = 2;
+        constexpr int ID = 7;
         constexpr bool INVERTED = false;
 
         constexpr IdleMode IDLE_MODE = IdleMode::kCoast;
@@ -26,7 +26,7 @@ namespace IndexerConstants
     }
         namespace clodeMotor
     {
-        constexpr int ID = 9;
+        constexpr int ID = 6;
         constexpr bool INVERTED = true;
 
         constexpr IdleMode IDLE_MODE = IdleMode::kCoast;

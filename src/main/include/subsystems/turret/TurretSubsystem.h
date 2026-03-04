@@ -15,7 +15,6 @@
 #include "LyonLib/control/pidRBL.h"
 #include "LyonLib/logging/Alert.h"
 #include "LyonLib/logging/TunableValueLogger.h"
-#include "camera/AprilTagPhotonCamera.h"
 
 #include "frc/DriverStation.h"
 
