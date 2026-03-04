@@ -64,24 +64,10 @@ class RobotContainer {
   ShootParameters *pShootParams{new ShootParameters};
 
   #if ROBOT_MODEL == SIMULATION
-  IndexerIOSim *indexerIOSim = new IndexerIOSim{};
-  Superstructure superstructure{new IntakeSubsystem {new RollerIOSim{}, new PivotIOSim{}},
-                                new IndexerSubsystem {indexerIOSim},
-                                new TurretSubsystem {new TurretIOSim, pShootParams},
-                                new ShooterSubsystem {new FlywheelIOSim{}, new HoodIOSim{}, pShootParams},
-                                new ClimberSubsystem {new ClimberIOSim},
-                                pShootParams};
-  DrivetrainSubsystem drivetrain{new DrivetrainIOSim()};
+    DrivetrainSubsystem drivetrain{new DrivetrainIOSim()};
   #else
-  Superstructure superstructure{new IntakeSubsystem {new RollerIOSpark{}, new PivotIOSpark{}},
-                                new IndexerSubsystem {new IndexerIOSpark{}},
-                                new TurretSubsystem {new TurretIOSpark{}, pShootParams},
-                                new ShooterSubsystem {new FlywheelIOSpark{}, new HoodIOSpark{}, pShootParams},
-                                new ClimberSubsystem {new ClimberIOSpark},
-                                pShootParams};
-  DrivetrainSubsystem drivetrain{new DrivetrainIOFlex()};
+    DrivetrainSubsystem drivetrain{new DrivetrainIOFlex()};
   #endif
-
 
   frc::AprilTagFieldLayout aprilTagFieldLayout = frc::AprilTagFieldLayout::LoadField(frc::AprilTagField::k2026RebuiltAndyMark);
   VisionFilterParameters visionFilterParameters{
@@ -122,13 +108,31 @@ std::vector<std::shared_ptr<VisionIO>> visionIOs{
   frc::DifferentialDriveKinematics kinematics{
     units::meter_t(driveConstants::Specifications::TRACKWIDTH)};
 
-
   RobotState robotState{
     initialPose,
     kinematics,
     ahrs,
     &drivetrain
   };
+
+  #if ROBOT_MODEL == SIMULATION
+  IndexerIOSim *indexerIOSim = new IndexerIOSim{};
+  Superstructure superstructure{new IntakeSubsystem {new RollerIOSim{}, new PivotIOSim{}},
+                                new IndexerSubsystem {indexerIOSim},
+                                new TurretSubsystem {new TurretIOSim, pShootParams},
+                                new ShooterSubsystem {new FlywheelIOSim{}, new HoodIOSim{}, pShootParams},
+                                new ClimberSubsystem {new ClimberIOSim},
+                                pShootParams};
+  #else
+  Superstructure superstructure{new IntakeSubsystem {new RollerIOSpark{}, new PivotIOSpark{}},
+                                new IndexerSubsystem {new IndexerIOSpark{}},
+                                new TurretSubsystem {new TurretIOSpark{}, pShootParams},
+                                new ShooterSubsystem {new FlywheelIOSpark{}, new HoodIOSpark{}, pShootParams},
+                                new ClimberSubsystem {new ClimberIOSpark},
+                                pShootParams,
+                                &robotState};
+  #endif
+  
 
  private:
   void ConfigureBindings();

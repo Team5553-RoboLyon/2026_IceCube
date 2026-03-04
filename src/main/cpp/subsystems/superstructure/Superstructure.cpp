@@ -8,13 +8,15 @@ Superstructure::Superstructure(IntakeSubsystem *pIntake,
                                TurretSubsystem *pTurret,
                                ShooterSubsystem *pShooter,
                                ClimberSubsystem *pClimber,
-                               ShootParameters *pShootParams)
+                               ShootParameters *pShootParams,
+                               RobotState* pRobotState)
                                : m_pIntake(pIntake),
                                  m_pIndexer(pIndexer),
                                  m_pTurret(pTurret),
                                  m_pShooter(pShooter),
                                  m_pClimber(pClimber),
-                                 m_pShootParameters(pShootParams)
+                                 m_pShootParameters(pShootParams),
+                                 m_pRobotState(pRobotState)
 {
     
 }
@@ -81,6 +83,14 @@ void Superstructure::ToggleClimberControlMode()
 
 void Superstructure::Periodic()
 {
+    if (m_pRobotState->GetPose().has_value())
+    {
+        m_robotPos = m_pRobotState->GetPose().value();
+    }
+    else
+    {
+        //TODO
+    }
     m_currentWantedSuperState = m_wantedSuperState;
     m_timestamp = TimerRBL::GetFPGATimestampInSeconds();
 
@@ -329,11 +339,6 @@ void Superstructure::Periodic()
     frc::SmartDashboard::PutNumber("Superstructure/WantedSuperState", (int)m_wantedSuperState);
     frc::SmartDashboard::PutNumber("Superstructure/SystemSuperState", (int)m_systemSuperState);
 
-}
-
-void Superstructure::SetRobotPos(frc::Pose2d robotPos)
-{
-    m_robotPos = robotPos;
 }
 
 void Superstructure::RunSuperStateMachine()

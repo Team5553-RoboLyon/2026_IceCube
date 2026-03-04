@@ -8,6 +8,7 @@
 #include "subsystems/shooter/ShooterSubsystem.h"
 #include "subsystems/turret/TurretSubsystem.h"
 #include "subsystems/ShootParametersCalculator.h"
+#include "RobotState.h"
 
 #include "frc/geometry/Pose2d.h"
 
@@ -20,7 +21,8 @@ class Superstructure final : public frc2::SubsystemBase
                                TurretSubsystem *pTurret,
                                ShooterSubsystem *pShooter,
                                ClimberSubsystem *pClimber,
-                               ShootParameters *pShootParams);
+                               ShootParameters *pShootParams,
+                               RobotState* pRobotState);
     ~Superstructure() = default;
 
     enum class WantedSuperState
@@ -102,8 +104,6 @@ class Superstructure final : public frc2::SubsystemBase
 
     void Periodic() override;
 
-    void SetRobotPos(frc::Pose2d robotPos);
-
     private:
 
     // === Subsystems ===
@@ -119,7 +119,7 @@ class Superstructure final : public frc2::SubsystemBase
     SystemSuperState m_systemSuperState = SystemSuperState::IDLE;
     bool m_IsInitialized = true;
 
-    // === Output wanted states (used for subsystems with important, ex : secure pos when approaching to trench)
+    // === Output wanted states (used for subsystems with more security, ex : secure pos when approaching to trench)
     IntakeSubsystem::WantedState m_intakeWantedState;
     ShooterSubsystem::WantedState m_shooterWantedState;
 
@@ -128,6 +128,7 @@ class Superstructure final : public frc2::SubsystemBase
     ShootParameters *m_pShootParameters;
 
     // === External Inputs ===
+    RobotState *m_pRobotState;
     frc::Pose2d m_robotPos;
     double m_timestamp{0.0};
 
