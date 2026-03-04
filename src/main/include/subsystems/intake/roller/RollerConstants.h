@@ -12,7 +12,7 @@ using IdleMode = rev::spark::SparkBaseConfig::IdleMode;
 namespace RollerConstants
 {
     
-    constexpr ControlMode MainControlMode = ControlMode::VOLTAGE;
+    constexpr ControlMode MainControlMode = ControlMode::DISABLED;
     constexpr ControlMode EmergencyControlMode = ControlMode::MANUAL_VOLTAGE;
 
     namespace rollerMotor

@@ -122,6 +122,8 @@ void ClimberSubsystem::SetManualControlInput(const double value)
         case ControlMode::MANUAL_POSITION:
             m_manualControlInput = m_ClimberPIDController.GetSetpoint() + value * ClimberConstants::Settings::MANUAL_SETPOINT_CHANGE_LIMIT;
             break; //end of ControlMode::MANUAL_POSITION
+        case ControlMode::DISABLED:
+            break;
         default:
             DEBUG_ASSERT(false, "Climber : SetManualControlInput impossible with an unrecognized mode.");
             break; //end of default

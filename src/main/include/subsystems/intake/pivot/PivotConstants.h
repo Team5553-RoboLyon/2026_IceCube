@@ -12,7 +12,7 @@ using IdleMode = rev::spark::SparkBaseConfig::IdleMode;
 
 namespace PivotConstants
 {
-    constexpr ControlMode MainControlMode = ControlMode::POSITION_DUTYCYCLE_PID;
+    constexpr ControlMode MainControlMode = ControlMode::DISABLED;
     constexpr ControlMode EmergencyControlMode = ControlMode::MANUAL_DUTY_CYCLE;
 
     namespace pivotMotor
