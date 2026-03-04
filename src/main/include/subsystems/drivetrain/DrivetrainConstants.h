@@ -21,7 +21,7 @@ using IdleMode = rev::spark::SparkBaseConfig::IdleMode;
 #if ROBOT_MODEL == COMPETITION || ROBOT_MODEL == TRAINING || ROBOT_MODEL == PROTOTYPE || ROBOT_MODEL == DEMO || ROBOT_MODEL == SIMULATION
 namespace driveConstants 
 {
-    constexpr DriveMode desiredDriveControl = DriveMode::DISABLE;
+    constexpr DriveMode desiredDriveControl = DriveMode::ARCADE_DRIVE;
 
     namespace Motors
     {
