@@ -15,7 +15,6 @@
 #include "commands/SetWantedShooterStateCmd.h"
 #include "commands/SetSystemTurretStateCmd.h"
 
-
 RobotContainer::RobotContainer()
 {
     ConfigureBindings();
@@ -23,6 +22,7 @@ RobotContainer::RobotContainer()
                                       [this] { return NDEADBAND(-rotationJoystick.GetZ(), driveConstants::Settings::DEADBAND); },
                                       [this] { return m_SlowDriveButton.Get(); },
                                       [this] { return m_driveActionButton.Get();});
+
 }
 void RobotContainer::ConfigureBindings() {
     operatorGamepad.STAND_BY.ToggleOnTrue(SetWantedIntakeStateCmd(&intakeSubsystem, IntakeSubsystem::WantedState::STAND_BY)
@@ -66,4 +66,12 @@ void RobotContainer::ConfigureBindings() {
                                                                                  
     // operatorGamepad.REVERSE.ToggleOnTrue(new frc2::ParallelCommandGroup{SetWantedShooterStateCmd(&shooterSubsystem, ShooterSubsystem::WantedState::REVERSE),
                                                                         //  SetSystemTurretStateCmd(&turretSubsystem, TurretSubsystem::WantedState::STAND_BY)});
+    vision.SetDefaultCommand(vision.ProcessVision(
+    [this] {
+        return robotState.GetPose().value();
+    },
+    [this](const VisionMeasurement& measurement) {
+        robotState.AddVisionMeasurement(measurement);
+    }));
+
 }

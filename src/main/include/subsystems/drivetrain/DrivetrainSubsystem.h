@@ -10,7 +10,7 @@
 
 #include <functional>
 #include <optional>
-
+#include <utility>
 #include "DrivetrainIO.h"
 #include "DrivetrainConstants.h"
 
@@ -54,6 +54,8 @@ class DrivetrainSubsystem : public frc2::SubsystemBase
   void ResetOdometryPose(const frc::Pose2d pose);
   
   void Periodic() override;
+
+  std::pair<units::meter_t, units::meter_t> GetDistancesSupplier();
 
  private:
   DrivetrainIO *m_pTankDriveIO;

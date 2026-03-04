@@ -65,9 +65,18 @@ void DrivetrainSubsystem::ResetOdometryPose(const frc::Pose2d pose)
     m_pTankDriveIO->ResetPosition(pose);
 }
 
+std::pair<units::meter_t, units::meter_t> DrivetrainSubsystem::GetDistancesSupplier()
+{
+    return {
+        inputs.leftSideTraveledDistance,
+        inputs.rightSideTraveledDistance
+    };
+}  
+
 void DrivetrainSubsystem::Periodic()
 {
     m_pTankDriveIO->UpdateInputs(inputs);
+
     
     m_frontLeftMotorDisconnected.Set(!inputs.isFrontLeftMotorConnected);
     m_frontRightMotorDisconnected.Set(!inputs.isFrontRightMotorConnected);
