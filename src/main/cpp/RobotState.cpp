@@ -8,7 +8,7 @@ RobotState::RobotState(frc::Pose2d& initialPose,
         m_pDrivetrain(pDrivetrain),
         m_poseEstimator(
           kinematics,
-          frc::Rotation2d(units::radian_t(m_navX.GetYaw() * M_PI / 180.0)),
+          frc::Rotation2d(units::radian_t(m_navX.GetYaw() * NF64_PI / 180.0)),
           0.0_m,
           0.0_m,
           initialPose,
@@ -30,7 +30,7 @@ void RobotState::AddVisionMeasurement(const VisionMeasurement& measurement)
 
 void RobotState::UpdateOdometry()
 {
-  frc::Rotation2d heading(units::radian_t(m_navX.GetYaw() * M_PI / 180.0));
+  frc::Rotation2d heading(units::radian_t(m_navX.GetYaw() * NF64_PI / 180.0));
 
   // Détection glissement / bosses
   if (IsOdometryReliable()) {
@@ -53,7 +53,7 @@ std::optional<frc::Pose2d> RobotState::GetPose() const
 
 void RobotState::ResetPoseWithVision()
 {
-    m_poseEstimator.ResetPosition(frc::Rotation2d(units::radian_t(m_navX.GetYaw() * M_PI / 180.0)),
+    m_poseEstimator.ResetPosition(frc::Rotation2d(units::radian_t(m_navX.GetYaw() * NF64_PI / 180.0)),
                                   m_pDrivetrain->GetDistancesSupplier().first,
                                   m_pDrivetrain->GetDistancesSupplier().second,
                                   m_lastVisionPose);
@@ -62,7 +62,7 @@ void RobotState::ResetPoseWithVision()
 
 void RobotState::ResetPose(frc::Pose2d &resetPosition)
 {
-    m_poseEstimator.ResetPosition(frc::Rotation2d(units::radian_t(m_navX.GetYaw() * M_PI / 180.0)),
+    m_poseEstimator.ResetPosition(frc::Rotation2d(units::radian_t(m_navX.GetYaw() * NF64_PI / 180.0)),
                                   m_pDrivetrain->GetDistancesSupplier().first,
                                   m_pDrivetrain->GetDistancesSupplier().second,
                                   resetPosition);

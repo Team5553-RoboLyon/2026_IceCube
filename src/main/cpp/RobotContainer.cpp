@@ -26,29 +26,43 @@ RobotContainer::RobotContainer()
 
 }
 void RobotContainer::ConfigureBindings() {
-    operatorGamepad.STAND_BY.ToggleOnTrue(SetWantedSuperstructureSuperStateCmd(&superstructure,Superstructure::WantedSuperState::STAND_BY)
-                                          .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
-    operatorGamepad.PROTECT_INTAKE.ToggleOnTrue(SetWantedSuperstructureSuperStateCmd(&superstructure,Superstructure::WantedSuperState::PROTECT_INTAKE)
-                                          .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
-    operatorGamepad.STOP_SHOOT.ToggleOnFalse(SetWantedSuperstructureSuperStateCmd(&superstructure,Superstructure::WantedSuperState::STOP_SHOOT)
-                                          .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
-    operatorGamepad.STOP_INTAKE.ToggleOnFalse(SetWantedSuperstructureSuperStateCmd(&superstructure,Superstructure::WantedSuperState::STOP_INTAKE)
-                                          .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
-    operatorGamepad.REFUEL.ToggleOnTrue(SetWantedSuperstructureSuperStateCmd(&superstructure,Superstructure::WantedSuperState::REFUEL)
-                                          .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
-    operatorGamepad.SHOOT_TO_HUB.ToggleOnTrue(SetWantedSuperstructureSuperStateCmd(&superstructure,Superstructure::WantedSuperState::SHOOT_TO_HUB)
-                                          .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
-    // operatorGamepad.PREPARE_SHOOT_TO_ALLIANCE_ZONE.ToggleOnTrue(SetWantedSuperstructureSuperStateCmd(&superstructure,Superstructure::WantedSuperState::PREPARE_SHOOT_TO_ALLIANCE_ZONE)
-    //                                       .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
-    operatorGamepad.RETRACT_CLIMB.ToggleOnTrue(SetWantedSuperstructureSuperStateCmd(&superstructure,Superstructure::WantedSuperState::RETRACT_CLIMBER)
-                                          .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
-    operatorGamepad.CLIMB.ToggleOnTrue(SetWantedSuperstructureSuperStateCmd(&superstructure,Superstructure::WantedSuperState::CLIMB)
-                                          .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
-    // operatorGamepad.SHOOT_TO_AZ.ToggleOnTrue(SetWantedSuperstructureSuperStateCmd(&superstructure,Superstructure::WantedSuperState::SHOOT_TO_ALLIANCE_ZONE)
-    //                                       .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
-    operatorGamepad.RETRACT_INTAKE.ToggleOnTrue(SetWantedSuperstructureSuperStateCmd(&superstructure,Superstructure::WantedSuperState::RETRACT_INTAKE)
-                                          .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
+
+    refuelButton.ToggleOnTrue(SetWantedSuperstructureSuperStateCmd(&superstructure, Superstructure::WantedSuperState::REFUEL)
+                              .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
+    refuelButton.ToggleOnFalse(SetWantedSuperstructureSuperStateCmd(&superstructure, Superstructure::WantedSuperState::STOP_INTAKE)
+                              .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
+
+    operatorGamepad.PREPARE_REFUEL.ToggleOnTrue(SetWantedSuperstructureSuperStateCmd(&superstructure, Superstructure::WantedSuperState::PREPARE_REFUEL)
+                              .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
+    operatorGamepad.RETRACT_INTAKE.ToggleOnTrue(SetWantedSuperstructureSuperStateCmd(&superstructure, Superstructure::WantedSuperState::RETRACT_INTAKE)
+                              .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));                      
     
+    operatorGamepad.CLIMB.ToggleOnTrue(SetWantedSuperstructureSuperStateCmd(&superstructure, Superstructure::WantedSuperState::CLIMB)
+                              .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
+    operatorGamepad.RETRACT_CLIMBER.ToggleOnTrue(SetWantedSuperstructureSuperStateCmd(&superstructure, Superstructure::WantedSuperState::RETRACT_CLIMBER)
+                              .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
+    operatorGamepad.PREPARE_CLIMB.ToggleOnTrue(SetWantedSuperstructureSuperStateCmd(&superstructure, Superstructure::WantedSuperState::PREPARE_CLIMB)
+                              .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
+    
+    operatorGamepad.SHOOT_TO_HUB.ToggleOnTrue(SetWantedSuperstructureSuperStateCmd(&superstructure, Superstructure::WantedSuperState::SHOOT_TO_HUB)
+                              .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
+    operatorGamepad.SHOOT_TO_HUB.ToggleOnFalse(SetWantedSuperstructureSuperStateCmd(&superstructure, Superstructure::WantedSuperState::STOP_SHOOT)
+                              .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
+    
+    operatorGamepad.SHOOT_AND_REFUEL.ToggleOnTrue(SetWantedSuperstructureSuperStateCmd(&superstructure, Superstructure::WantedSuperState::SHOOT_AT_HUB_REFUELING)
+                              .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
+    operatorGamepad.SHOOT_AND_REFUEL.ToggleOnFalse(SetWantedSuperstructureSuperStateCmd(&superstructure, Superstructure::WantedSuperState::STAND_BY)
+                              .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
+    
+    operatorGamepad.STOP_SHOOT.ToggleOnTrue(SetWantedSuperstructureSuperStateCmd(&superstructure, Superstructure::WantedSuperState::STOP_SHOOT)
+                              .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
+
+    operatorGamepad.EVACUATE_SHOOTER.ToggleOnTrue(SetWantedSuperstructureSuperStateCmd(&superstructure, Superstructure::WantedSuperState::EVACUATE_SHOOTER)
+                              .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
+
+    operatorGamepad.PROTECT_INTAKE.ToggleOnTrue(SetWantedSuperstructureSuperStateCmd(&superstructure, Superstructure::WantedSuperState::PROTECT_INTAKE)
+                              .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
+
     vision.SetDefaultCommand(vision.ProcessVision(
     [this] {
         return robotState.GetPose().value();

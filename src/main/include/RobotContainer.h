@@ -43,8 +43,6 @@
 #include "subsystems/indexer/IndexerSubsystem.h"
 
 
-
-
 #include "LyonLib/Vision/Vision.h"
 #include "LyonLib/Vision/VisionFilterParameters.h"
 #include "LyonLib/Vision/RealPhotonVisionIO.h"
@@ -61,6 +59,8 @@ class RobotContainer {
   frc::Joystick forwardJoystick{ControlPanelConstants::JOYSTICK_FORWARD_ID};
   frc::Joystick rotationJoystick{ControlPanelConstants::JOYSTICK_ROTATION_ID};
 
+  frc2::JoystickButton refuelButton{&forwardJoystick, 0};
+
   ShootParameters *pShootParams{new ShootParameters};
 
   #if ROBOT_MODEL == SIMULATION
@@ -76,7 +76,7 @@ class RobotContainer {
     .aprilTagWidth = 0.1524_m, // 6 inches in meters
     .maxAmbiguityRatio = 0.15,
     .maxAprilTagDistance = 5.0, // meters
-    .estimatedFOV = frc::Rotation2d(units::radian_t(60.0 * (M_PI / 180.0))), // 60 degrees in radians
+    .estimatedFOV = frc::Rotation2d(units::radian_t(60.0 * (NF64_PI / 180.0))), // 60 degrees in radians
     .zMargin = 0.5_m, // meters
     .aprilTagFieldLayout = aprilTagFieldLayout
   };
