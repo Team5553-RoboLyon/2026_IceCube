@@ -9,7 +9,7 @@ using IdleMode = rev::spark::SparkBaseConfig::IdleMode;
 namespace IndexerConstants
 {
     constexpr ControlMode MainControlMode = ControlMode::MANUAL_VOLTAGE;
-    constexpr ControlMode EmergencyControlMode = ControlMode::DISABLED;
+    constexpr ControlMode EmergencyControlMode = ControlMode::FEEDFORWARD_VELOCITY_VOLTAGE;
 
     namespace indexerMotor
     {
@@ -24,6 +24,7 @@ namespace IndexerConstants
         constexpr int OVERHEATING_THRESHOLD = 75;
         constexpr int KV = 496.3; // RPM.V-1
     }
+
     namespace clodeMotor
     {
         constexpr int ID = 6;
@@ -36,6 +37,13 @@ namespace IndexerConstants
         constexpr int HOT_THRESHOLD = 60;
         constexpr int OVERHEATING_THRESHOLD = 75;
         constexpr int KV = 917; // RPM.V-1
+        constexpr double GEAR_RATIO = 45.0; //TUNEME
+    }
+
+    namespace theMostImportantSensorOfTheRobot //IndexerIRbreaker
+    {
+        constexpr int ID = 18;
+        constexpr bool IS_TRIGERED = true; //TUNEME
     }
 
     
@@ -49,30 +57,36 @@ namespace IndexerConstants
 
     namespace Gains
     {
-        namespace POSITION_DUTYCYCLE_PID
+        namespace FEEDFORWARD_VELOCITY_VOLTAGE
         {
-            constexpr double KP = 10.0; //TUNEME
-            constexpr double KI = 0.0; //TUNEME
-            constexpr double KD = 0.2; //TUNEME
-            constexpr double KG = 0.0; //TUNEME
-            constexpr double TOLERANCE = 0.001;
-        }
-        namespace MANUAL_SETPOINT_PID
-        {
-            constexpr double KP = 8.0; //TUNEME
-            constexpr double KI = 0.0; //TUNEME
-            constexpr double KD = 0.1; //TUNEME
-            constexpr double KG = 0.0; //TUNEME
-            constexpr double TOLERANCE = 0.001;
+            constexpr double KS = 0.0; //TUNEME
+            constexpr double KV = 0.0; //TUNEME
+            constexpr double KA = 0.0; //TUNEME
         }
     }
 
-
-    namespace Speed 
+    namespace Simulation //very aproximative values
     {
-        constexpr double MAX = 1.0; 
-        constexpr double MIN = -1.0;
+        constexpr double MOI = 0.05310484;
+        constexpr double CLODE_MOI = 0.3920869; 
+    }
+
+
+    namespace Voltage //TUNEME
+    {
         constexpr double REST = 0.0;
+        constexpr double MAX = indexerMotor::VOLTAGE_COMPENSATION; 
+        constexpr double MIN = -indexerMotor::VOLTAGE_COMPENSATION;
+        constexpr double FEED = 8.0;
+        constexpr double CLODE_POWER = 8.0;
+    }
+
+    namespace Speed //in RPM
+    {
+        constexpr double REST = 0.0;
+        constexpr double FEED = 2500.0;
+        constexpr double EVACUATE = -1000.0;
+        constexpr double PREPARE_SHOOT = 1000.0;
     }
     
     namespace Settings

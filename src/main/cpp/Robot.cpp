@@ -52,6 +52,8 @@ void Robot::RobotPeriodic() {
 
   frc::SmartDashboard::PutBoolean("Robot X", m_container.ahrs.IsConnected());
   frc::SmartDashboard::PutNumber("Robot Yaw", m_container.ahrs.GetAngle());
+
+  m_container.robotState.UpdateOdometry();
 }
 
 void Robot::DriverStationConnected() {
@@ -59,6 +61,7 @@ void Robot::DriverStationConnected() {
   frc::DriverStation::StartDataLog(frc::DataLogManager::GetLog());
   m_container.ShootParamCalculator.SetAlliance(frc::DriverStation::GetAlliance().value());
   // m_container.turretSubsystem.SetAlliance(frc::DriverStation::GetAlliance().value());
+  m_container.ahrs.Reset();
 }
 
 void Robot::AutonomousInit() {
@@ -76,9 +79,9 @@ void Robot::TeleopInit() {
   m_container.drivetrain.SetWantedDrive(DriveMode::ARCADE_DRIVE);
 }
 void Robot::TeleopPeriodic() {
-  if(BYPASS_STATE_MACHINE(m_container.climber.GetControlMode()))
+  if(BYPASS_STATE_MACHINE(m_container.shooterSubsystem.GetHoodControlMode()))
   {
-    m_container.climber.SetManualControlInput(m_container.operatorGamepad.GetLeftY());
+    m_container.shooterSubsystem.SetManualControlInput(m_container.operatorGamepad.GetRightX());
   }
   if (m_container.operatorGamepad.GetAButtonPressed())
   {
@@ -105,6 +108,7 @@ void Robot::DisabledExit() {
   m_container.intakeSubsystem.SetControlMode(PivotConstants::MainControlMode, RollerConstants::MainControlMode);
   m_container.turretSubsystem.SetControlMode(TurretConstants::MainControlMode);
   m_container.shooterSubsystem.SetControlMode(FlywheelConstants::MainControlMode, HoodConstants::MainControlMode);
+  m_container.robotState.ResetPoseWithVision();
 }
 
 void Robot::TestInit() {}

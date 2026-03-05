@@ -12,6 +12,8 @@
 
 #include "subsystems/drivetrain/DrivetrainSubsystem.h"
 
+#include "LyonLib/logging/ComplexStructLogger.h"
+
 #include <studica/AHRS.h>
 
 class RobotState {
@@ -33,6 +35,8 @@ public:
 private:
     studica::AHRS& m_navX;
     frc::DifferentialDrivePoseEstimator m_poseEstimator;
+
+    StructLogger<frc::Pose2d> m_logger{"/RobotPose"};
 
     DrivetrainSubsystem *m_pDrivetrain;
     frc::Pose2d m_lastVisionPose;

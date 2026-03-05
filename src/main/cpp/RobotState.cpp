@@ -1,5 +1,5 @@
 #include "RobotState.h"
-
+#include "frc/smartdashboard/SmartDashboard.h"
 RobotState::RobotState(frc::Pose2d& initialPose,
          frc::DifferentialDriveKinematics& kinematics,
          studica::AHRS& navX,
@@ -13,7 +13,7 @@ RobotState::RobotState(frc::Pose2d& initialPose,
           0.0_m,
           initialPose,
           wpi::array<double, 3>{0.02, 0.02, 0.02},     // std dev odometry (m, m, rad)
-          wpi::array<double, 3>{0.1, 0.1, 0.1}         // std dev vision (m, m, rad)
+          wpi::array<double, 3>{0.1, 0.1, 0.3}         // std dev vision (m, m, rad)
       )
   {}
 
@@ -30,7 +30,7 @@ void RobotState::AddVisionMeasurement(const VisionMeasurement& measurement)
 
 void RobotState::UpdateOdometry()
 {
-  frc::Rotation2d heading(units::radian_t(m_navX.GetYaw() * M_PI / 180.0));
+  frc::Rotation2d heading(units::radian_t(-m_navX.GetYaw() * M_PI / 180.0));
 
   // Détection glissement / bosses
   if (IsOdometryReliable()) {
@@ -44,6 +44,7 @@ void RobotState::UpdateOdometry()
       // remise à la normale
       m_poseEstimator.SetVisionMeasurementStdDevs({0.1, 0.1, 0.1});
   }
+  m_logger.Log(m_poseEstimator.GetEstimatedPosition());
 }
 
 std::optional<frc::Pose2d> RobotState::GetPose() const

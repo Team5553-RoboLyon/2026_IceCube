@@ -83,7 +83,7 @@ class RobotContainer {
     .rotStandardDevBase = 5.0,
     .aprilTagWidth = 0.1524_m, // 6 inches in meters
     .maxAmbiguityRatio = 0.15,
-    .maxAprilTagDistance = 5.0, // meters
+    .maxAprilTagDistance = 5.5, // meters
     .estimatedFOV = frc::Rotation2d(units::radian_t(60.0 * (M_PI / 180.0))), // 60 degrees in radians
     .zMargin = 0.5_m, // meters
     .aprilTagFieldLayout = aprilTagFieldLayout
@@ -95,20 +95,19 @@ std::vector<std::shared_ptr<VisionIO>> visionIOs{
   std::make_shared<RealPhotonVisionIO>(
     "Big_brother",
     frc::Transform3d(
-      frc::Translation3d(0.302_m, 0.32_m, 0.37_m),
-      frc::Rotation3d(-0.24_deg, -22.26_deg, 0.0_deg)
-    ),
-    aprilTagFieldLayout
-  ),
-
-  std::make_shared<RealPhotonVisionIO>(
-    "Lil'Bro",
-    frc::Transform3d(
-      frc::Translation3d(-0.15_m, 0.20_m, 0.50_m),  // Position relative au centre robot
-      frc::Rotation3d(0_deg, 0_deg, 180_deg)        // Orientation si caméra arrière
+      frc::Translation3d(-0.302_m, -0.32_m, 0.37_m),
+      frc::Rotation3d(-0.24_deg, -22.26_deg, 180.0_deg)
     ),
     aprilTagFieldLayout
   )
+  // ,std::make_shared<RealPhotonVisionIO>(
+  //   "Lil'Bro",
+  //   frc::Transform3d(
+  //     frc::Translation3d(-0.15_m, 0.20_m, 0.50_m),  // Position relative au centre robot
+  //     frc::Rotation3d(0_deg, 0_deg, 180_deg)        // Orientation si caméra arrière
+  //   ),
+  //   aprilTagFieldLayout
+  // )
 };
 
   Vision vision{visionFilterParameters,visionIOs};
