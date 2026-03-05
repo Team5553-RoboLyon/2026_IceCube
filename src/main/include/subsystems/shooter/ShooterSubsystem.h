@@ -30,6 +30,8 @@ class ShooterSubsystem : public frc2::SubsystemBase {
       // FEED_ALLY = 2,
       STOP = 3,
       REVERSE = 4,
+      // PREPARE_TO_HUB = 5
+      //RETRACT_HOOD
       // KEEP_ALL_FOR_YOU = 5 //TASK1
     };
 

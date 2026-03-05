@@ -259,7 +259,6 @@ void ShooterSubsystem::Periodic()
                     // m_flywheelFeedforward.SetGains(FlywheelConstants::Gains::FLYWHEEL_FEEDFORWARD::KS, m_tunableFlywheelKVLogger.Get(), 0.0);
                     // m_flywheelPIDController.SetGains(m_tunableFlywheelKPLogger.Get(), 0.0, m_tunableFlywheelKDLogger.Get());
 
-
                     // double rpm = m_tunableFlywheelVoltageLogger.Get();
                     // double ff = m_flywheelFeedforward.Calculate(0.0, rpm, 0.0);
                     // double pid = m_flywheelPIDController.CalculateWithRealTime(
@@ -276,9 +275,9 @@ void ShooterSubsystem::Periodic()
                     //         double(FlywheelConstants::Voltage::MAX))
 
                     m_flywheelOutput = units::volt_t{m_tunableFlywheelVoltageLogger.Get()};
-                    // };
-                    break;
+                    // };  
                 #endif
+                break;       
             }
         default: 
             DEBUG_ASSERT(false, "Shooter (Flywheel) : unknown control mode used");
