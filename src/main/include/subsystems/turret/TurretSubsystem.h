@@ -15,7 +15,6 @@
 #include "LyonLib/control/pidRBL.h"
 #include "LyonLib/logging/Alert.h"
 #include "LyonLib/logging/TunableValueLogger.h"
-#include "camera/AprilTagPhotonCamera.h"
 
 #include "frc/DriverStation.h"
 
@@ -53,11 +52,6 @@ class TurretSubsystem : public frc2::SubsystemBase {
     bool IsResting();
     bool IsInitialized() { return m_isInitialized; }
     void SetManualControlInput(const double value);
-    
-    /**
-     * @param robotOrientation Robot orientation in rad
-     */
-    void SetAlliance(frc::DriverStation::Alliance alliance);
 
 
     void Periodic() override;
@@ -81,6 +75,7 @@ class TurretSubsystem : public frc2::SubsystemBase {
       double m_targetPos{0.0};
       double m_highestHallEffectSensorValue{0.0};
       TunableValueLogger m_tunableRobotOrientation{"Tunable robot orientation", 0.0};
+      TunableValueLogger m_tunableKP{"Tunable KP", TurretConstants::Gains::POSITION_DUTYCYCLE_PID::KP};
     // === Status Flags ===
       bool m_isInitialized = true;
       bool m_isInBlueAlliance = true;

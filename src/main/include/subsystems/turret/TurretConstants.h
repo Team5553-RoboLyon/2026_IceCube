@@ -31,7 +31,8 @@ namespace TurretConstants
     
     namespace Specifications
     {
-        constexpr double GEAR_RATIO = (130.0/24.0)*(5.23)*(5.23); //ul
+        constexpr double MOTOR_RATIO = (5.23)*(5.23);
+        constexpr double GEAR_RATIO = (130.0/24.0)*MOTOR_RATIO; //ul
         constexpr double MOTOR_FREE_SPEED = Motor::VOLTAGE_COMPENSATION * Motor::KV; //RPM
         constexpr frc::Transform2d ROBOT_TO_TURRET{155.0_m, 155.0_m,{}}; //TUNEME
     }
@@ -41,12 +42,13 @@ namespace TurretConstants
         constexpr int A_ID = 22;
         constexpr int B_ID = 23;
         constexpr bool REVERSED = false;
-        constexpr double DISTANCE_PER_PULSE = 2*NF64_PI/Specifications::GEAR_RATIO/ENCODER_TICKS_PER_REVOLUTION_K2X;
+        constexpr double DISTANCE_PER_PULSE = 2*NF64_PI/(Specifications::GEAR_RATIO/Specifications::MOTOR_RATIO)/ENCODER_TICKS_PER_REVOLUTION_K2X;
     }
 
-    namespace TurretCamera
+    namespace HallEffectSensor
     {
-        const std::string NAME = "Big brother"; //TUNEME
+        constexpr int ID = 21;
+        constexpr double MIN_VALUE_WHEN_MAGNET = 2.5; //TUNEME
     }
 
     namespace Simulation
@@ -81,9 +83,9 @@ namespace TurretConstants
     
     namespace Settings
     {
-        constexpr double BOTTOM_LIMIT = 0.0; //TUNEME
-        constexpr double TOP_LIMIT = 2.0*NF64_PI; //TUNEME
-        constexpr double MANUAL_SETPOINT_CHANGE_LIMIT = (TOP_LIMIT - BOTTOM_LIMIT) / (2.5/TIME_PER_CYCLE); //TUNEME
+        constexpr double BOTTOM_LIMIT = NDEGtoRAD(-132.0); //TUNEME
+        constexpr double TOP_LIMIT = NDEGtoRAD(138.0); //TUNEME
+        constexpr double MANUAL_SETPOINT_CHANGE_LIMIT = (TOP_LIMIT - BOTTOM_LIMIT) / (3.0/TIME_PER_CYCLE); //TUNEME
         constexpr double OPEN_LOOP_REDUC = 10.0;
     }
 }

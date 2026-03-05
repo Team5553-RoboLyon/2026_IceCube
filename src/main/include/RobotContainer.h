@@ -87,8 +87,8 @@ std::vector<std::shared_ptr<VisionIO>> visionIOs{
   std::make_shared<RealPhotonVisionIO>(
     "Big_brother",
     frc::Transform3d(
-      frc::Translation3d(0.10_m, 0.0_m, 0.46_m),
-      frc::Rotation3d()
+      frc::Translation3d(0.302_m, 0.32_m, 0.37_m),
+      frc::Rotation3d(-0.24_deg, -22.26_deg, 0.0_deg)
     ),
     aprilTagFieldLayout
   ),
@@ -132,7 +132,6 @@ std::vector<std::shared_ptr<VisionIO>> visionIOs{
                                 pShootParams,
                                 &robotState};
   #endif
-  
 
  private:
   void ConfigureBindings();
