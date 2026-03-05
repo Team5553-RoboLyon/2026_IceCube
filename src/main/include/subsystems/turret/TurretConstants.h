@@ -83,8 +83,8 @@ namespace TurretConstants
     
     namespace Settings
     {
-        constexpr double BOTTOM_LIMIT = 0.0; //TUNEME
-        constexpr double TOP_LIMIT = NDEGtoRAD(270.0); //TUNEME
+        constexpr double BOTTOM_LIMIT = NDEGtoRAD(-132.0); //TUNEME
+        constexpr double TOP_LIMIT = NDEGtoRAD(138.0); //TUNEME
         constexpr double MANUAL_SETPOINT_CHANGE_LIMIT = (TOP_LIMIT - BOTTOM_LIMIT) / (3.0/TIME_PER_CYCLE); //TUNEME
         constexpr double OPEN_LOOP_REDUC = 10.0;
     }
