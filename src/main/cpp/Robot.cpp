@@ -58,7 +58,7 @@ void Robot::DriverStationConnected() {
   //link driver station to data logging
   frc::DriverStation::StartDataLog(frc::DataLogManager::GetLog());
   m_container.ShootParamCalculator.SetAlliance(frc::DriverStation::GetAlliance().value());
-  m_container.turretSubsystem.SetAlliance(frc::DriverStation::GetAlliance().value());
+  // m_container.turretSubsystem.SetAlliance(frc::DriverStation::GetAlliance().value());
 }
 
 void Robot::AutonomousInit() {

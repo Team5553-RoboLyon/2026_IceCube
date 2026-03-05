@@ -87,7 +87,7 @@ void ShootParametersCalculator::CalculateHubNewParameters(ShootParameters& param
 
     double turretSuplAngleToAlignToTarget =  atan((lookAheadTargetPos-estimatedNextTurretPos).Y().value()/(lookAheadTargetPos-estimatedNextTurretPos).X().value()); //TODO : find a better name
 
-    params.lookAheadTargetTurretPos = WRAP_ANGLE_0_TO_2PI(m_hubTargetPos.Rotation().Radians().value() - estimatedNextTurretPos.Rotation().Radians().value()
+    params.lookAheadTargetTurretPos = WRAP_ANGLE_NEG_PI_TO_PI(m_hubTargetPos.Rotation().Radians().value() - estimatedNextTurretPos.Rotation().Radians().value()
                                       + turretSuplAngleToAlignToTarget);
 
     params.lookAheadTargetPos = lookAheadTargetPos;
@@ -140,7 +140,7 @@ void ShootParametersCalculator::CalculateAllianceZoneNewParameters(ShootParamete
     else
         params.flywheelSpeed = m_flywheelSpeedMap[lookAheadTargetDistance];
 
-    params.lookAheadTargetTurretPos = WRAP_ANGLE_0_TO_2PI(m_allianceZoneTargetPose.Rotation().Radians().value() - estimatedNextTurretPos.Rotation().Radians().value());
+    params.lookAheadTargetTurretPos = WRAP_ANGLE_NEG_PI_TO_PI(m_allianceZoneTargetPose.Rotation().Radians().value() - estimatedNextTurretPos.Rotation().Radians().value());
 
     params.lookAheadTargetPos = lookAheadTargetPos;
 
