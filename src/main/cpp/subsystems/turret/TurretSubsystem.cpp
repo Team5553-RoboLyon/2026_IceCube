@@ -40,6 +40,10 @@ void TurretSubsystem::SetControlMode(const ControlMode mode)
             m_output = TurretConstants::DutyCycle::REST;
             m_targetPos = inputs.orientation;
 
+            m_wantedState = WantedState::STAND_BY;
+            m_currentWantedState = m_wantedState;
+            m_systemState = SystemState::IDLE;
+
             m_controlMode = mode;
             break; //end of ControlMode::MANUAL_DUTY_CYCLE
 
@@ -47,6 +51,10 @@ void TurretSubsystem::SetControlMode(const ControlMode mode)
             m_output = TurretConstants::DutyCycle::REST;
             m_manualControlInput = TurretConstants::DutyCycle::REST;
             m_targetPos = inputs.orientation;
+
+            m_wantedState = WantedState::STAND_BY;
+            m_currentWantedState = m_wantedState;
+            m_systemState = SystemState::IDLE;
 
             m_controlMode = mode;
             break; //end of ControlMode::MANUAL_POSITION
@@ -98,10 +106,6 @@ void TurretSubsystem::SetManualControlInput(const double value)
     }
 }
 
-void TurretSubsystem::SetAlliance(frc::DriverStation::Alliance alliance)
-{
-    m_isInBlueAlliance = (alliance == frc::DriverStation::Alliance::kBlue);
-}
 
 // This method will be called once per scheduler run
 void TurretSubsystem::Periodic()
@@ -166,10 +170,8 @@ void TurretSubsystem::Periodic()
                 break;
 
             case ControlMode::MANUAL_POSITION :
-                
                 m_manualControlInput = m_TurretPIDController.GetSetpoint() 
                                     + m_manualControlInput * TurretConstants::Settings::MANUAL_SETPOINT_CHANGE_LIMIT;
-                                    // std::cout << m_TurretPIDController.GetState() <<std::endl;
 
                 m_output = m_TurretPIDController.CalculateWithRealTime(m_manualControlInput,
                                                                             inputs.orientation,

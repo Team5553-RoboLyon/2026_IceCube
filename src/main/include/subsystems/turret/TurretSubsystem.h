@@ -52,11 +52,6 @@ class TurretSubsystem : public frc2::SubsystemBase {
     bool IsResting();
     bool IsInitialized() { return m_isInitialized; }
     void SetManualControlInput(const double value);
-    
-    /**
-     * @param robotOrientation Robot orientation in rad
-     */
-    void SetAlliance(frc::DriverStation::Alliance alliance);
 
 
     void Periodic() override;
