@@ -80,6 +80,7 @@ class TurretSubsystem : public frc2::SubsystemBase {
       double m_targetPos{0.0};
       double m_highestHallEffectSensorValue{0.0};
       TunableValueLogger m_tunableRobotOrientation{"Tunable robot orientation", 0.0};
+      TunableValueLogger m_tunableKP{"Tunable KP", TurretConstants::Gains::POSITION_DUTYCYCLE_PID::KP};
     // === Status Flags ===
       bool m_isInitialized = true;
       bool m_isInBlueAlliance = true;

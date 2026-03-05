@@ -166,12 +166,16 @@ void TurretSubsystem::Periodic()
                 break;
 
             case ControlMode::MANUAL_POSITION :
+                
                 m_manualControlInput = m_TurretPIDController.GetSetpoint() 
                                     + m_manualControlInput * TurretConstants::Settings::MANUAL_SETPOINT_CHANGE_LIMIT;
+                                    // std::cout << m_TurretPIDController.GetState() <<std::endl;
 
                 m_output = m_TurretPIDController.CalculateWithRealTime(m_manualControlInput,
                                                                             inputs.orientation,
                                                                             m_timestamp);
+
+                    // m_TurretPIDController.SetGains(m_tunableKP.Get(),0.0,0.0);
                 break; //end of ControlMode::MANUAL_POSITION
 
             case ControlMode::DISABLED :
@@ -195,7 +199,7 @@ void TurretSubsystem::Periodic()
         m_output = NMIN(0.0, m_output); // prevent the turret to go through the top side
     }
 
-    frc::SmartDashboard::PutNumber("turret/Target", m_targetPos);
+    frc::SmartDashboard::PutNumber("turret/Target", m_TurretPIDController.GetSetpoint());
 
     // Apply output
     m_pTurretIO->SetDutyCycle(m_output);

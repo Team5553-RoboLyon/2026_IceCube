@@ -11,7 +11,7 @@ namespace IndexerConstants
     constexpr ControlMode MainControlMode = ControlMode::MANUAL_VOLTAGE;
     constexpr ControlMode EmergencyControlMode = ControlMode::DISABLED;
 
-        namespace indexerMotor
+    namespace indexerMotor
     {
         constexpr int ID = 7;
         constexpr bool INVERTED = false;
@@ -24,7 +24,7 @@ namespace IndexerConstants
         constexpr int OVERHEATING_THRESHOLD = 75;
         constexpr int KV = 496.3; // RPM.V-1
     }
-        namespace clodeMotor
+    namespace clodeMotor
     {
         constexpr int ID = 6;
         constexpr bool INVERTED = true;
