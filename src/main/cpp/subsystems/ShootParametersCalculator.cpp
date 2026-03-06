@@ -9,15 +9,17 @@
 
 ShootParametersCalculator::ShootParametersCalculator()
 {
-    m_hoodPosMap.insert(0.0, 0.0);
-    m_hoodPosMap.insert(6.0, HoodConstants::Position::MAX);
+    m_hoodPosMap.insert(0.51, 4.5);
+    m_hoodPosMap.insert(1.01, 7);
+    m_hoodPosMap.insert(1.51, 8.5);
 
-    m_flywheelSpeedMap.insert(0.0, 1706.0);
-    m_flywheelSpeedMap.insert(6.0, 4500.0);
+    m_flywheelSpeedMap.insert(0.51, 2300.0);
+    m_flywheelSpeedMap.insert(1.01, 2450.0);
+    m_flywheelSpeedMap.insert(1.51, 2550.0);
 
-    m_timeToReachTargetMap.insert(0.0, 2.0);
-    m_timeToReachTargetMap.insert(0.0, 6.0);
-    // m_hoodPosMap.insert()
+    m_timeToReachTargetMap.insert(0.51, 0.6);
+    m_timeToReachTargetMap.insert(1.01, 0.8);
+    m_timeToReachTargetMap.insert(1.51, 1);
 }
 
 void ShootParametersCalculator::SetAlliance(frc::DriverStation::Alliance alliance)

@@ -59,7 +59,7 @@ class RobotContainer {
   frc::Joystick forwardJoystick{ControlPanelConstants::JOYSTICK_FORWARD_ID};
   frc::Joystick rotationJoystick{ControlPanelConstants::JOYSTICK_ROTATION_ID};
 
-  frc2::JoystickButton refuelButton{&forwardJoystick, 0};
+  frc2::JoystickButton refuelButton{&forwardJoystick, 1};
 
   ShootParameters *pShootParams{new ShootParameters};
 
@@ -135,7 +135,7 @@ std::vector<std::shared_ptr<VisionIO>> visionIOs{
 
  private:
   void ConfigureBindings();
-  frc2::JoystickButton m_SlowDriveButton{&forwardJoystick, ControlPanelConstants::SLOW_DRIVE_BUTTON};
-  frc2::JoystickButton m_driveActionButton{&rotationJoystick, ControlPanelConstants::ACTION_DRIVE_BUTTON};
+  // frc2::JoystickButton m_SlowDriveButton{&forwardJoystick, ControlPanelConstants::SLOW_DRIVE_BUTTON};
+  // frc2::JoystickButton m_driveActionButton{&rotationJoystick, ControlPanelConstants::ACTION_DRIVE_BUTTON};
 
 };
