@@ -16,7 +16,7 @@ class TurretIOSpark  final : public TurretIO
     
     frc::Encoder m_encoder{TurretConstants::Encoder::A_ID, TurretConstants::Encoder::B_ID, TurretConstants::Encoder::REVERSED};
 
-    // frc::AnalogInput m_hallEffectSensor{TurretConstants::HallEffectSensor::ID};
+    frc::AnalogInput m_hallEffectSensor{TurretConstants::HallEffectSensor::ID};
 
     #ifndef TURRET_SMARTDASHBOARD_LOG
       TurretIOLogger m_logger{frc::DataLogManager::GetLog(), "/turret"};

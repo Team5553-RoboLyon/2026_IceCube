@@ -47,7 +47,7 @@ namespace TurretConstants
 
     namespace HallEffectSensor
     {
-        constexpr int ID = 21;
+        constexpr int ID = 2;
         constexpr double MIN_VALUE_WHEN_MAGNET = 2.5; //TUNEME
     }
 
