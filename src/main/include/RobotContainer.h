@@ -59,7 +59,7 @@ class RobotContainer {
   frc::Joystick forwardJoystick{ControlPanelConstants::JOYSTICK_FORWARD_ID};
   frc::Joystick rotationJoystick{ControlPanelConstants::JOYSTICK_ROTATION_ID};
 
-  frc2::JoystickButton refuelButton{&forwardJoystick, 1};
+  frc2::JoystickButton refuelButton{&rotationJoystick, 1};
 
   ShootParameters *pShootParams{new ShootParameters};
 

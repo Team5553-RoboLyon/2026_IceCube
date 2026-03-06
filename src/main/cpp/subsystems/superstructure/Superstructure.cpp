@@ -425,16 +425,7 @@ void Superstructure::RunSuperStateMachine()
             break;
 
         case WantedSuperState::CLIMB:
-            if(m_pClimber->GetSystemState() != ClimberSubsystem::SystemState::ARMED
-               || m_pClimber->GetSystemState() != ClimberSubsystem::SystemState::CLIMBING
-               || m_pClimber->GetSystemState() != ClimberSubsystem::SystemState::CLIMBED_LOCKED)
-            {
-                m_systemSuperState = SystemSuperState::PREPARING_CLIMB;
-            }
-            else
-            {
-                m_systemSuperState = SystemSuperState::CLIMBING;
-            }
+            m_systemSuperState = SystemSuperState::CLIMBING;
             break;
 
         // case WantedSuperState::PREPARE_SHOOT_TO_HUB:
