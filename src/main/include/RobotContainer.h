@@ -93,7 +93,7 @@ std::vector<std::shared_ptr<VisionIO>> visionIOs{
     aprilTagFieldLayout
   )
   ,std::make_shared<RealPhotonVisionIO>(
-    "Lil_Bro",
+    "Lil_bro",
     frc::Transform3d(
       frc::Translation3d(-0.567_m, -0.145_m, 0.499_m),  // Position relative au centre robot
       frc::Rotation3d(-1.94_deg, 17.90_deg, -16_deg)        // Orientation si caméra arrière
