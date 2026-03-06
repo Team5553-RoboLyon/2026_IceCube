@@ -78,7 +78,7 @@ class TurretSubsystem : public frc2::SubsystemBase {
       TunableValueLogger m_tunableKP{"Tunable KP", TurretConstants::Gains::POSITION_DUTYCYCLE_PID::KP};
     // === Status Flags ===
       bool m_isInitialized = true;
-      bool m_isInBlueAlliance = true;
+      // bool m_isInBlueAlliance = true;
     // === System Alerts ===
       Alert m_motorDisconnected{"Turret Motor: Disconnected", Alert::AlertType::ERROR};
       Alert m_motorHot{"Turret Motor: Temperature exceeds 60°C", Alert::AlertType::WARNING};

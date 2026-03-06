@@ -62,11 +62,11 @@ namespace driveConstants
     {
         constexpr int LEFT_ID_ENCODER_A = 1;
         constexpr int LEFT_ID_ENCODER_B = 2;
-        constexpr bool LEFT_REVERSE_ENCODER = true; 
+        constexpr bool LEFT_REVERSE_ENCODER = false; 
 
         constexpr int RIGHT_ID_ENCODER_A = 3;
         constexpr int RIGHT_ID_ENCODER_B = 4;
-        constexpr bool RIGHT_REVERSE_ENCODER = false;
+        constexpr bool RIGHT_REVERSE_ENCODER = true;
 
         constexpr double DISTANCE_PER_PULSE = (2.0 * NF64_PI * Specifications::WHEEL_RADIUS)/ENCODER_TICKS_PER_REVOLUTION_K2X;
     }

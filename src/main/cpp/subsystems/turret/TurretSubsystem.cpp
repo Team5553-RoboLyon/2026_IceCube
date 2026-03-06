@@ -122,18 +122,18 @@ void TurretSubsystem::Periodic()
     
     if(!m_isInitialized)
     {
-        // m_output = TurretConstants::DutyCycle::INIT;
-        // if(inputs.hallEffectSensorValue > m_highestHallEffectSensorValue)
-        // {
-        //     m_highestHallEffectSensorValue = inputs.hallEffectSensorValue;
-        //     m_pTurretIO->ResetOrientation();
-        // }
-        // else if (inputs.hallEffectSensorValue < TurretConstants::HallEffectSensor::MIN_VALUE_WHEN_MAGNET &&
-        //          m_highestHallEffectSensorValue >= TurretConstants::HallEffectSensor::MIN_VALUE_WHEN_MAGNET)
-        // {
-        //     m_isInitialized = true;
-        //     m_output = TurretConstants::DutyCycle::REST;
-        // }
+        m_output = TurretConstants::DutyCycle::INIT;
+        if(inputs.hallEffectSensorValue > m_highestHallEffectSensorValue)
+        {
+            m_highestHallEffectSensorValue = inputs.hallEffectSensorValue;
+            m_pTurretIO->ResetOrientation();
+        }
+        else if (inputs.hallEffectSensorValue < TurretConstants::HallEffectSensor::MIN_VALUE_WHEN_MAGNET &&
+                 m_highestHallEffectSensorValue >= TurretConstants::HallEffectSensor::MIN_VALUE_WHEN_MAGNET)
+        {
+            m_isInitialized = true;
+            m_output = TurretConstants::DutyCycle::REST;
+        }
     }
     else 
     {

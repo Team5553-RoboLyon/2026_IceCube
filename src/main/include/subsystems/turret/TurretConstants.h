@@ -12,8 +12,8 @@ using IdleMode = rev::spark::SparkBaseConfig::IdleMode;
 #endif
 namespace TurretConstants
 {
-    constexpr ControlMode MainControlMode = ControlMode::MANUAL_POSITION;
-    constexpr ControlMode EmergencyControlMode = ControlMode::POSITION_DUTYCYCLE_PID;
+    constexpr ControlMode MainControlMode = ControlMode::POSITION_DUTYCYCLE_PID;
+    constexpr ControlMode EmergencyControlMode = ControlMode::MANUAL_POSITION;
 
     namespace Motor
     {
@@ -47,8 +47,8 @@ namespace TurretConstants
 
     namespace HallEffectSensor
     {
-        constexpr int ID = 21;
-        constexpr double MIN_VALUE_WHEN_MAGNET = 2.5; //TUNEME
+        constexpr int ID = 2;
+        constexpr double MIN_VALUE_WHEN_MAGNET = 790; //TUNEME
     }
 
     namespace Simulation
@@ -71,6 +71,7 @@ namespace TurretConstants
     {
         constexpr double EJECT = NF64_PI; //TUNEME
         constexpr double TOLERANCE = NDEGtoRAD(0.1);
+        constexpr double INIT_POS = NF64_PI_2;
     }
 
     namespace DutyCycle 

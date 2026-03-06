@@ -83,7 +83,7 @@ namespace HoodConstants
 
     namespace Position //in rad
     { 
-        constexpr double MAX = NDEGtoRAD(19.1); //TUNEME
+        constexpr double MAX = NDEGtoRAD(15); //TUNEME
         constexpr double MIN = 0.0; //TUNEME
         constexpr double TOLERANCE = NDEGtoRAD(0.1); //TUNEME
         constexpr double FEED = MAX;  //TUNEME

@@ -43,6 +43,7 @@ void Superstructure::EnableSubsystems()
     m_pTurret->SetControlMode(TurretConstants::MainControlMode);
     m_pShooter->SetControlMode(FlywheelConstants::MainControlMode, HoodConstants::MainControlMode);
     m_pClimber->SetControlMode(ClimberConstants::MainControlMode);
+    m_pClimber->SetWantedState(ClimberSubsystem::WantedState::INITIALIZATION);
 }
 
 void Superstructure::DisableSubsystems()
