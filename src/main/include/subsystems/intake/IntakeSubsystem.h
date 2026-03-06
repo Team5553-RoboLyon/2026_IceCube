@@ -65,7 +65,7 @@ class IntakeSubsystem : public frc2::SubsystemBase {
     bool IsPivotMoving();
     bool IsInitialized() { return m_isInitialized; }
     // void ResetPivotEncoder();
-    // void SetManualControlInput(const double value);
+    void SetManualControlInput(const double PivotInput, const double RollerInput);
     // void SetManualControlInput(const std::function<double()> Axis); //temporary
 
 
@@ -93,8 +93,7 @@ class IntakeSubsystem : public frc2::SubsystemBase {
       double m_pivotTargetPos{0.0};
       double m_timestamp{0.0};
     // std::function<double()> m_fxAxis; //temporary
-      TunableValueLogger m_tunablePivotDutyCycleLogger{"Intake/PivotDutyCycle", 0.0}; //RPM
-      TunableValueLogger m_tunableRollerVoltageLogger{"Intake/RollerVoltage", 0.0}; //RPM
+      TunableValueLogger m_tunableRollerVoltageLogger{"Intake/RollerVoltage", 8.0}; //RPM
       TunableValueLogger m_tunableRollerP{"Intake/P", 0.0};
       TunableValueLogger m_tunableRollerI{"Intake/i", 0.0};
       TunableValueLogger m_tunableRollerD{"Intake/D", 0.0};

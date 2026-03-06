@@ -12,8 +12,8 @@ using IdleMode = rev::spark::SparkBaseConfig::IdleMode;
 #endif
 namespace TurretConstants
 {
-    constexpr ControlMode MainControlMode = ControlMode::MANUAL_POSITION;
-    constexpr ControlMode EmergencyControlMode = ControlMode::POSITION_DUTYCYCLE_PID;
+    constexpr ControlMode MainControlMode = ControlMode::MANUAL_VOLTAGE;
+    constexpr ControlMode EmergencyControlMode = ControlMode::DISABLED;
 
     namespace Motor
     {

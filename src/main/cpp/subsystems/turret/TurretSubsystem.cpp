@@ -36,6 +36,14 @@ void TurretSubsystem::SetControlMode(const ControlMode mode)
 {
     switch (mode)
     {
+        case ControlMode::MANUAL_VOLTAGE:
+             m_output = TurretConstants::DutyCycle::REST;
+             m_wantedState = WantedState::STAND_BY;
+             m_currentWantedState = m_wantedState;
+             m_systemState = SystemState::IDLE;
+
+             m_controlMode = mode;
+             break; //end of ControlMode::MANUAL_VOLTAGE
         case ControlMode::POSITION_DUTYCYCLE_PID:
             m_output = TurretConstants::DutyCycle::REST;
             m_targetPos = inputs.orientation;
@@ -114,7 +122,6 @@ void TurretSubsystem::Periodic()
     m_timestamp = TimerRBL::GetFPGATimestampInSeconds();
 
     m_pTurretIO->UpdateInputs(inputs);
-    // m_turretCamera.UpdateResults();
     
     m_motorDisconnected.Set(!inputs.isMotorConnected);
     m_motorHot.Set(inputs.motorTemperature > TurretConstants::Motor::HOT_THRESHOLD);
@@ -179,6 +186,9 @@ void TurretSubsystem::Periodic()
 
                 break; //end of ControlMode::MANUAL_POSITION
 
+            case ControlMode::MANUAL_VOLTAGE :
+                m_output = m_manualControlInput * m_voltageTuner.Get();
+                break; //end of ControlMode::MANUAL_VOLTAGE
             case ControlMode::DISABLED :
                 m_output = TurretConstants::DutyCycle::REST;
                 break; //end of ControlMode::DISABLED
@@ -191,14 +201,14 @@ void TurretSubsystem::Periodic()
 
 
     // ----------------- Limits -----------------
-    if(inputs.orientation < TurretConstants::Settings::BOTTOM_LIMIT)
-    {
-        m_output = NMAX(0.0, m_output); // prevent the turret to go through the bottom side
-    }
-    else if(inputs.orientation > TurretConstants::Settings::TOP_LIMIT)
-    {
-        m_output = NMIN(0.0, m_output); // prevent the turret to go through the top side
-    }
+    // if(inputs.orientation < TurretConstants::Settings::BOTTOM_LIMIT)
+    // {
+    //     m_output = NMAX(0.0, m_output); // prevent the turret to go through the bottom side
+    // }
+    // else if(inputs.orientation > TurretConstants::Settings::TOP_LIMIT)
+    // {
+    //     m_output = NMIN(0.0, m_output); // prevent the turret to go through the top side
+    // }
 
     frc::SmartDashboard::PutNumber("turret/Target", m_TurretPIDController.GetSetpoint());
 

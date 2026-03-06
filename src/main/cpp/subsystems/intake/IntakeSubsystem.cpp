@@ -65,6 +65,18 @@ void IntakeSubsystem::SetPivotControlMode(ControlMode mode)
             m_pivotControlMode = mode;
             break; //end of ControlMode::MANUAL_DUTY_CYCLE
 
+        case ControlMode::MANUAL_POSITION :
+            m_pivotOutput = PivotConstants::DutyCycle::REST;
+            m_pivotManualControlInput = pivotInputs.pivotPos;
+
+            m_pivotPIDController.Reset(m_timestamp);
+            m_pivotPIDController.SetGains(PivotConstants::Gains::POSITION_DUTYCYCLE_PID::KP, 
+                                    PivotConstants::Gains::POSITION_DUTYCYCLE_PID::KI, 
+                                    PivotConstants::Gains::POSITION_DUTYCYCLE_PID::KD);
+
+            m_pivotControlMode = mode;
+        break; //end of ControlMode::MANUAL_POSITION
+
         case ControlMode::DISABLED :
             m_pivotOutput = PivotConstants::DutyCycle::REST;
 
@@ -166,19 +178,22 @@ bool IntakeSubsystem::IsPivotMoving()
             m_systemState == SystemState::GOING_TO_SAFE_POS);
 }
 
-// void IntakeSubsystem::SetManualControlInput(const double value)
-// {
-//     if(BYPASS_STATE_MACHINE(m_controlMode))
-//     {
-//         DEBUG_ASSERT((value <= 1.0) && (value >= -1.0) 
-//             , "Intake Duty Cycle out of range");
-//         m_manualControlInput = value;
-//     }
-//     else 
-//     {
-//         DEBUG_ASSERT(false, "Intake : Open Loop Output set while Closed Loop is used");
-//     }
-// }
+void IntakeSubsystem::SetManualControlInput(const double PivotInput, const double RollerInput)
+{
+    if(BYPASS_STATE_MACHINE(m_pivotControlMode))
+    {
+        DEBUG_ASSERT((PivotInput <= 1.0) && (PivotInput >= -1.0) 
+            , "Intake Pivot Duty Cycle out of range");
+        DEBUG_ASSERT((RollerInput <= 1.0) && (RollerInput >= -1.0) 
+            , "Intake Roller Duty Cycle out of range");
+        m_pivotManualControlInput = m_pivotPIDController.GetSetpoint() + PivotInput * PivotConstants::Settings::MANUAL_SETPOINT_CHANGE_LIMIT;
+        m_rollerManualControlInput = RollerInput;
+    }
+    else 
+    {
+        DEBUG_ASSERT(false, "Intake : Open Loop Output set while Closed Loop is used");
+    }
+}
 
 // void IntakeSubsystem::SetManualControlInput(const std::function<double()> Axis)
 // {
@@ -223,7 +238,7 @@ void IntakeSubsystem::Periodic()
                 break; //end of ControlMode::DISABLED
 
             case ControlMode::MANUAL_DUTY_CYCLE:
-                m_pivotOutput = m_tunablePivotDutyCycleLogger.Get();
+                // m_pivotOutput = m_tunablePivotDutyCycleLogger.Get();
                 break; //end of ControlMode::MANUAL_DUTY_CYCLE
 
             case ControlMode::POSITION_DUTYCYCLE_PID:
@@ -260,6 +275,12 @@ void IntakeSubsystem::Periodic()
                 }
                 break;
 
+            case ControlMode::MANUAL_POSITION:
+                m_pivotTargetPos = m_pivotPIDController.CalculateWithRealTime(m_pivotManualControlInput,
+                                                                        pivotInputs.pivotPos,
+                                                                        m_timestamp);
+                break;
+
             default:
                 DEBUG_ASSERT(false, "Pivot : impossible state");
                 break; //end of default
@@ -272,7 +293,7 @@ void IntakeSubsystem::Periodic()
                 break; //end of ControlMode::DISABLED
 
             case ControlMode::MANUAL_VOLTAGE:
-                m_rollerOutput = m_tunableRollerVoltageLogger.Get();
+                m_rollerOutput = m_tunableRollerVoltageLogger.Get() * m_rollerManualControlInput;
                 break;
 
             case ControlMode::VOLTAGE:
@@ -325,6 +346,7 @@ void IntakeSubsystem::Periodic()
         case ControlMode::DISABLED:
         case ControlMode::MANUAL_DUTY_CYCLE:
         case ControlMode::POSITION_DUTYCYCLE_PID:
+        case ControlMode::MANUAL_POSITION:
             m_pPivotIO->SetDutyCycle(m_pivotOutput);
             break;
 

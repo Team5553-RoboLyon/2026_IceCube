@@ -25,27 +25,27 @@ RobotContainer::RobotContainer()
 
 }
 void RobotContainer::ConfigureBindings() {
-    operatorGamepad.STAND_BY.ToggleOnTrue(SetWantedIntakeStateCmd(&intakeSubsystem, IntakeSubsystem::WantedState::STAND_BY)
-                                            .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
-    operatorGamepad.BECOME_AN_INDEXER.ToggleOnTrue(SetWantedIntakeStateCmd(&intakeSubsystem, IntakeSubsystem::WantedState::BECOME_AN_INDEXER)
-                                            .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
-    operatorGamepad.EJECT.ToggleOnTrue(SetWantedIntakeStateCmd(&intakeSubsystem, IntakeSubsystem::WantedState::EJECT)
-                                            .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
-    operatorGamepad.REFUEL.ToggleOnTrue(SetWantedIntakeStateCmd(&intakeSubsystem, IntakeSubsystem::WantedState::REFUEL)
-                                            .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
-    operatorGamepad.EXTEND.ToggleOnTrue(SetWantedIntakeStateCmd(&intakeSubsystem, IntakeSubsystem::WantedState::EXTEND)
-                                            .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
-    operatorGamepad.RETURN_AT_HOME.ToggleOnTrue(SetWantedIntakeStateCmd(&intakeSubsystem, IntakeSubsystem::WantedState::RETURN_AT_HOME)
-                                            .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
-    operatorGamepad.PROTECT_YOURSELF.ToggleOnTrue(SetWantedIntakeStateCmd(&intakeSubsystem, IntakeSubsystem::WantedState::PROTECT_YOURSELF_AGAINST_EVIL_PILOT)
-                                            .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
+    // operatorGamepad.STAND_BY.ToggleOnTrue(SetWantedIntakeStateCmd(&intakeSubsystem, IntakeSubsystem::WantedState::STAND_BY)
+    //                                         .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
+    // operatorGamepad.BECOME_AN_INDEXER.ToggleOnTrue(SetWantedIntakeStateCmd(&intakeSubsystem, IntakeSubsystem::WantedState::BECOME_AN_INDEXER)
+    //                                         .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
+    // operatorGamepad.EJECT.ToggleOnTrue(SetWantedIntakeStateCmd(&intakeSubsystem, IntakeSubsystem::WantedState::EJECT)
+    //                                         .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
+    // operatorGamepad.REFUEL.ToggleOnTrue(SetWantedIntakeStateCmd(&intakeSubsystem, IntakeSubsystem::WantedState::REFUEL)
+    //                                         .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
+    // operatorGamepad.EXTEND.ToggleOnTrue(SetWantedIntakeStateCmd(&intakeSubsystem, IntakeSubsystem::WantedState::EXTEND)
+    //                                         .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
+    // operatorGamepad.RETURN_AT_HOME.ToggleOnTrue(SetWantedIntakeStateCmd(&intakeSubsystem, IntakeSubsystem::WantedState::RETURN_AT_HOME)
+    //                                         .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
+    // operatorGamepad.PROTECT_YOURSELF.ToggleOnTrue(SetWantedIntakeStateCmd(&intakeSubsystem, IntakeSubsystem::WantedState::PROTECT_YOURSELF_AGAINST_EVIL_PILOT)
+    //                                         .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
 
-    operatorGamepad.CLIMBED.OnTrue(SetWantedClimberStateCmd(&climber, ClimberSubsystem::WantedState::CLIMBED)
-                                .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
-    operatorGamepad.ARMED_TO_CLIMB.OnTrue(SetWantedClimberStateCmd(&climber, ClimberSubsystem::WantedState::ARMED_TO_CLIMB)
-                                .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
-    operatorGamepad.STOWED.OnTrue(SetWantedClimberStateCmd(&climber, ClimberSubsystem::WantedState::STOWED)
-                                .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
+    // operatorGamepad.CLIMBED.OnTrue(SetWantedClimberStateCmd(&climber, ClimberSubsystem::WantedState::CLIMBED)
+    //                             .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
+    // operatorGamepad.ARMED_TO_CLIMB.OnTrue(SetWantedClimberStateCmd(&climber, ClimberSubsystem::WantedState::ARMED_TO_CLIMB)
+    //                             .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
+    // operatorGamepad.STOWED.OnTrue(SetWantedClimberStateCmd(&climber, ClimberSubsystem::WantedState::STOWED)
+    //                             .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
     // operatorGamepad.toggle.OnTrue(frc2::InstantCommand([this](){climber.ToggleControlMode();})
     //                             .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
     // intakeSubsystem.SetManualControlInput([this] { return -operatorGamepad.GetLeftY(); });

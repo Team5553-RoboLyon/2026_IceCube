@@ -12,8 +12,8 @@ using IdleMode = rev::spark::SparkBaseConfig::IdleMode;
 
 namespace PivotConstants
 {
-    constexpr ControlMode MainControlMode = ControlMode::POSITION_DUTYCYCLE_PID;
-    constexpr ControlMode EmergencyControlMode = ControlMode::MANUAL_DUTY_CYCLE;
+    constexpr ControlMode MainControlMode = ControlMode::MANUAL_POSITION;
+    constexpr ControlMode EmergencyControlMode = ControlMode::DISABLED;
 
     namespace pivotMotor
     {
@@ -91,5 +91,6 @@ namespace PivotConstants
     
     namespace Settings
     {
+        constexpr double MANUAL_SETPOINT_CHANGE_LIMIT = (Position::RANGE) / (2.5/TIME_PER_CYCLE);
     }
 }

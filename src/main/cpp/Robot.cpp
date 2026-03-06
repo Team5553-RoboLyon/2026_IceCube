@@ -50,9 +50,6 @@ void Robot::RobotPeriodic() {
     //Code for no data received yet
   }
 
-  frc::SmartDashboard::PutBoolean("Robot X", m_container.ahrs.IsConnected());
-  frc::SmartDashboard::PutNumber("Robot Yaw", m_container.ahrs.GetAngle());
-
   m_container.robotState.UpdateOdometry();
 }
 
@@ -65,10 +62,10 @@ void Robot::DriverStationConnected() {
 }
 
 void Robot::AutonomousInit() {
-  //TODO : set pose
-  m_container.drivetrain.ResetOdometryPose(trajectory.GetInitialSample().value().GetPose());
-  m_container.drivetrain.SetWantedDrive(DriveMode::AUTO_PATH_FOLLOWER);
-  m_container.drivetrain.SetDesiredAutoTrajectory(trajectory);
+  // //TODO : set pose
+  // m_container.drivetrain.ResetOdometryPose(trajectory.GetInitialSample().value().GetPose());
+  // m_container.drivetrain.SetWantedDrive(DriveMode::AUTO_PATH_FOLLOWER);
+  // m_container.drivetrain.SetDesiredAutoTrajectory(trajectory);
 
 }
 void Robot::AutonomousPeriodic() {}
@@ -79,17 +76,18 @@ void Robot::TeleopInit() {
   m_container.drivetrain.SetWantedDrive(DriveMode::ARCADE_DRIVE);
 }
 void Robot::TeleopPeriodic() {
-  if(BYPASS_STATE_MACHINE(m_container.shooterSubsystem.GetHoodControlMode()))
-  {
-    m_container.shooterSubsystem.SetManualControlInput(m_container.operatorGamepad.GetRightX());
-  }
-  if (m_container.operatorGamepad.GetAButtonPressed())
-  {
-    m_container.intakeSubsystem.ActualisePIDCoef();
-  m_container.ShootParamCalculator.SetRobotPos({0.0_m,0.0_m,{}},TimerRBL::GetFPGATimestampInSeconds());
-  m_container.turretSubsystem.SetControlMode(TurretConstants::MainControlMode);
-  m_container.shooterSubsystem.SetControlMode(FlywheelConstants::MainControlMode, HoodConstants::MainControlMode);
-  }
+  m_container.turretSubsystem.SetManualControlInput(m_container.operatorGamepad.GetAButton() ? 1.0 : 0.0);
+  m_container.shooterSubsystem.SetManualControlInput(m_container.operatorGamepad.GetLeftY(), m_container.operatorGamepad.GetL1Button() ? 1.0 : 0.0);
+  m_container.indexer.SetManualControlInput(m_container.operatorGamepad.GetR1Button() ? 1.0 : 0.0);
+  m_container.climber.SetManualControlInput(m_container.operatorGamepad.GetL2Axis()-m_container.operatorGamepad.GetR2Axis());
+  m_container.intakeSubsystem.SetManualControlInput(m_container.operatorGamepad.GetRightX(), m_container.operatorGamepad.GetXButton() ? 1.0 : 0.0);
+  // if (m_container.operatorGamepad.GetAButtonPressed())
+  // {
+  //   m_container.intakeSubsystem.ActualisePIDCoef();
+  // m_container.ShootParamCalculator.SetRobotPos({0.0_m,0.0_m,{}},TimerRBL::GetFPGATimestampInSeconds());
+  // m_container.turretSubsystem.SetControlMode(TurretConstants::MainControlMode);
+  // m_container.shooterSubsystem.SetControlMode(FlywheelConstants::MainControlMode, HoodConstants::MainControlMode);
+  // }
 }
 void Robot::TeleopExit() {}
 

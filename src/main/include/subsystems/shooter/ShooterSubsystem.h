@@ -65,7 +65,7 @@ class ShooterSubsystem : public frc2::SubsystemBase {
 
     bool IsResting();
     bool IsInitialized() { return m_isInitialized; }
-    void SetManualControlInput(const double value);
+    void SetManualControlInput(const double hoodInput, const double flywheelInput);
 
 
     void Periodic() override;
@@ -88,10 +88,11 @@ class ShooterSubsystem : public frc2::SubsystemBase {
       FeedForwardModel m_flywheelFeedforward;
     // === Control Inputs / Outputs ===
       double m_manualControlInput{0.0};
+      double m_manualFlywheelInput{0.0};
       double m_timestamp{0.0};
       units::volt_t m_flywheelOutput{0.0};
       units::volt_t m_hoodOutput{0.0};
-      TunableValueLogger m_tunableFlywheelVoltageLogger{"/Shooter/FlywheelVoltage", 0.0};
+      TunableValueLogger m_tunableFlywheelVelocityLogger{"/Shooter/FlywheelVelocity", 2000.0};
 
       #if ROBOT_MODEL == PROTOTYPE
         TunableValueLogger m_tunableFlywheelKVLogger{"/Shooter/KV", FlywheelConstants::Gains::FLYWHEEL_FEEDFORWARD::KV};

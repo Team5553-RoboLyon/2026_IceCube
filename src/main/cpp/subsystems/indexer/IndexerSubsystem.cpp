@@ -220,8 +220,8 @@ void IndexerSubsystem::Periodic()
                 break;
 
             case ControlMode::MANUAL_VOLTAGE:
-                m_output = m_tunableVoltageLogger.Get();
-                m_clodeOutput = m_manualControlInput;
+                m_output = m_tunableVoltageLogger.Get()  * m_manualControlInput;
+                m_clodeOutput = m_tunableClodeVoltageLogger.Get() * m_manualControlInput;
                 break;
                 
             default:

@@ -11,8 +11,8 @@ using IdleMode = rev::spark::SparkBaseConfig::IdleMode;
 #endif
 namespace ClimberConstants
 {
-    constexpr ControlMode MainControlMode = ControlMode::POSITION_VOLTAGE_PID;
-    constexpr ControlMode EmergencyControlMode = ControlMode::MANUAL_POSITION;
+    constexpr ControlMode MainControlMode = ControlMode::MANUAL_POSITION;
+    constexpr ControlMode EmergencyControlMode = ControlMode::DISABLED;
 
     namespace Motor
     {

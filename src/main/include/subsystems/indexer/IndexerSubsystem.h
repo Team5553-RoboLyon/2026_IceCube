@@ -70,8 +70,8 @@ class IndexerSubsystem : public frc2::SubsystemBase {
       double m_targetVelocity{0.0};
       double m_timestamp{0.0};
     // std::function<double()> m_fxAxis; //temporary
-      TunableValueLogger m_tunableVoltageLogger{"/Indexer/IndexerVoltage",0.0};
-      TunableValueLogger m_tunableClodeVoltageLogger{"Intake/ClodeVoltage", 0.0}; //RPM
+      TunableValueLogger m_tunableVoltageLogger{"Indexer/IndexerVoltage",12.0};
+      TunableValueLogger m_tunableClodeVoltageLogger{"Indexer/SpindexerVoltage", 10.0}; //RPM
     // === Status Flags ===
       bool m_isInitialized = true;
     // === System Alerts ===
