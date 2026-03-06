@@ -177,7 +177,6 @@ void TurretSubsystem::Periodic()
                                                                             inputs.orientation,
                                                                             m_timestamp);
 
-                    // m_TurretPIDController.SetGains(m_tunableKP.Get(),0.0,0.0);
                 break; //end of ControlMode::MANUAL_POSITION
 
             case ControlMode::DISABLED :

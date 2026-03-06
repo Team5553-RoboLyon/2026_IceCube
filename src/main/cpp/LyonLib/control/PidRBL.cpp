@@ -22,7 +22,7 @@ void PidRBL::SetGains(const double kp, const double ki, const double kd)
     else {
         m_kaw = 0.0; // No anti-windup if integral gain is zero
     }
-    Reset();
+    // Reset();
 }
 
 void PidRBL::SetSetpoint(const double setpoint)
@@ -181,7 +181,7 @@ double PidRBL::Calculate(const double setpoint, const double measurement) {
 }
 void PidRBL::Reset()
 {
-    m_setpoint = m_setpoint - m_currentError; // Reset setpoint to current measurement 
+    SetSetpoint(m_previousMeasurement + m_currentError); // Reset setpoint to current measurement to avoid derivative kick
     m_previousMeasurement = m_setpoint; // Set previous measurement to new setpoint to avoid derivative kick
     m_currentError = 0.0;
     m_output = 0.0;

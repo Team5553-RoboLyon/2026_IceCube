@@ -256,26 +256,26 @@ void ShooterSubsystem::Periodic()
         case ControlMode::MANUAL_VOLTAGE:
             {
                 #if ROBOT_MODEL == PROTOTYPE
-                    // m_flywheelFeedforward.SetGains(FlywheelConstants::Gains::FLYWHEEL_FEEDFORWARD::KS, m_tunableFlywheelKVLogger.Get(), 0.0);
-                    // m_flywheelPIDController.SetGains(m_tunableFlywheelKPLogger.Get(), 0.0, m_tunableFlywheelKDLogger.Get());
+                    m_flywheelFeedforward.SetGains(FlywheelConstants::Gains::FLYWHEEL_FEEDFORWARD::KS, m_tunableFlywheelKVLogger.Get(), 0.0);
+                    m_flywheelPIDController.SetGains(m_tunableFlywheelKPLogger.Get(), 0.0, m_tunableFlywheelKDLogger.Get());
 
-                    // double rpm = m_tunableFlywheelVoltageLogger.Get();
-                    // double ff = m_flywheelFeedforward.Calculate(0.0, rpm, 0.0);
-                    // double pid = m_flywheelPIDController.CalculateWithRealTime(
-                    //                 rpm,
-                    //                 flywheelInputs.shooterVelocity,
-                    //                 m_timestamp);
+                    double rpm = m_tunableFlywheelVoltageLogger.Get();
+                    double ff = m_flywheelFeedforward.Calculate(0.0, rpm, 0.0);
+                    double pid = m_flywheelPIDController.CalculateWithRealTime(
+                                    rpm,
+                                    flywheelInputs.shooterVelocity,
+                                    m_timestamp);
 
-                    // frc::SmartDashboard::PutNumber("output", pid);
+                    frc::SmartDashboard::PutNumber("output", pid);
 
-                    // m_flywheelOutput = units::volt_t{
-                    //     NCLAMP(
-                    //         double(FlywheelConstants::Voltage::MIN),
-                    //         pid + ff,
-                    //         double(FlywheelConstants::Voltage::MAX))
+                    m_flywheelOutput = units::volt_t{
+                        NCLAMP(
+                            double(FlywheelConstants::Voltage::MIN),
+                            pid + ff,
+                            double(FlywheelConstants::Voltage::MAX))
 
-                    m_flywheelOutput = units::volt_t{m_tunableFlywheelVoltageLogger.Get()};
-                    // };  
+                    // m_flywheelOutput = units::volt_t{m_tunableFlywheelVoltageLogger.Get()};
+                    };  
                 #endif
                 break;       
             }
@@ -317,7 +317,6 @@ void ShooterSubsystem::Periodic()
         m_hoodOutput = HoodConstants::Voltage::REST;
      }
     // Apply output
-    frc::SmartDashboard::PutNumber("hoodOutput", m_hoodOutput.value());
     m_pFlywheelIO->SetVoltage(m_flywheelOutput);
     m_pHoodIO->SetVoltage(m_hoodOutput); 
     //LOG

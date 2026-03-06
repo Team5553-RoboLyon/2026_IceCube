@@ -52,6 +52,8 @@ void Robot::RobotPeriodic() {
 
   frc::SmartDashboard::PutBoolean("Robot X", m_container.ahrs.IsConnected());
   frc::SmartDashboard::PutNumber("Robot Yaw", m_container.ahrs.GetAngle());
+
+  m_container.robotState.UpdateOdometry();
 }
 
 void Robot::DriverStationConnected() {

@@ -13,7 +13,7 @@ using IdleMode = rev::spark::SparkBaseConfig::IdleMode;
 
 namespace HoodConstants
 {
-    constexpr ControlMode MainControlMode = ControlMode::DISABLED; //MANUAL_POSITION
+    constexpr ControlMode MainControlMode = ControlMode::MANUAL_POSITION; //MANUAL_POSITION
     constexpr ControlMode EmergencyControlMode = ControlMode::POSITION_VOLTAGE_PID;
     namespace HoodMotor
     {
@@ -91,6 +91,6 @@ namespace HoodConstants
     
     namespace Settings
     {
-        constexpr double MANUAL_SETPOINT_CHANGE_LIMIT = (Position::MAX - Position::MIN) / (0.02/TIME_PER_CYCLE);
+        constexpr double MANUAL_SETPOINT_CHANGE_LIMIT = (Position::MAX - Position::MIN) / (3.0/TIME_PER_CYCLE);
     }
 }

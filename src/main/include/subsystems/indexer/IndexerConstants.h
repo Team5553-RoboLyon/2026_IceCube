@@ -24,6 +24,7 @@ namespace IndexerConstants
         constexpr int OVERHEATING_THRESHOLD = 75;
         constexpr int KV = 496.3; // RPM.V-1
     }
+
     namespace clodeMotor
     {
         constexpr int ID = 6;

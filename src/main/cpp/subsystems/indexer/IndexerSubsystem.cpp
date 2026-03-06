@@ -59,6 +59,18 @@ void IndexerSubsystem::SetControlMode(const ControlMode mode)
             m_controlMode = mode;
             break; //end of ControlMode::VELOCITY_DUTYCYCLE_PID
 
+        case ControlMode::MANUAL_VOLTAGE:
+            m_output = IndexerConstants::Voltage::REST;
+            m_manualControlInput = IndexerConstants::Voltage::REST;
+            m_clodeOutput = IndexerConstants::Voltage::REST;
+
+            m_systemState = SystemState::IDLE;
+            m_wantedState = WantedState::STAND_BY;
+            m_currentWantedState = m_wantedState;
+
+            m_controlMode = mode;
+            break; //end of ControlMode::MANUAL_VOLTAGE
+
         default:
             DEBUG_ASSERT(false," Indexer : SetControlMode impossible with an unrecognized mode.");
             break; //end of default
