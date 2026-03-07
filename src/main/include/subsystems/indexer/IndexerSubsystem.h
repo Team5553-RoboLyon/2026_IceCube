@@ -26,7 +26,7 @@ class IndexerSubsystem : public frc2::SubsystemBase {
       STAND_BY = 0, // no wanted state scheduled. (It's all good man, it's all good !)
       FEED_SHOOTER = 1,
       EVACUATE_SHOOTER = 2,
-      PREPARE_SHOOT = 3,
+      // PREPARE_SHOOT = 3,
     };
     enum class SystemState
     {
@@ -35,9 +35,9 @@ class IndexerSubsystem : public frc2::SubsystemBase {
       SLEEPING = 1,
       FEEDING_SHOOTER = 2,
       EVACUATING_SHOOTER = 3,
-      READY_TO_SHOOT = 4,
+      // READY_TO_SHOOT = 4,
       //Transition state
-      PREPARING_SHOOT = 5,
+      // PREPARING_SHOOT = 5,
     };
     void SetWantedState(const WantedState wantedState);
     SystemState GetSystemState();

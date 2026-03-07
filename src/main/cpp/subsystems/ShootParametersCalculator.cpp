@@ -26,26 +26,26 @@ void ShootParametersCalculator::SetAlliance(frc::DriverStation::Alliance allianc
 {
     if (alliance == frc::DriverStation::Alliance::kBlue)
     {
-        m_hubTargetPos = FieldConstants::Hub::BLUE_PLACEMENT;
-        m_allianceZoneTargetPose = FieldConstants::AllianceZone::BLUE_CENTER_POSITION;
+        m_pHubTargetPos = new frc::Pose2d(FieldConstants::Hub::BLUE_PLACEMENT);
+        m_pAllianceZoneTargetPose = new frc::Pose2d(FieldConstants::AllianceZone::BLUE_CENTER_POSITION);
     }
     else
     {
-        m_hubTargetPos = FieldConstants::Hub::RED_PLACEMENT;
-        m_allianceZoneTargetPose = FieldConstants::AllianceZone::RED_CENTER_POSITION;
+        m_pHubTargetPos = new frc::Pose2d(FieldConstants::Hub::RED_PLACEMENT);
+        m_pAllianceZoneTargetPose = new frc::Pose2d(FieldConstants::AllianceZone::RED_CENTER_POSITION);
     }
 
 }
 
 void ShootParametersCalculator::SetRobotPos(frc::Pose2d robotPos, double timestamp)
 {
-    m_lastRobotPos = robotPos;
+    m_pLastRobotPos = new frc::Pose2d(robotPos);
     m_lastTimestamp = timestamp;
 }
 
 void ShootParametersCalculator::CalculateHubNewParameters(ShootParameters& params, frc::Pose2d robotPos, double timestamp)
 { 
-    frc::Transform2d robotDisplacement = robotPos - m_lastRobotPos;
+    frc::Transform2d robotDisplacement = robotPos - *m_pLastRobotPos;
     double elapsedTime = m_lastTimestamp-timestamp;
 
     double xSpeed = robotDisplacement.X().value()/(elapsedTime);
@@ -57,17 +57,17 @@ void ShootParametersCalculator::CalculateHubNewParameters(ShootParameters& param
                                                                   units::radian_t(rotationSpeed * TIME_PER_CYCLE)});
     frc::Pose2d estimatedNextTurretPos = estimatedNextRobotPos + TurretConstants::Specifications::ROBOT_TO_TURRET;
 
-    double nextTurretToHubDistance = (m_hubTargetPos - estimatedNextTurretPos).Translation().Norm().value();
+    double nextTurretToHubDistance = (*m_pHubTargetPos - estimatedNextTurretPos).Translation().Norm().value();
     double timeToReachHub = m_timeToReachTargetMap[nextTurretToHubDistance];
 
-    frc::Pose2d lookAheadTargetPos = m_hubTargetPos;
+    frc::Pose2d lookAheadTargetPos = *m_pHubTargetPos;
     double lookAheadTargetDistance = nextTurretToHubDistance;
     double timeToReachLookAheadTarget = timeToReachHub;
 
     for (int i = 0; i < 20; i++) //TUNEME
     {
         timeToReachLookAheadTarget = m_timeToReachTargetMap[lookAheadTargetDistance];
-        lookAheadTargetPos = m_hubTargetPos + frc::Transform2d {units::meter_t(-xSpeed*timeToReachLookAheadTarget), 
+        lookAheadTargetPos = *m_pHubTargetPos + frc::Transform2d {units::meter_t(-xSpeed*timeToReachLookAheadTarget), 
                                                            units::meter_t(-ySpeed*timeToReachLookAheadTarget),
                                                            0.0_rad};
         lookAheadTargetDistance = (lookAheadTargetPos - estimatedNextTurretPos).Translation().Norm().value();
@@ -89,18 +89,17 @@ void ShootParametersCalculator::CalculateHubNewParameters(ShootParameters& param
 
     double turretSuplAngleToAlignToTarget =  atan((lookAheadTargetPos-estimatedNextTurretPos).Y().value()/(lookAheadTargetPos-estimatedNextTurretPos).X().value()); //TODO : find a better name
 
-    params.lookAheadTargetTurretPos = WRAP_ANGLE_NEG_PI_TO_PI(m_hubTargetPos.Rotation().Radians().value() - estimatedNextTurretPos.Rotation().Radians().value()
+    params.lookAheadTargetTurretPos = WRAP_ANGLE_NEG_PI_TO_PI(m_pHubTargetPos->Rotation().Radians().value() - estimatedNextTurretPos.Rotation().Radians().value()
                                       + turretSuplAngleToAlignToTarget);
 
     params.lookAheadTargetPos = lookAheadTargetPos;
 
-    m_lastRobotPos = robotPos;
-    m_lastTimestamp = timestamp;
+    SetRobotPos(robotPos, timestamp);
 }
 
 void ShootParametersCalculator::CalculateAllianceZoneNewParameters(ShootParameters& params, frc::Pose2d robotPos, double timestamp)
 {
-    frc::Transform2d robotDisplacement = robotPos - m_lastRobotPos;
+    frc::Transform2d robotDisplacement = robotPos - *m_pLastRobotPos;
     double elapsedTime = m_lastTimestamp-timestamp;
 
     double xSpeed = robotDisplacement.X().value()/(elapsedTime);
@@ -112,17 +111,17 @@ void ShootParametersCalculator::CalculateAllianceZoneNewParameters(ShootParamete
                                                                   units::radian_t(rotationSpeed * TIME_PER_CYCLE)});
     frc::Pose2d estimatedNextTurretPos = estimatedNextRobotPos + TurretConstants::Specifications::ROBOT_TO_TURRET;
 
-    double nextTurretToAllianceZoneDistance = (m_allianceZoneTargetPose - estimatedNextTurretPos).Translation().Y().value();
+    double nextTurretToAllianceZoneDistance = (*m_pAllianceZoneTargetPose - estimatedNextTurretPos).Translation().Y().value();
     double timeToReachAllianceZone = m_timeToReachTargetMap[nextTurretToAllianceZoneDistance];
 
-    frc::Pose2d lookAheadTargetPos = {estimatedNextTurretPos.X(), m_allianceZoneTargetPose.Y(), m_allianceZoneTargetPose.Rotation()};
+    frc::Pose2d lookAheadTargetPos = {estimatedNextTurretPos.X(), m_pAllianceZoneTargetPose->Y(), m_pAllianceZoneTargetPose->Rotation()};
     double lookAheadTargetDistance = nextTurretToAllianceZoneDistance;
     double timeToReachLookAheadTarget = timeToReachAllianceZone;
 
     for (int i = 0; i < 20; i++) //TUNEME
     {
         timeToReachLookAheadTarget = m_timeToReachTargetMap[lookAheadTargetDistance];
-        lookAheadTargetPos = m_allianceZoneTargetPose + frc::Transform2d {0.0_m, 
+        lookAheadTargetPos = *m_pAllianceZoneTargetPose + frc::Transform2d {0.0_m, 
                                                            units::meter_t(-ySpeed*timeToReachLookAheadTarget),
                                                            0.0_rad};
         lookAheadTargetDistance = (lookAheadTargetPos - estimatedNextTurretPos).Translation().Norm().value();
@@ -142,10 +141,9 @@ void ShootParametersCalculator::CalculateAllianceZoneNewParameters(ShootParamete
     else
         params.flywheelSpeed = m_flywheelSpeedMap[lookAheadTargetDistance];
 
-    params.lookAheadTargetTurretPos = WRAP_ANGLE_NEG_PI_TO_PI(m_allianceZoneTargetPose.Rotation().Radians().value() - estimatedNextTurretPos.Rotation().Radians().value());
+    params.lookAheadTargetTurretPos = WRAP_ANGLE_NEG_PI_TO_PI(m_pAllianceZoneTargetPose->Rotation().Radians().value() - estimatedNextTurretPos.Rotation().Radians().value());
 
     params.lookAheadTargetPos = lookAheadTargetPos;
 
-    m_lastRobotPos = robotPos;
-    m_lastTimestamp = timestamp;
+    SetRobotPos(robotPos, timestamp);
 }

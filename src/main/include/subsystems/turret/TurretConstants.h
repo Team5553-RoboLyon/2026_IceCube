@@ -70,7 +70,7 @@ namespace TurretConstants
     namespace Setpoints
     {
         constexpr double EJECT = NF64_PI; //TUNEME
-        constexpr double TOLERANCE = NDEGtoRAD(0.1);
+        constexpr double TOLERANCE = NDEGtoRAD(2.0);
         constexpr double INIT_POS = NF64_PI_2;
     }
 
