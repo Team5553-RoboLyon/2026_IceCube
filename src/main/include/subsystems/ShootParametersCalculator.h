@@ -3,6 +3,7 @@
 #include "frc/geometry/Pose2d.h"
 #include "frc/DriverStation.h"
 #include <wpi/interpolating_map.h>
+#include "LyonLib/logging/ComplexStructLogger.h"
 
 struct ShootParameters {
     frc::Pose2d lookAheadTargetPos;
@@ -33,4 +34,6 @@ class ShootParametersCalculator
      wpi::interpolating_map<double,double> m_hoodPosMap; //TODO : do tests to get at least 10 values for each interpolating map
      wpi::interpolating_map<double,double> m_flywheelSpeedMap;
      wpi::interpolating_map<double,double> m_timeToReachTargetMap;
+     StructLogger<frc::Pose2d> m_logger{"/Hub Pos"};
+
 };

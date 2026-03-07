@@ -648,12 +648,12 @@ void Superstructure::RunSuperStateMachine()
 
 bool Superstructure::IsRobotCloseToTrench()
 {
-    return (IS_IN_RANGE(double(m_robotPos.X()),
+    return ((IS_IN_RANGE(double(m_robotPos.X()),
                         double(FieldConstants::AllianceZone::LENGTH - FieldConstants::Trench::LENGTH/2.0),
                         double(FieldConstants::Trench::SECURITY_DISTANCE))
             || IS_IN_RANGE(double(m_robotPos.X()),
                           double(FieldConstants::FIELD_LENGTH - FieldConstants::AllianceZone::LENGTH + FieldConstants::Trench::LENGTH/2.0),
                           double(FieldConstants::Trench::SECURITY_DISTANCE)))
-        &&  (m_robotPos.Y() >= (FieldConstants::FIELD_WIDTH-FieldConstants::Trench::WIDTH) 
-            || m_robotPos.Y() >= FieldConstants::Trench::WIDTH);
+            &&  (m_robotPos.Y() >= (FieldConstants::FIELD_WIDTH-FieldConstants::Trench::WIDTH) 
+            || m_robotPos.Y() >= FieldConstants::Trench::WIDTH));
 }

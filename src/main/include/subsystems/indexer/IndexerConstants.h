@@ -77,8 +77,8 @@ namespace IndexerConstants
         constexpr double REST = 0.0;
         constexpr double MAX = indexerMotor::VOLTAGE_COMPENSATION; 
         constexpr double MIN = -indexerMotor::VOLTAGE_COMPENSATION;
-        constexpr double FEED = 8.0;
-        constexpr double CLODE_POWER = 8.0;
+        constexpr double FEED = 12.0;
+        constexpr double CLODE_POWER = -10.0;
     }
 
     namespace Speed //in RPM
