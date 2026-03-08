@@ -257,23 +257,23 @@ void ShooterSubsystem::Periodic()
         case ControlMode::MANUAL_VOLTAGE:
             {
                 #if ROBOT_MODEL == PROTOTYPE
-                    m_flywheelFeedforward.SetGains(FlywheelConstants::Gains::FLYWHEEL_FEEDFORWARD::KS, m_tunableFlywheelKVLogger.Get(), 0.0);
-                    m_flywheelPIDController.SetGains(m_tunableFlywheelKPLogger.Get(), 0.0, m_tunableFlywheelKDLogger.Get());
+                    // m_flywheelFeedforward.SetGains(FlywheelConstants::Gains::FLYWHEEL_FEEDFORWARD::KS, m_tunableFlywheelKVLogger.Get(), 0.0);
+                    // m_flywheelPIDController.SetGains(m_tunableFlywheelKPLogger.Get(), 0.0, m_tunableFlywheelKDLogger.Get());
 
-                    double rpm = m_tunableFlywheelVelocityLogger.Get();
-                    double ff = m_flywheelFeedforward.Calculate(0.0, rpm, 0.0);
-                    double pid = m_flywheelPIDController.CalculateWithRealTime(
-                                    rpm,
-                                    flywheelInputs.shooterVelocity,
-                                    m_timestamp);
+                    // double rpm = m_tunableFlywheelVelocityLogger.Get();
+                    // double ff = m_flywheelFeedforward.Calculate(0.0, rpm, 0.0);
+                    // double pid = m_flywheelPIDController.CalculateWithRealTime(
+                    //                 rpm,
+                    //                 flywheelInputs.shooterVelocity,
+                    //                 m_timestamp);
 
-                    m_flywheelOutput = units::volt_t{
-                        NCLAMP(
-                            double(FlywheelConstants::Voltage::MIN),
-                            pid + ff,
-                            double(FlywheelConstants::Voltage::MAX) * m_manualFlywheelInput)
-                    };  
-                    // m_flywheelOutput = units::volt_t{m_tunableFlywheelVelocityLogger.Get()};
+                    // m_flywheelOutput = units::volt_t{
+                    //     NCLAMP(
+                    //         double(FlywheelConstants::Voltage::MIN),
+                    //         pid + ff,
+                    //         double(FlywheelConstants::Voltage::MAX) * m_manualFlywheelInput)
+                    // };  
+                    m_flywheelOutput = units::volt_t{m_tunableFlywheelVelocityLogger.Get()};
                 #endif
                 break;       
             }

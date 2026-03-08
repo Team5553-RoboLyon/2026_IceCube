@@ -92,7 +92,7 @@ class ShooterSubsystem : public frc2::SubsystemBase {
       double m_timestamp{0.0};
       units::volt_t m_flywheelOutput{0.0};
       units::volt_t m_hoodOutput{0.0};
-      TunableValueLogger m_tunableFlywheelVelocityLogger{"/Shooter/FlywheelVelocity", 2000.0};
+      TunableValueLogger m_tunableFlywheelVelocityLogger{"/Shooter/FlywheelVelocity", 0.0};
 
       #if ROBOT_MODEL == PROTOTYPE
         TunableValueLogger m_tunableFlywheelKVLogger{"/Shooter/KV", FlywheelConstants::Gains::FLYWHEEL_FEEDFORWARD::KV};
