@@ -34,7 +34,6 @@ void ShootParametersCalculator::SetAlliance(frc::DriverStation::Alliance allianc
         m_pHubTargetPos = new frc::Pose2d(FieldConstants::Hub::RED_PLACEMENT);
         m_pAllianceZoneTargetPose = new frc::Pose2d(FieldConstants::AllianceZone::RED_CENTER_POSITION);
     }
-
 }
 
 void ShootParametersCalculator::SetRobotPos(frc::Pose2d robotPos, double timestamp)
