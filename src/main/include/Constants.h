@@ -115,14 +115,14 @@ namespace FieldConstants
         constexpr units::meter_t LENGTH = 158.6_in;
         constexpr units::meter_t WIDTH = 317.7_in;
         constexpr frc::Pose2d BLUE_CENTER_POSITION = {LENGTH/2.0, WIDTH/2.0, {180.0_deg}};
-        constexpr frc::Pose2d RED_CENTER_POSITION = {FIELD_LENGTH-LENGTH/2.0, WIDTH/2.0, {0.0_deg}};
+        constexpr frc::Pose2d RED_CENTER_POSITION = {FIELD_LENGTH-LENGTH/2.0, WIDTH/2.0, {}};
     }
 
     namespace Hub
     {
         constexpr units::meter_t WIDTH = 47_in;
         constexpr frc::Pose2d BLUE_PLACEMENT = {AllianceZone::LENGTH + WIDTH/2.0, (FIELD_WIDTH)/2.0,{0.0_deg}}; //placement of the center point of the blue hub
-        constexpr frc::Pose2d RED_PLACEMENT = {FIELD_LENGTH - (AllianceZone::LENGTH + WIDTH/2.0), (FIELD_WIDTH)/2.0,{180.0_deg}}; //placement of the center point of the red hub
+        constexpr frc::Pose2d RED_PLACEMENT = {FIELD_LENGTH - (AllianceZone::LENGTH + WIDTH/2.0), (FIELD_WIDTH)/2.0,{}}; //placement of the center point of the red hub
     }
 
     namespace Trench

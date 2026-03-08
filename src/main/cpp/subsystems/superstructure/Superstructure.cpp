@@ -157,13 +157,13 @@ void Superstructure::Periodic()
         || m_currentWantedSuperState == WantedSuperState::PREPARE_SHOOT_TO_HUB
         || m_currentWantedSuperState == WantedSuperState::SHOOT_AT_HUB_REFUELING)
     {
-        m_shootParameterCalculator.CalculateHubNewParameters(*m_pShootParameters, m_robotPos, m_timestamp);
+        m_shootParameterCalculator.CalculateHubNewParameters(*m_pShootParameters, m_robotPos, m_pTurret->inputs.orientation ,m_timestamp);
     }
     else if (m_currentWantedSuperState == WantedSuperState::SHOOT_TO_ALLIANCE_ZONE
              || m_currentWantedSuperState == WantedSuperState::PREPARE_SHOOT_TO_ALLIANCE_ZONE
              || m_currentWantedSuperState == WantedSuperState::SHOOT_AT_ALLIANCE_ZONE_REFUELING)
     {
-        m_shootParameterCalculator.CalculateAllianceZoneNewParameters(*m_pShootParameters, m_robotPos, m_timestamp);
+        m_shootParameterCalculator.CalculateAllianceZoneNewParameters(*m_pShootParameters, m_robotPos, m_pTurret->inputs.orientation ,m_timestamp);
     }
     else
     {

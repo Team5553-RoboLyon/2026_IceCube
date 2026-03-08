@@ -53,12 +53,12 @@ class TurretSubsystem : public frc2::SubsystemBase {
     bool IsInitialized() { return m_isInitialized; }
     void SetManualControlInput(const double value);
 
+    TurretIOInputs inputs;
 
     void Periodic() override;
   private:
     // === Hardware & IO Interfaces ===
       TurretIO *m_pTurretIO;
-      TurretIOInputs inputs;
       // AprilTagPhotonCamera m_turretCamera{new photon::PhotonCamera{TurretConstants::TurretCamera::NAME}};
       ShootParameters* m_pShootParams;
     // === System States & Control Modes ===

@@ -21,8 +21,8 @@ class ShootParametersCalculator
 
      void SetAlliance(frc::DriverStation::Alliance alliance);
      void SetRobotPos(frc::Pose2d robotPos, double timestamp);
-     void CalculateHubNewParameters(ShootParameters& params, frc::Pose2d robotPos, double timestamp);
-     void CalculateAllianceZoneNewParameters(ShootParameters& params, frc::Pose2d robotPos, double timestamp);
+     void CalculateHubNewParameters(ShootParameters& params, frc::Pose2d robotPos, double turretOrientation, double timestamp);
+     void CalculateAllianceZoneNewParameters(ShootParameters& params, frc::Pose2d robotPos, double turretOrientation, double timestamp);
 
 
     private:

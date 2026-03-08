@@ -12,7 +12,7 @@ using IdleMode = rev::spark::SparkBaseConfig::IdleMode;
 #endif
 namespace TurretConstants
 {
-    constexpr ControlMode MainControlMode = ControlMode::POSITION_DUTYCYCLE_PID;
+    constexpr ControlMode MainControlMode = ControlMode::DISABLED;
     constexpr ControlMode EmergencyControlMode = ControlMode::MANUAL_POSITION;
 
     namespace Motor
@@ -34,7 +34,7 @@ namespace TurretConstants
         constexpr double MOTOR_RATIO = (5.23)*(5.23);
         constexpr double GEAR_RATIO = (130.0/24.0)*MOTOR_RATIO; //ul
         constexpr double MOTOR_FREE_SPEED = Motor::VOLTAGE_COMPENSATION * Motor::KV; //RPM
-        constexpr frc::Transform2d ROBOT_TO_TURRET{155.0_m, 155.0_m,{}}; //TUNEME
+        constexpr frc::Translation2d ROBOT_TO_TURRET{-0.165_m, 0.149_m}; //TUNEME
     }
 
     namespace Encoder 
@@ -79,7 +79,7 @@ namespace TurretConstants
         constexpr double MAX = 1.0; 
         constexpr double MIN = -1.0;
         constexpr double REST = 0.0;
-        constexpr double INIT = 0.1;
+        constexpr double INIT = 0.01;
     }
     
     namespace Settings
