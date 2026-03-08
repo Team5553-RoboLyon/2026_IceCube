@@ -24,6 +24,7 @@ class ShootParametersCalculator
      void CalculateHubNewParameters(ShootParameters& params, frc::Pose2d robotPos, double turretOrientation, double timestamp);
      void CalculateAllianceZoneNewParameters(ShootParameters& params, frc::Pose2d robotPos, double turretOrientation, double timestamp);
 
+     double PIPI(double angle_rad);
 
     private:
 
