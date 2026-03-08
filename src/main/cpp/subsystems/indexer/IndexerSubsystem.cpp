@@ -145,7 +145,7 @@ void IndexerSubsystem::Periodic()
                 {
                     case SystemState::IDLE:
                     case SystemState::SLEEPING:
-                    case SystemState::READY_TO_SHOOT:
+                    // case SystemState::READY_TO_SHOOT:
                         m_output = IndexerConstants::Voltage::REST;
                         m_clodeOutput = IndexerConstants::Voltage::REST;
                         break;
@@ -161,11 +161,11 @@ void IndexerSubsystem::Periodic()
                         m_clodeOutput = IndexerConstants::Voltage::CLODE_POWER;
                         break;
 
-                    case SystemState::PREPARING_SHOOT:
-                        m_targetVelocity = IndexerConstants::Speed::PREPARE_SHOOT;
-                        m_output = m_indexerFeedforwardController.Calculate(0.0,m_targetVelocity,0.0);
-                        m_clodeOutput = IndexerConstants::Voltage::CLODE_POWER;
-                        break;
+                    // case SystemState::PREPARING_SHOOT:
+                    //     m_targetVelocity = IndexerConstants::Speed::PREPARE_SHOOT;
+                    //     m_output = m_indexerFeedforwardController.Calculate(0.0,m_targetVelocity,0.0);
+                    //     m_clodeOutput = IndexerConstants::Voltage::CLODE_POWER;
+                    //     break;
 
                     default:
                         m_targetVelocity = IndexerConstants::Speed::REST;
@@ -186,7 +186,7 @@ void IndexerSubsystem::Periodic()
                 {
                     case SystemState::IDLE:
                     case SystemState::SLEEPING:
-                    case SystemState::READY_TO_SHOOT:
+                    // case SystemState::READY_TO_SHOOT:
                         m_targetVelocity = IndexerConstants::Speed::REST;
                         m_output = IndexerConstants::Voltage::REST;
                         m_clodeOutput = IndexerConstants::Voltage::REST;
@@ -204,11 +204,11 @@ void IndexerSubsystem::Periodic()
                         m_clodeOutput = IndexerConstants::Voltage::CLODE_POWER;
                         break;
 
-                    case SystemState::PREPARING_SHOOT:
-                        m_targetVelocity = IndexerConstants::Speed::PREPARE_SHOOT;
-                        m_output = m_indexerFeedforwardController.Calculate(0.0,m_targetVelocity,0.0);
-                        m_clodeOutput = IndexerConstants::Voltage::CLODE_POWER;
-                        break;
+                    // case SystemState::PREPARING_SHOOT:
+                    //     m_targetVelocity = IndexerConstants::Speed::PREPARE_SHOOT;
+                    //     m_output = m_indexerFeedforwardController.Calculate(0.0,m_targetVelocity,0.0);
+                    //     m_clodeOutput = IndexerConstants::Voltage::CLODE_POWER;
+                    //     break;
 
                     default:
                         m_targetVelocity = IndexerConstants::Speed::REST;
@@ -261,9 +261,11 @@ void IndexerSubsystem::RunStateMachine()
     switch (m_currentWantedState) //Handle State transition
     {
         case WantedState::STAND_BY :
-            if (m_systemState != SystemState::SLEEPING && m_systemState != SystemState::READY_TO_SHOOT)
-                m_systemState = SystemState::SLEEPING;
-            break; //end of Others States
+            // if (m_systemState != SystemState::SLEEPING && m_systemState != SystemState::READY_TO_SHOOT)
+            //     m_systemState = SystemState::SLEEPING;
+            // break; //end of Others States
+            m_systemState = SystemState::SLEEPING;
+            break;
 
         case WantedState::EVACUATE_SHOOTER:
             if (m_systemState != SystemState::EVACUATING_SHOOTER)
@@ -277,12 +279,12 @@ void IndexerSubsystem::RunStateMachine()
                 m_systemState = SystemState::FEEDING_SHOOTER;
             break;
 
-        case WantedState::PREPARE_SHOOT:
-            if(m_systemState != SystemState::READY_TO_SHOOT)
-            {
-                m_systemState = SystemState::PREPARING_SHOOT;
-            }
-            break;
+        // case WantedState::PREPARE_SHOOT:
+        //     if(m_systemState != SystemState::READY_TO_SHOOT)
+        //     {
+        //         m_systemState = SystemState::PREPARING_SHOOT;
+        //     }
+        //     break;
 
         default:
             DEBUG_ASSERT(false, "indexer : impossible wanted state");
@@ -292,18 +294,20 @@ void IndexerSubsystem::RunStateMachine()
     switch (m_systemState) // Change System State
     {
         case SystemState::IDLE:
-            if (inputs.isThereABall)
-            {
-                m_systemState = SystemState::READY_TO_SHOOT;
-            }
-            else
-            {
-                m_systemState = SystemState::SLEEPING;
-            }
+            // if (inputs.isThereABall)
+            // {
+            //     m_systemState = SystemState::READY_TO_SHOOT;
+            // }
+            // else
+            // {
+            //     m_systemState = SystemState::SLEEPING;
+            // }
+            m_systemState = SystemState::SLEEPING;
+            break;
 
         case SystemState::SLEEPING:
         case SystemState::FEEDING_SHOOTER:
-        case SystemState::READY_TO_SHOOT:
+        // case SystemState::READY_TO_SHOOT:
             break;
 
         case SystemState::EVACUATING_SHOOTER:
@@ -313,14 +317,14 @@ void IndexerSubsystem::RunStateMachine()
             }
             break;
 
-        case SystemState::PREPARING_SHOOT:
-            if (inputs.isThereABall)
-            {
-                m_systemState = SystemState::READY_TO_SHOOT;
-                m_wantedState = WantedState::STAND_BY;
-                m_currentWantedState = m_wantedState;
-            }
-            break;
+        // case SystemState::PREPARING_SHOOT:
+        //     if (inputs.isThereABall)
+        //     {
+        //         m_systemState = SystemState::READY_TO_SHOOT;
+        //         m_wantedState = WantedState::STAND_BY;
+        //         m_currentWantedState = m_wantedState;
+        //     }
+        //     break;
 
         default:
             DEBUG_ASSERT(false, "indexer : impossible system state");

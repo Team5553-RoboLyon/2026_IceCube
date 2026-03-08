@@ -18,8 +18,7 @@ IntakeSubsystem::IntakeSubsystem(RollerIO *pRollerIO, PivotIO *pPivotIO) :
 
 void IntakeSubsystem::SetWantedState(const WantedState wantedState)
 {
-    if (!(m_wantedState == WantedState::PROTECT_YOURSELF_AGAINST_EVIL_PILOT && wantedState != WantedState::STAND_BY))
-        m_wantedState = wantedState;
+    m_wantedState = wantedState;
 }
 
 IntakeSubsystem::SystemState IntakeSubsystem::GetSystemState()

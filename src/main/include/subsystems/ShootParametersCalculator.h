@@ -27,13 +27,12 @@ class ShootParametersCalculator
 
     private:
 
-     frc::Pose2d m_lastRobotPos;
-     frc::Pose2d m_hubTargetPos;
-     frc::Pose2d m_allianceZoneTargetPose;
+     frc::Pose2d *m_pLastRobotPos;
+     frc::Pose2d *m_pHubTargetPos;
+     frc::Pose2d *m_pAllianceZoneTargetPose;
      double m_lastTimestamp = 0.0;
      wpi::interpolating_map<double,double> m_hoodPosMap; //TODO : do tests to get at least 10 values for each interpolating map
      wpi::interpolating_map<double,double> m_flywheelSpeedMap;
      wpi::interpolating_map<double,double> m_timeToReachTargetMap;
-     StructLogger<frc::Pose2d> m_logger{"/Hub Pos"};
 
 };

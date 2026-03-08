@@ -23,6 +23,70 @@ Superstructure::Superstructure(IntakeSubsystem *pIntake,
 
 void Superstructure::SetWantedSuperState(WantedSuperState wantedSuperState)
 {
+    switch (wantedSuperState)
+    {
+        default:
+            break;
+
+        case WantedSuperState::STOP_SHOOT:
+            if (m_wantedSuperState == WantedSuperState::SHOOT_AT_ALLIANCE_ZONE_REFUELING
+                || m_wantedSuperState == WantedSuperState::SHOOT_AT_HUB_REFUELING)
+            {
+                wantedSuperState = WantedSuperState::REFUEL;
+            }
+            break;
+
+        case WantedSuperState::STOP_INTAKE:
+            if (m_wantedSuperState == WantedSuperState::SHOOT_AT_HUB_REFUELING)
+            {
+                wantedSuperState = WantedSuperState::SHOOT_TO_HUB;
+            }
+            else if (m_wantedSuperState == WantedSuperState::SHOOT_AT_ALLIANCE_ZONE_REFUELING)
+            {
+                wantedSuperState = WantedSuperState::SHOOT_TO_ALLIANCE_ZONE;
+            }
+            break;
+
+        case WantedSuperState::RETRACT_HOOD:
+            if(m_wantedSuperState == WantedSuperState::SHOOT_TO_HUB)
+            {
+                wantedSuperState = WantedSuperState::PREPARE_SHOOT_TO_HUB;
+            }
+            else if(m_wantedSuperState == WantedSuperState::SHOOT_TO_ALLIANCE_ZONE)
+            {
+                wantedSuperState = WantedSuperState::PREPARE_SHOOT_TO_ALLIANCE_ZONE;
+            }
+            break;
+
+        case WantedSuperState::REFUEL:
+            if(m_wantedSuperState == WantedSuperState::SHOOT_TO_HUB 
+                || m_wantedSuperState == WantedSuperState::PREPARE_SHOOT_TO_HUB)
+            {
+                wantedSuperState = WantedSuperState::SHOOT_AT_HUB_REFUELING;
+            }
+            else if (m_wantedSuperState == WantedSuperState::SHOOT_TO_ALLIANCE_ZONE 
+                || m_wantedSuperState == WantedSuperState::PREPARE_SHOOT_TO_ALLIANCE_ZONE)
+            {
+                wantedSuperState = WantedSuperState::SHOOT_AT_ALLIANCE_ZONE_REFUELING;
+            }
+            break;
+
+        case WantedSuperState::PREPARE_SHOOT_TO_ALLIANCE_ZONE:
+        case WantedSuperState::SHOOT_TO_ALLIANCE_ZONE:
+            if(m_wantedSuperState == WantedSuperState::REFUEL)
+            {
+                wantedSuperState = WantedSuperState::SHOOT_AT_ALLIANCE_ZONE_REFUELING;
+            }
+            break;
+
+        case WantedSuperState::PREPARE_SHOOT_TO_HUB:
+        case WantedSuperState::SHOOT_TO_HUB:
+            if(m_wantedSuperState == WantedSuperState::REFUEL)
+            {
+                wantedSuperState = WantedSuperState::SHOOT_AT_HUB_REFUELING;
+            }
+            break;
+    }
     m_wantedSuperState = wantedSuperState;
 }
 
@@ -84,27 +148,23 @@ void Superstructure::ToggleClimberControlMode()
 
 void Superstructure::Periodic()
 {
-    if (m_pRobotState->GetPose().has_value())
-    {
-        m_robotPos = m_pRobotState->GetPose().value();
-    }
-    else
-    {
-        //TODO
-    }
+    m_robotPos = m_pRobotState->GetPose().value();
+
     m_currentWantedSuperState = m_wantedSuperState;
     m_timestamp = TimerRBL::GetFPGATimestampInSeconds();
 
-    if (m_currentWantedSuperState == WantedSuperState::SHOOT_TO_HUB)
-        // || m_currentWantedSuperState == WantedSuperState::PREPARE_SHOOT_TO_HUB)
+    if (m_currentWantedSuperState == WantedSuperState::SHOOT_TO_HUB
+        || m_currentWantedSuperState == WantedSuperState::PREPARE_SHOOT_TO_HUB
+        || m_currentWantedSuperState == WantedSuperState::SHOOT_AT_HUB_REFUELING)
     {
         m_shootParameterCalculator.CalculateHubNewParameters(*m_pShootParameters, m_robotPos, m_timestamp);
     }
-    // else if (m_currentWantedSuperState == WantedSuperState::SHOOT_TO_ALLIANCE_ZONE)
-            //  || m_currentWantedSuperState == WantedSuperState::PREPARE_SHOOT_TO_ALLIANCE_ZONE)
-    // {
-    //     m_shootParameterCalculator.CalculateAllianceZoneNewParameters(*m_pShootParameters, m_robotPos, m_timestamp);
-    // }
+    else if (m_currentWantedSuperState == WantedSuperState::SHOOT_TO_ALLIANCE_ZONE
+             || m_currentWantedSuperState == WantedSuperState::PREPARE_SHOOT_TO_ALLIANCE_ZONE
+             || m_currentWantedSuperState == WantedSuperState::SHOOT_AT_ALLIANCE_ZONE_REFUELING)
+    {
+        m_shootParameterCalculator.CalculateAllianceZoneNewParameters(*m_pShootParameters, m_robotPos, m_timestamp);
+    }
     else
     {
         m_shootParameterCalculator.SetRobotPos(m_robotPos, m_timestamp);
@@ -130,13 +190,13 @@ void Superstructure::Periodic()
             m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STAND_BY);
             break;
 
-        // case SystemSuperState::SHOOTING_TO_ALLIANCE_ZONE:
-        //     m_intakeWantedState = IntakeSubsystem::WantedState::BECOME_AN_INDEXER;
-        //     m_shooterWantedState = ShooterSubsystem::WantedState::KEEP_ALL_FOR_YOU;
-        //     m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::FEED_SHOOTER);
-        //     m_pTurret->SetWantedState(TurretSubsystem::WantedState::POINT_AT_ALLIANCE_ZONE);
-        //     m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STAND_BY);
-        //     break;
+        case SystemSuperState::SHOOTING_TO_ALLIANCE_ZONE:
+            m_intakeWantedState = IntakeSubsystem::WantedState::BECOME_AN_INDEXER;
+            m_shooterWantedState = ShooterSubsystem::WantedState::KEEP_ALL_FOR_YOU;
+            m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::FEED_SHOOTER);
+            m_pTurret->SetWantedState(TurretSubsystem::WantedState::POINT_AT_ALLIANCE_ZONE);
+            m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STAND_BY);
+            break;
 
         case SystemSuperState::SHOOTING_TO_HUB:
             m_intakeWantedState = IntakeSubsystem::WantedState::BECOME_AN_INDEXER;
@@ -186,18 +246,18 @@ void Superstructure::Periodic()
             m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STAND_BY);
             break;
 
-        // case SystemSuperState::PREPARING_ALLIANCE_ZONE_SHOOT:
-        //     m_intakeWantedState = IntakeSubsystem::WantedState::STAND_BY;
-        //     m_shooterWantedState = ShooterSubsystem::WantedState::PREPARE_TO_KEEP_ALL;
-        //     m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::PREPARE_SHOOT);
-        //     m_pTurret->SetWantedState(TurretSubsystem::WantedState::POINT_AT_ALLIANCE_ZONE);
-        //     m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STAND_BY);
-        //     break;
+        case SystemSuperState::PREPARING_ALLIANCE_ZONE_SHOOT:
+            m_intakeWantedState = IntakeSubsystem::WantedState::STAND_BY;
+            m_shooterWantedState = ShooterSubsystem::WantedState::PREPARE_TO_KEEP_ALL;
+            m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::STAND_BY);
+            m_pTurret->SetWantedState(TurretSubsystem::WantedState::POINT_AT_ALLIANCE_ZONE);
+            m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STAND_BY);
+            break;
 
         case SystemSuperState::PREPARING_TO_SHOOT:
             m_intakeWantedState = IntakeSubsystem::WantedState::STAND_BY;
             m_shooterWantedState = ShooterSubsystem::WantedState::SHOOT_TO_HUB;
-            m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::PREPARE_SHOOT);
+            m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::STAND_BY);
             m_pTurret->SetWantedState(TurretSubsystem::WantedState::FOLLOW_HUB);
             m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STAND_BY);
             break;
@@ -253,26 +313,42 @@ void Superstructure::Periodic()
         case SystemSuperState::PREPARING_TO_SHOOT_TO_HUB_WHILE_REFUELING:
             m_intakeWantedState = IntakeSubsystem::WantedState::REFUEL;
             m_shooterWantedState = ShooterSubsystem::WantedState::SHOOT_TO_HUB;
-            m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::PREPARE_SHOOT);
+            m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::STAND_BY);
             m_pTurret->SetWantedState(TurretSubsystem::WantedState::FOLLOW_HUB);
             m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STAND_BY);
             break;
 
-        // case SystemSuperState::PREPARING_TO_SHOOT_TO_ALLIANCE_ZONE_WHILE_REFUELING:
-        //     m_intakeWantedState = IntakeSubsystem::WantedState::REFUEL;
-        //     m_shooterWantedState = ShooterSubsystem::WantedState::KEEP_ALL_FOR_YOU;
-        //     m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::PREPARE_SHOOT);
-        //     m_pTurret->SetWantedState(TurretSubsystem::WantedState::POINT_AT_ALLIANCE_ZONE);
-        //     m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STAND_BY);
-        //     break;
+        case SystemSuperState::PREPARING_TO_SHOOT_TO_ALLIANCE_ZONE_WHILE_REFUELING:
+            m_intakeWantedState = IntakeSubsystem::WantedState::REFUEL;
+            m_shooterWantedState = ShooterSubsystem::WantedState::KEEP_ALL_FOR_YOU;
+            m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::STAND_BY);
+            m_pTurret->SetWantedState(TurretSubsystem::WantedState::POINT_AT_ALLIANCE_ZONE);
+            m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STAND_BY);
+            break;
 
-        // case SystemSuperState::SHOOTING_TO_ALLIANCE_ZONE_WHILE_REFUELING:
-        //     m_intakeWantedState = IntakeSubsystem::WantedState::REFUEL;
-        //     m_shooterWantedState = ShooterSubsystem::WantedState::KEEP_ALL_FOR_YOU;
-        //     m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::FEED_SHOOTER);
-        //     m_pTurret->SetWantedState(TurretSubsystem::WantedState::POINT_AT_ALLIANCE_ZONE);
-        //     m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STAND_BY);
-        //     break;
+        case SystemSuperState::SHOOTING_TO_ALLIANCE_ZONE_WHILE_REFUELING:
+            m_intakeWantedState = IntakeSubsystem::WantedState::REFUEL;
+            m_shooterWantedState = ShooterSubsystem::WantedState::KEEP_ALL_FOR_YOU;
+            m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::FEED_SHOOTER);
+            m_pTurret->SetWantedState(TurretSubsystem::WantedState::POINT_AT_ALLIANCE_ZONE);
+            m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STAND_BY);
+            break;
+
+        case SystemSuperState::RETRACTING_HOOD:
+            m_intakeWantedState = IntakeSubsystem::WantedState::STAND_BY;
+            m_shooterWantedState = ShooterSubsystem::WantedState::STOP;
+            m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::STAND_BY);
+            m_pTurret->SetWantedState(TurretSubsystem::WantedState::STAND_BY);
+            m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STAND_BY);
+            break;
+
+        case SystemSuperState::REJECTING_FROM_INTAKE:
+            m_intakeWantedState = IntakeSubsystem::WantedState::EJECT;
+            m_shooterWantedState = ShooterSubsystem::WantedState::STOP;
+            m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::STAND_BY);
+            m_pTurret->SetWantedState(TurretSubsystem::WantedState::STAND_BY);
+            m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STAND_BY);
+            break;
 
         default:
             DEBUG_ASSERT(false,"Superstructure : unknwon system super state used");
@@ -297,9 +373,6 @@ void Superstructure::Periodic()
                 break;
 
             case IntakeSubsystem::WantedState::RETURN_AT_HOME:
-                m_intakeWantedState = IntakeSubsystem::WantedState::PROTECT_YOURSELF_AGAINST_EVIL_PILOT;
-                break;
-
             case IntakeSubsystem::WantedState::BECOME_AN_INDEXER:
                 m_intakeWantedState = IntakeSubsystem::WantedState::EXTEND;
                 break;
@@ -312,20 +385,23 @@ void Superstructure::Periodic()
         switch(m_shooterWantedState)
         {
             case ShooterSubsystem::WantedState::STAND_BY:
-            // case ShooterSubsystem::WantedState::FEED_ALLY:
             case ShooterSubsystem::WantedState::STOP:
             case ShooterSubsystem::WantedState::REVERSE:
-            // case ShooterSubsystem::WantedState::PREPARE_HUB_SHOOTING:
-            // case ShooterSubsystem::WantedState::PREPARE_TO_KEEP_ALL:
+                m_shooterWantedState = ShooterSubsystem::WantedState::RETRACT_HOOD;
                 break;
 
             case ShooterSubsystem::WantedState::SHOOT_TO_HUB:
-                // m_shooterWantedState = ShooterSubsystem::WantedState::PREPARE_HUB_SHOOTING;
+                m_shooterWantedState = ShooterSubsystem::WantedState::PREPARE_SHOOT;
                 break;
 
-            // case ShooterSubsystem::WantedState::KEEP_ALL_FOR_YOU:
-                // m_shooterWantedState = ShooterSubsystem::WantedState::PREPARE_TO_KEEP_ALL;
-                // break;
+            case ShooterSubsystem::WantedState::KEEP_ALL_FOR_YOU:
+                m_shooterWantedState = ShooterSubsystem::WantedState::PREPARE_TO_KEEP_ALL;
+                break;
+
+            case ShooterSubsystem::WantedState::PREPARE_SHOOT:
+            case ShooterSubsystem::WantedState::PREPARE_TO_KEEP_ALL:
+            case ShooterSubsystem::WantedState::RETRACT_HOOD:
+                break;
 
             default:
                 DEBUG_ASSERT(false,"Superstructure : unknown shooter wanted state used");
@@ -400,12 +476,12 @@ void Superstructure::RunSuperStateMachine()
             }
             break;
 
-        // case WantedSuperState::SHOOT_TO_ALLIANCE_ZONE:
-        //     if (m_systemSuperState != SystemSuperState::SHOOTING_TO_ALLIANCE_ZONE)
-        //     {
-        //         m_systemSuperState = SystemSuperState::PREPARING_ALLIANCE_ZONE_SHOOT;
-        //     }
-        //     break;
+        case WantedSuperState::SHOOT_TO_ALLIANCE_ZONE:
+            if (m_systemSuperState != SystemSuperState::SHOOTING_TO_ALLIANCE_ZONE)
+            {
+                m_systemSuperState = SystemSuperState::PREPARING_ALLIANCE_ZONE_SHOOT;
+            }
+            break;
 
         case WantedSuperState::SHOOT_TO_HUB:
             if (m_systemSuperState != SystemSuperState::SHOOTING_TO_HUB)
@@ -429,19 +505,19 @@ void Superstructure::RunSuperStateMachine()
             m_systemSuperState = SystemSuperState::CLIMBING;
             break;
 
-        // case WantedSuperState::PREPARE_SHOOT_TO_HUB:
-        //     if(m_systemSuperState != SystemSuperState::PREPARING_TO_SHOOT)
-        //     {
-        //         m_systemSuperState = SystemSuperState::PREPARING_TO_SHOOT;
-        //     }
-        //     break;
+        case WantedSuperState::PREPARE_SHOOT_TO_HUB:
+            if(m_systemSuperState != SystemSuperState::PREPARING_TO_SHOOT)
+            {
+                m_systemSuperState = SystemSuperState::PREPARING_TO_SHOOT;
+            }
+            break;
 
-        // case WantedSuperState::PREPARE_SHOOT_TO_ALLIANCE_ZONE:
-        //     if(m_systemSuperState != SystemSuperState::PREPARING_ALLIANCE_ZONE_SHOOT)
-        //     {
-        //         m_systemSuperState = SystemSuperState::PREPARING_ALLIANCE_ZONE_SHOOT;
-        //     }
-        //     break;
+        case WantedSuperState::PREPARE_SHOOT_TO_ALLIANCE_ZONE:
+            if(m_systemSuperState != SystemSuperState::PREPARING_ALLIANCE_ZONE_SHOOT)
+            {
+                m_systemSuperState = SystemSuperState::PREPARING_ALLIANCE_ZONE_SHOOT;
+            }
+            break;
             
 
         case WantedSuperState::PREPARE_REFUEL:
@@ -470,12 +546,20 @@ void Superstructure::RunSuperStateMachine()
             }
             break;
 
-        // case WantedSuperState::SHOOT_AT_ALLIANCE_ZONE_REFUELING:
-        //     if(m_systemSuperState != SystemSuperState::SHOOTING_TO_ALLIANCE_ZONE_WHILE_REFUELING)
-        //     {
-        //         m_systemSuperState = SystemSuperState::PREPARING_TO_SHOOT_TO_ALLIANCE_ZONE_WHILE_REFUELING;
-        //     }
-        //     break;
+        case WantedSuperState::SHOOT_AT_ALLIANCE_ZONE_REFUELING:
+            if(m_systemSuperState != SystemSuperState::SHOOTING_TO_ALLIANCE_ZONE_WHILE_REFUELING)
+            {
+                m_systemSuperState = SystemSuperState::PREPARING_TO_SHOOT_TO_ALLIANCE_ZONE_WHILE_REFUELING;
+            }
+            break;
+
+        case WantedSuperState::RETRACT_HOOD:
+            m_systemSuperState = SystemSuperState::RETRACTING_HOOD;
+            break;
+
+        case WantedSuperState::REJECT_FROM_INTAKE:
+            m_systemSuperState = SystemSuperState::REJECTING_FROM_INTAKE;
+            break;
 
         default:
             DEBUG_ASSERT(false, "Superstructure : unknown wanted super state used");
@@ -511,12 +595,13 @@ void Superstructure::RunSuperStateMachine()
             break;
 
         case SystemSuperState::REFUELING:
-        // case SystemSuperState::SHOOTING_TO_ALLIANCE_ZONE:
+        case SystemSuperState::SHOOTING_TO_ALLIANCE_ZONE:
         case SystemSuperState::SHOOTING_TO_HUB:
         case SystemSuperState::READY_TO_REFUEL:
         case SystemSuperState::INTAKE_SAFE:
         case SystemSuperState::CLIMBED:
         case SystemSuperState::AT_HOME:
+        case SystemSuperState::REJECTING_FROM_INTAKE:
             break;
 
         case SystemSuperState::EXTENDING_INTAKE:
@@ -531,14 +616,14 @@ void Superstructure::RunSuperStateMachine()
             }
             break;
 
-        // case SystemSuperState::PREPARING_ALLIANCE_ZONE_SHOOT:
-            // if(m_pShooter->GetSystemState() == ShooterSubsystem::SystemState::THATS_ALL_MINE
-            //    && m_pTurret->GetSystemState() == TurretSubsystem::SystemState::POINTING_AT_ALLIANCE_ZONE
-            //    && m_wantedSuperState == WantedSuperState::SHOOT_TO_ALLIANCE_ZONE)
-            // {
-            //     m_systemSuperState = SystemSuperState::SHOOTING_TO_ALLIANCE_ZONE;
-            // }
-            // break;
+        case SystemSuperState::PREPARING_ALLIANCE_ZONE_SHOOT:
+            if(m_pShooter->GetSystemState() == ShooterSubsystem::SystemState::THATS_ALL_MINE
+               && m_pTurret->GetSystemState() == TurretSubsystem::SystemState::POINTING_AT_ALLIANCE_ZONE
+               && m_wantedSuperState == WantedSuperState::SHOOT_TO_ALLIANCE_ZONE)
+            {
+                m_systemSuperState = SystemSuperState::SHOOTING_TO_ALLIANCE_ZONE;
+            }
+            break;
 
 
         case SystemSuperState::PREPARING_TO_SHOOT:
@@ -627,18 +712,27 @@ void Superstructure::RunSuperStateMachine()
             }
             break;
 
-        // case SystemSuperState::SHOOTING_TO_ALLIANCE_ZONE_WHILE_REFUELING:
-        // case SystemSuperState::PREPARING_TO_SHOOT_TO_ALLIANCE_ZONE_WHILE_REFUELING:
-        //     if(m_pShooter->GetSystemState() == ShooterSubsystem::SystemState::THATS_ALL_MINE
-        //                         && m_pTurret->GetSystemState() == TurretSubsystem::SystemState::POINTING_AT_ALLIANCE_ZONE)
-        //     {
-        //         m_systemSuperState = SystemSuperState::SHOOTING_TO_ALLIANCE_ZONE_WHILE_REFUELING;
-        //     }
-        //     else
-        //     {
-        //         m_systemSuperState = SystemSuperState::PREPARING_TO_SHOOT_TO_ALLIANCE_ZONE_WHILE_REFUELING;
-        //     }
-        //     break;
+        case SystemSuperState::SHOOTING_TO_ALLIANCE_ZONE_WHILE_REFUELING:
+        case SystemSuperState::PREPARING_TO_SHOOT_TO_ALLIANCE_ZONE_WHILE_REFUELING:
+            if(m_pShooter->GetSystemState() == ShooterSubsystem::SystemState::THATS_ALL_MINE
+                                && m_pTurret->GetSystemState() == TurretSubsystem::SystemState::POINTING_AT_ALLIANCE_ZONE)
+            {
+                m_systemSuperState = SystemSuperState::SHOOTING_TO_ALLIANCE_ZONE_WHILE_REFUELING;
+            }
+            else
+            {
+                m_systemSuperState = SystemSuperState::PREPARING_TO_SHOOT_TO_ALLIANCE_ZONE_WHILE_REFUELING;
+            }
+            break;
+
+            case SystemSuperState::RETRACTING_HOOD:
+            if (m_pShooter->IsHoodRetract())
+            {
+                m_systemSuperState = SystemSuperState::IDLE;
+                m_wantedSuperState = WantedSuperState::STAND_BY;
+                m_currentWantedSuperState = m_wantedSuperState;
+            }
+            break;
 
         default:
             DEBUG_ASSERT(false,"Superstrcture : unknown system super state");

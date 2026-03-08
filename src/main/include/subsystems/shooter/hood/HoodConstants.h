@@ -87,6 +87,8 @@ namespace HoodConstants
         constexpr double MIN = 0.0; //TUNEME
         constexpr double TOLERANCE = NDEGtoRAD(0.1); //TUNEME
         constexpr double FEED = MAX;  //TUNEME
+        constexpr double AGAINST_HUB = 4.5; //TUNEME
+        constexpr double TO_FAR_AWAY = 7.5; //TUNEME
     }
     
     namespace Settings

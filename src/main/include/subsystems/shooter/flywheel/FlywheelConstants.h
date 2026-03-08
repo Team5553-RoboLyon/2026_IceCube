@@ -12,8 +12,8 @@ using IdleMode = rev::spark::SparkBaseConfig::IdleMode;
 #endif
 namespace FlywheelConstants
 {
-    constexpr ControlMode MainControlMode = ControlMode::VOLTAGE; //VOLTAGE
-    constexpr ControlMode EmergencyControlMode = ControlMode::VELOCITY_MODEL_CONTROLLED;
+    constexpr ControlMode MainControlMode = ControlMode::VELOCITY_MODEL_CONTROLLED; //VOLTAGE
+    constexpr ControlMode EmergencyControlMode = ControlMode::VOLTAGE;
 
     namespace LeftMotor
     {
@@ -94,8 +94,9 @@ namespace FlywheelConstants
         constexpr double TOLERANCE = 200.0; //TUNEME
         constexpr double FEED = 1200.0; //TUNEME
         constexpr double BACKWARD = -1000.0; //TUNEME
-        constexpr double AGAINST_HUB = 2000.0; //TUNEME
-        constexpr double AGAINST_ALLIANCE_ZONE = 1000.0; //TUNEME
+        constexpr double AGAINST_ALLIANCE_ZONE = 1000.0;
+        constexpr double AGAINST_HUB = 2300.0; //TUNEME
+        constexpr double TO_ALLIANCE_ZONE = 3000.0; //TUNEME
         constexpr double MAX_FOR_SHOOT = 4500.0; //TUNEME
     }
     

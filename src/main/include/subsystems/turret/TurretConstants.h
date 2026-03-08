@@ -48,7 +48,7 @@ namespace TurretConstants
     namespace HallEffectSensor
     {
         constexpr int ID = 2;
-        constexpr double MIN_VALUE_WHEN_MAGNET = 790; //TUNEME
+        constexpr double MIN_VALUE_WHEN_MAGNET = 2300; //TUNEME
     }
 
     namespace Simulation
@@ -70,7 +70,7 @@ namespace TurretConstants
     namespace Setpoints
     {
         constexpr double EJECT = NF64_PI; //TUNEME
-        constexpr double TOLERANCE = NDEGtoRAD(0.1);
+        constexpr double TOLERANCE = NDEGtoRAD(2.0);
         constexpr double INIT_POS = NF64_PI_2;
     }
 
