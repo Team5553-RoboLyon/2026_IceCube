@@ -48,7 +48,7 @@ namespace RollerConstants
     {
         constexpr double REST = 0.0;
         constexpr double REFUEL = 10.0; //TUNEME
-        constexpr double IM_AN_INDEXER = 6.0; //TUNEME
+        constexpr double IM_AN_INDEXER = 4.0; //TUNEME
         constexpr double EJECT = -10.0;
     }
 

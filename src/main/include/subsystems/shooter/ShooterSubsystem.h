@@ -30,9 +30,10 @@ class ShooterSubsystem : public frc2::SubsystemBase {
       // FEED_ALLY = 2,
       STOP = 3,
       REVERSE = 4,
-      // PREPARE_TO_HUB = 5
-      //RETRACT_HOOD
-      // KEEP_ALL_FOR_YOU = 5 //TASK1
+      PREPARE_SHOOT = 5,
+      PREPARE_TO_KEEP_ALL = 6,
+      RETRACT_HOOD = 7,
+      KEEP_ALL_FOR_YOU = 8
     };
 
     enum class SystemState
@@ -43,13 +44,14 @@ class ShooterSubsystem : public frc2::SubsystemBase {
       // READY_TO_FEED = 2,
       RESTING = 3,
       SHOOTING_BACKWARD = 4,
-      // THATS_ALL_MINE = 5,
+      THATS_ALL_MINE = 5,
       //Transition states
       RAMPING_TO_SHOOT = 6,
       // RAMPING_TO_FEED = 7,
       RAMPING_BACKWARD = 8,
-      SLOWING_DOWN = 9
-      // SOON_MINE = 10
+      SLOWING_DOWN = 9,
+      SOON_MINE = 10,
+      RETRACTING_HOOD = 11
     };
 
     void SetWantedState(const WantedState wantedState);
@@ -62,6 +64,8 @@ class ShooterSubsystem : public frc2::SubsystemBase {
     ControlMode GetHoodControlMode();
     void ToggleFlywheelControlMode();
     void ToggleHoodControlMode();
+
+    bool IsHoodRetract();
 
     bool IsResting();
     bool IsInitialized() { return m_isInitialized; }
