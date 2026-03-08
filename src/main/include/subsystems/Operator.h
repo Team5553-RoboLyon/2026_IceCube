@@ -45,16 +45,18 @@ private:
 
 public:
 
-    frc2::Trigger PREPARE_REFUEL{_R1Button};
-    frc2::Trigger RETRACT_INTAKE{_L1Button};
-    frc2::Trigger CLIMB{_R3AsButton};
-    frc2::Trigger RETRACT_CLIMBER{_L3AsButton};
+    frc2::Trigger RETRACT_INTAKE{_YButton};
+    frc2::Trigger PREPARE_REFUEL{_XButton};
+    frc2::Trigger PREPARE_SHOOT_TO_ALLIANCE_ZONE{_R3AsButton};
+    frc2::Trigger PREPARE_SHOOT_TO_HUB{_L3AsButton};
+    frc2::Trigger CLIMB{_R1Button};
+    frc2::Trigger RETRACT_CLIMBER{_L1Button};
     frc2::Trigger PREPARE_CLIMB{_startButton};
     frc2::Trigger SHOOT_TO_HUB{_R2AsButton};
-    frc2::Trigger SHOOT_AND_REFUEL{_AButton};
-    frc2::Trigger STOP_SHOOT{_BButton};
-    frc2::Trigger EVACUATE_SHOOTER{_YButton};
-    frc2::Trigger PROTECT_INTAKE{_optionsButton};
+    frc2::Trigger SHOOT_TO_ALLAINCE_ZONE{_L2AsButton};
+    frc2::Trigger RETRACT_HOOD{_optionsButton};
+    frc2::Trigger REJECT_FROM_INTAKE{_BButton};
+    frc2::Trigger PROTECT_INTAKE{_AButton};
     
     Operator(int port) : XboxGamepad(port){};
     Operator(int port, double threshold) : XboxGamepad(port, threshold){};
