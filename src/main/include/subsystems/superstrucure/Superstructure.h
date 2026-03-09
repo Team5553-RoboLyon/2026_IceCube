@@ -10,6 +10,8 @@
 #include "subsystems/ShootParametersCalculator.h"
 #include "RobotState.h"
 
+#include "LyonLib/logging/ComplexStructLogger.h"
+
 #include "frc/geometry/Pose2d.h"
 
 class Superstructure final : public frc2::SubsystemBase
@@ -133,9 +135,12 @@ class Superstructure final : public frc2::SubsystemBase
     // === External Inputs ===
     RobotState *m_pRobotState;
     frc::Pose2d m_robotPos;
+    StructLogger<frc::Pose2d> m_loggerPos{"/superstructurePos"};
     double m_timestamp{0.0};
 
     // === Internal methods ===
     void RunSuperStateMachine();
     bool IsRobotCloseToTrench();
+
+    // StructLogger<frc::Pose2d> m_logger{"RobotPos"};
 };

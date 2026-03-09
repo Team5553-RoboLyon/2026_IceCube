@@ -12,7 +12,7 @@ using IdleMode = rev::spark::SparkBaseConfig::IdleMode;
 #endif
 namespace TurretConstants
 {
-    constexpr ControlMode MainControlMode = ControlMode::DISABLED;
+    constexpr ControlMode MainControlMode = ControlMode::POSITION_DUTYCYCLE_PID;
     constexpr ControlMode EmergencyControlMode = ControlMode::MANUAL_POSITION;
 
     namespace Motor
@@ -21,7 +21,7 @@ namespace TurretConstants
         constexpr bool INVERTED = false;
 
         constexpr IdleMode IDLE_MODE = IdleMode::kBrake;
-        constexpr double VOLTAGE_COMPENSATION = 3.0;
+        constexpr double VOLTAGE_COMPENSATION = 7.0;
         constexpr double CURRENT_LIMIT = 20.0;
         constexpr double RAMP_RATE = 0.4;
         constexpr int HOT_THRESHOLD = 60;
@@ -84,8 +84,8 @@ namespace TurretConstants
     
     namespace Settings
     {
-        constexpr double BOTTOM_LIMIT = NDEGtoRAD(-132.0); //TUNEME
-        constexpr double TOP_LIMIT = NDEGtoRAD(138.0); //TUNEME
+        constexpr double BOTTOM_LIMIT = -NF64_PI_2; //TUNEME
+        constexpr double TOP_LIMIT = NF64_PI_2; //TUNEME
         constexpr double MANUAL_SETPOINT_CHANGE_LIMIT = (TOP_LIMIT - BOTTOM_LIMIT) / (2.0/TIME_PER_CYCLE); //TUNEME
         constexpr double OPEN_LOOP_REDUC = 10.0;
     }

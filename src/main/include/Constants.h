@@ -17,7 +17,7 @@
 #define LENA 3
 #define TEST 4
 
-#define ROBOT_MODEL (PROTOTYPE) // Change this to the desired robot model
+#define ROBOT_MODEL (COMPETITON)// Change this to the desired robot model
 #define PILOT (ALEXIS)
 #define OPERATOR (VICTOR)
 
@@ -114,7 +114,7 @@ namespace FieldConstants
     {
         constexpr units::meter_t LENGTH = 158.6_in;
         constexpr units::meter_t WIDTH = 317.7_in;
-        constexpr frc::Pose2d BLUE_CENTER_POSITION = {LENGTH/2.0, WIDTH/2.0, {180.0_deg}};
+        constexpr frc::Pose2d BLUE_CENTER_POSITION = {LENGTH/2.0, WIDTH/2.0, {}};
         constexpr frc::Pose2d RED_CENTER_POSITION = {FIELD_LENGTH-LENGTH/2.0, WIDTH/2.0, {}};
     }
 
