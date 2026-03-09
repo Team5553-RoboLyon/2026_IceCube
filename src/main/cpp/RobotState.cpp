@@ -8,7 +8,7 @@ RobotState::RobotState(frc::Pose2d& initialPose,
         m_pDrivetrain(pDrivetrain),
         m_poseEstimator(
           kinematics,
-          frc::Rotation2d(units::radian_t(m_navX.GetYaw() * NF64_PI / 180.0)),
+          frc::Rotation2d(units::radian_t(-m_navX.GetYaw() * NF64_PI / 180.0)),
           0.0_m,
           0.0_m,
           initialPose,
