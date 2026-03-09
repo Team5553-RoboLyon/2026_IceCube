@@ -28,7 +28,7 @@ namespace IndexerConstants
     namespace clodeMotor
     {
         constexpr int ID = 6;
-        constexpr bool INVERTED = true;
+        constexpr bool INVERTED = false;
 
         constexpr IdleMode IDLE_MODE = IdleMode::kCoast;
         constexpr double VOLTAGE_COMPENSATION = 12.0;
