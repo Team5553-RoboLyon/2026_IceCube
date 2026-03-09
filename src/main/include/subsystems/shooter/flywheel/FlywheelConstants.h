@@ -66,8 +66,8 @@ namespace FlywheelConstants
         }
         namespace FLYWHEEL_FEEDFORWARD
         {
-            constexpr double KV = 0.001762;
-            constexpr double KS = 0.125;
+            constexpr double KV = 1/503.0;
+            constexpr double KS = 1/28.4;
         }
     }
 
