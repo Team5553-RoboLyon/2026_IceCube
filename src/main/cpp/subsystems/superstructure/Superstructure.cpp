@@ -477,10 +477,7 @@ void Superstructure::RunSuperStateMachine()
             break;
 
         case WantedSuperState::SHOOT_TO_ALLIANCE_ZONE:
-            if (m_systemSuperState != SystemSuperState::SHOOTING_TO_ALLIANCE_ZONE)
-            {
-                m_systemSuperState = SystemSuperState::PREPARING_ALLIANCE_ZONE_SHOOT;
-            }
+            m_systemSuperState = SystemSuperState::SHOOTING_TO_ALLIANCE_ZONE;
             break;
 
         case WantedSuperState::SHOOT_TO_HUB:
@@ -542,14 +539,14 @@ void Superstructure::RunSuperStateMachine()
         case WantedSuperState::SHOOT_AT_HUB_REFUELING:
             if(m_systemSuperState != SystemSuperState::SHOOTING_TO_HUB_WHILE_REFUELING)
             {
-                m_systemSuperState = SystemSuperState::PREPARING_TO_SHOOT_TO_HUB_WHILE_REFUELING;
+                m_systemSuperState = SystemSuperState::SHOOTING_TO_HUB_WHILE_REFUELING;
             }
             break;
 
         case WantedSuperState::SHOOT_AT_ALLIANCE_ZONE_REFUELING:
             if(m_systemSuperState != SystemSuperState::SHOOTING_TO_ALLIANCE_ZONE_WHILE_REFUELING)
             {
-                m_systemSuperState = SystemSuperState::PREPARING_TO_SHOOT_TO_ALLIANCE_ZONE_WHILE_REFUELING;
+                m_systemSuperState = SystemSuperState::SHOOTING_TO_ALLIANCE_ZONE_WHILE_REFUELING;
             }
             break;
 
@@ -617,22 +614,10 @@ void Superstructure::RunSuperStateMachine()
             break;
 
         case SystemSuperState::PREPARING_ALLIANCE_ZONE_SHOOT:
-            if(m_pShooter->GetSystemState() == ShooterSubsystem::SystemState::THATS_ALL_MINE
-               && m_pTurret->GetSystemState() == TurretSubsystem::SystemState::POINTING_AT_ALLIANCE_ZONE
-               && m_wantedSuperState == WantedSuperState::SHOOT_TO_ALLIANCE_ZONE)
-            {
-                m_systemSuperState = SystemSuperState::SHOOTING_TO_ALLIANCE_ZONE;
-            }
             break;
 
 
         case SystemSuperState::PREPARING_TO_SHOOT:
-            if (m_pShooter->GetSystemState() == ShooterSubsystem::SystemState::AT_SHOOT_SPEED
-                && m_pTurret->GetSystemState() == TurretSubsystem::SystemState::ALIGNED_WITH_HUB
-                && m_wantedSuperState == WantedSuperState::SHOOT_TO_HUB)
-            {
-                m_systemSuperState = SystemSuperState::SHOOTING_TO_HUB;
-            }
             break;
 
         case SystemSuperState::MOVING_INTAKE_TO_SAFE_POS:
@@ -701,28 +686,10 @@ void Superstructure::RunSuperStateMachine()
 
         case SystemSuperState::SHOOTING_TO_HUB_WHILE_REFUELING:
         case SystemSuperState::PREPARING_TO_SHOOT_TO_HUB_WHILE_REFUELING:
-            if(m_pShooter->GetSystemState() == ShooterSubsystem::SystemState::AT_SHOOT_SPEED
-                                && m_pTurret->GetSystemState() == TurretSubsystem::SystemState::ALIGNED_WITH_HUB)
-            {
-                m_systemSuperState = SystemSuperState::SHOOTING_TO_HUB_WHILE_REFUELING;
-            }
-            else
-            {
-                m_systemSuperState = SystemSuperState::PREPARING_TO_SHOOT_TO_HUB_WHILE_REFUELING;
-            }
             break;
 
         case SystemSuperState::SHOOTING_TO_ALLIANCE_ZONE_WHILE_REFUELING:
         case SystemSuperState::PREPARING_TO_SHOOT_TO_ALLIANCE_ZONE_WHILE_REFUELING:
-            if(m_pShooter->GetSystemState() == ShooterSubsystem::SystemState::THATS_ALL_MINE
-                                && m_pTurret->GetSystemState() == TurretSubsystem::SystemState::POINTING_AT_ALLIANCE_ZONE)
-            {
-                m_systemSuperState = SystemSuperState::SHOOTING_TO_ALLIANCE_ZONE_WHILE_REFUELING;
-            }
-            else
-            {
-                m_systemSuperState = SystemSuperState::PREPARING_TO_SHOOT_TO_ALLIANCE_ZONE_WHILE_REFUELING;
-            }
             break;
 
             case SystemSuperState::RETRACTING_HOOD:

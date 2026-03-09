@@ -235,6 +235,7 @@ void IndexerSubsystem::Periodic()
         case ControlMode::DISABLED:
         case ControlMode::MANUAL_VOLTAGE:
         case ControlMode::FEEDFORWARD_VELOCITY_VOLTAGE:
+        case ControlMode::VOLTAGE:
             m_pIndexerIO->SetVoltage(m_output, m_clodeOutput);
             break;
 

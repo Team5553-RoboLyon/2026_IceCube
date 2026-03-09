@@ -12,10 +12,10 @@ RobotState::RobotState(frc::Pose2d& initialPose,
           0.0_m,
           0.0_m,
           initialPose,
-          wpi::array<double, 3>{0.02, 0.02, 0.02},     // std dev odometry (m, m, rad)
+          wpi::array<double, 3>{0.2, 0.2, 0.05},     // std dev odometry (m, m, rad)
           wpi::array<double, 3>{0.1, 0.1, 0.3}         // std dev vision (m, m, rad)
       )
-  {}
+  {} 
 
 void RobotState::AddVisionMeasurement(const VisionMeasurement& measurement)
 {

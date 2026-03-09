@@ -40,7 +40,7 @@ class ShooterSubsystem : public frc2::SubsystemBase {
     {
       IDLE = 0,
       //Steady states
-      AT_SHOOT_SPEED = 1,
+      SHOOTING_TO_HUB = 1,
       // READY_TO_FEED = 2,
       RESTING = 3,
       SHOOTING_BACKWARD = 4,
