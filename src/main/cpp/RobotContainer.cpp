@@ -10,6 +10,7 @@
 #include <frc2/command/Commands.h>
 
 #include "commands/SetWantedSuperstructureSuperStateCmd.h"
+#include "commands/ToggleMaintainPidCmd.h"
 
 // #include "commands/SetWantedStateClimberCmd.h"
 // #include "LyonLib/utils/MacroUtilsRBL.h"
@@ -75,6 +76,8 @@ void RobotContainer::ConfigureBindings() {
 
     operatorGamepad.PROTECT_INTAKE.ToggleOnTrue(SetWantedSuperstructureSuperStateCmd(&superstructure, Superstructure::WantedSuperState::PROTECT_INTAKE)
                               .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
+
+    m_toggleMaintainPidButton.ToggleOnTrue(ToggleMaintainPidCmd(&superstructure).ToPtr());
 
     vision.SetDefaultCommand(vision.ProcessVision(
     [this] {

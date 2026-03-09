@@ -109,6 +109,8 @@ class Superstructure final : public frc2::SubsystemBase
 
     void Periodic() override;
 
+    void TogglePivotMantainPID();
+
     private:
 
     // === Subsystems ===

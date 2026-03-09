@@ -146,6 +146,11 @@ void Superstructure::ToggleClimberControlMode()
     m_pClimber->ToggleControlMode();
 }
 
+void Superstructure::TogglePivotMantainPID()
+{
+    m_pIntake->ToggleMantainPID();
+}
+
 void Superstructure::Periodic()
 {
     m_robotPos = m_pRobotState->GetPose().value();

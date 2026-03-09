@@ -38,6 +38,11 @@ void IntakeSubsystem::ActualisePIDCoef()
     m_pivotPIDController.Reset();
 }
 
+void IntakeSubsystem::ToggleMantainPID()
+{
+    m_mantainPIDAtBottom = !m_mantainPIDAtBottom;
+}
+
 void IntakeSubsystem::SetPivotControlMode(ControlMode mode)
 {
     switch (mode)
@@ -231,6 +236,17 @@ void IntakeSubsystem::Periodic()
                     case SystemState::CHILLING_OUT:
                     case SystemState::REFUELING:
                     case SystemState::EJECTING:
+                        if(m_mantainPIDAtBottom)
+                        {
+                            m_pivotTargetPos = PivotConstants::Position::EXTENDED_POS;
+                            m_pivotOutput = m_pivotPIDController.CalculateWithRealTime(m_pivotTargetPos,pivotInputs.pivotPos, m_timestamp);
+                        }
+                        else
+                        {
+                            m_pivotOutput = 0.0;
+                        }
+                        break;
+
                     case SystemState::EXTENDING:
                         m_pivotTargetPos = PivotConstants::Position::EXTENDED_POS;
                         m_pivotOutput = m_pivotPIDController.CalculateWithRealTime(m_pivotTargetPos,pivotInputs.pivotPos, m_timestamp);
