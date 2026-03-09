@@ -76,20 +76,6 @@
  (std::fmod((angle_rad), NF64_2PI) + NF64_2PI) : \
  (std::fmod((angle_rad), NF64_2PI)))
 
-static double PIPI(double angle_rad)
-{
-    double result = std::fmod(angle_rad,NF64_2PI);
-    if (result < 0)
-    {
-        result += NF64_2PI;
-    }
-    if (result > NF64_PI)
-    {
-        result -= NF64_2PI;
-    }
-    return result;
-}
-
 
 /* =============================================================================
  *  MACROS : TABLES DE BITES

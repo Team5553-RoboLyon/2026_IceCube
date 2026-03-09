@@ -21,7 +21,7 @@ namespace TurretConstants
         constexpr bool INVERTED = false;
 
         constexpr IdleMode IDLE_MODE = IdleMode::kBrake;
-        constexpr double VOLTAGE_COMPENSATION = 10.0;
+        constexpr double VOLTAGE_COMPENSATION = 3.0;
         constexpr double CURRENT_LIMIT = 20.0;
         constexpr double RAMP_RATE = 0.4;
         constexpr int HOT_THRESHOLD = 60;
@@ -71,7 +71,7 @@ namespace TurretConstants
     {
         constexpr double EJECT = NF64_PI; //TUNEME
         constexpr double TOLERANCE = NDEGtoRAD(2.0);
-        constexpr double INIT_POS = NF64_PI_2;
+        constexpr double INIT_POS = 0.0;
     }
 
     namespace DutyCycle 
@@ -79,7 +79,7 @@ namespace TurretConstants
         constexpr double MAX = 1.0; 
         constexpr double MIN = -1.0;
         constexpr double REST = 0.0;
-        constexpr double INIT = 0.01;
+        constexpr double INIT = 0.0;
     }
     
     namespace Settings
