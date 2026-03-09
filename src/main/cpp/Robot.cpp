@@ -64,9 +64,9 @@ void Robot::DriverStationConnected() {
 
 void Robot::AutonomousInit() {
   //TODO : set pose
-  m_container.drivetrain.ResetOdometryPose(trajectory.GetInitialSample().value().GetPose());
-  m_container.drivetrain.SetWantedDrive(DriveMode::AUTO_PATH_FOLLOWER);
-  m_container.drivetrain.SetDesiredAutoTrajectory(trajectory);
+  // m_container.drivetrain.ResetOdometryPose(trajectory.GetInitialSample().value().GetPose());
+  // m_container.drivetrain.SetWantedDrive(DriveMode::AUTO_PATH_FOLLOWER);
+  // m_container.drivetrain.SetDesiredAutoTrajectory(trajectory);
 
 }
 void Robot::AutonomousPeriodic() {}
