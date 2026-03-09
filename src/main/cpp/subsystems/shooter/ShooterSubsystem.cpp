@@ -351,11 +351,7 @@ void ShooterSubsystem::RunStateMachine()
             m_systemState = SystemState::SHOOTING_TO_HUB;
 
         case WantedState::STOP:
-            if (m_systemState != SystemState::RESTING)
-                m_systemState = SystemState::SLOWING_DOWN;
-            else 
-                m_wantedState = WantedState::STAND_BY; // ignoring the command
-            break;
+            m_systemState = SystemState::SLOWING_DOWN;
 
         case WantedState::REVERSE:
             if (m_systemState != SystemState::SHOOTING_BACKWARD)
@@ -418,9 +414,11 @@ void ShooterSubsystem::RunStateMachine()
             m_flywheelTargetSpeed = FlywheelConstants::Speed::REST;
             m_hoodTargetPos = HoodConstants::Position::MIN;
 
-            if (IS_IN_RANGE(flywheelInputs.shooterVelocity,m_flywheelTargetSpeed,FlywheelConstants::Speed::TOLERANCE)
-                && IS_IN_RANGE(hoodInputs.hoodAngle, m_hoodTargetPos, HoodConstants::Position::TOLERANCE))
-                    m_systemState = SystemState::RESTING;
+            if (IS_IN_RANGE(flywheelInputs.shooterVelocity,m_flywheelTargetSpeed,FlywheelConstants::Speed::TOLERANCE))
+            {
+                m_systemState = SystemState::RESTING;
+                m_wantedState = WantedState::STAND_BY;
+                m_currentWantedState = m_wantedState;
             break;
 
         case SystemState::SOON_MINE:
@@ -440,7 +438,7 @@ void ShooterSubsystem::RunStateMachine()
         case SystemState::RETRACTING_HOOD:
             if (IS_IN_RANGE(hoodInputs.hoodAngle, 0.0, HoodConstants::Position::TOLERANCE))
             {
-                m_systemState = SystemState::SLOWING_DOWN;
+                m_systemState = SystemState::RESTING;
                 m_wantedState = WantedState::STOP;
                 m_currentWantedState = m_wantedState;
             }

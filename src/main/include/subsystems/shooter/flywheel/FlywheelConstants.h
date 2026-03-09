@@ -12,7 +12,7 @@ using IdleMode = rev::spark::SparkBaseConfig::IdleMode;
 #endif
 namespace FlywheelConstants
 {
-    constexpr ControlMode MainControlMode = ControlMode::VELOCITY_MODEL_CONTROLLED; //VOLTAGE
+    constexpr ControlMode MainControlMode = ControlMode::VELOCITY_MODEL_CONTROLLED;
     constexpr ControlMode EmergencyControlMode = ControlMode::VOLTAGE;
 
     namespace LeftMotor

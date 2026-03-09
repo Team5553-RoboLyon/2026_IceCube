@@ -275,7 +275,7 @@ void Superstructure::Periodic()
             break;
 
         case SystemSuperState::CLIMBING:
-            m_intakeWantedState = IntakeSubsystem::WantedState::RETURN_AT_HOME;
+            m_intakeWantedState = IntakeSubsystem::WantedState::STAND_BY;
             m_shooterWantedState = ShooterSubsystem::WantedState::STOP;
             m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::STAND_BY);
             m_pTurret->SetWantedState(TurretSubsystem::WantedState::STAND_BY);
@@ -454,7 +454,9 @@ void Superstructure::RunSuperStateMachine()
 
         case WantedSuperState::STOP_SHOOT:
             if (m_systemSuperState == SystemSuperState::PREPARING_TO_SHOOT
-                || m_systemSuperState == SystemSuperState::SHOOTING_TO_HUB)
+                || m_systemSuperState == SystemSuperState::SHOOTING_TO_HUB
+                || m_systemSuperState == SystemSuperState::SHOOTING_TO_ALLIANCE_ZONE
+                || m_systemSuperState == SystemSuperState::PREPARING_ALLIANCE_ZONE_SHOOT)
                 {
                     m_systemSuperState = SystemSuperState::IDLE;
                     m_wantedSuperState = WantedSuperState::STAND_BY;
