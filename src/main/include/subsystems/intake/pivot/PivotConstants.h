@@ -85,7 +85,7 @@ namespace PivotConstants
         constexpr double MAX = 1.0; 
         constexpr double MIN = -1.0;
         constexpr double REST = 0.0;
-        constexpr double INDEXER_MODE = 0.2; //TUNEME
+        constexpr double INDEXER_MODE = 0.05; //TUNEME
     }
     
     namespace Settings

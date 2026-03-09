@@ -8,8 +8,8 @@ using IdleMode = rev::spark::SparkBaseConfig::IdleMode;
 
 namespace IndexerConstants
 {
-    constexpr ControlMode MainControlMode = ControlMode::FEEDFORWARD_VELOCITY_VOLTAGE;
-    constexpr ControlMode EmergencyControlMode = ControlMode::VOLTAGE;
+    constexpr ControlMode MainControlMode = ControlMode::VOLTAGE;
+    constexpr ControlMode EmergencyControlMode = ControlMode::DISABLED;
 
     namespace indexerMotor
     {

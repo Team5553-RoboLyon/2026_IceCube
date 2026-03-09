@@ -13,8 +13,8 @@ using IdleMode = rev::spark::SparkBaseConfig::IdleMode;
 
 namespace HoodConstants
 {
-    constexpr ControlMode MainControlMode = ControlMode::MANUAL_POSITION; //MANUAL_POSITION
-    constexpr ControlMode EmergencyControlMode = ControlMode::POSITION_VOLTAGE_PID;
+    constexpr ControlMode MainControlMode = ControlMode::POSITION_VOLTAGE_PID; //MANUAL_POSITION
+    constexpr ControlMode EmergencyControlMode = ControlMode::MANUAL_POSITION;
     namespace HoodMotor
     {
         constexpr int ID = 3;
