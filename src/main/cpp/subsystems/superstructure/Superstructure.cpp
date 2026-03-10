@@ -394,30 +394,30 @@ void Superstructure::Periodic()
 
     if (IsRobotCloseToTrench())
     {
-        switch(m_intakeWantedState)
-        {
-            case IntakeSubsystem::WantedState::STAND_BY:
-                if(m_pIntake->IsOut())
-                {
-                    m_intakeWantedState = IntakeSubsystem::WantedState::PROTECT_YOURSELF_AGAINST_EVIL_PILOT;
-                }
-                break;
+        // switch(m_intakeWantedState)
+        // {
+        //     case IntakeSubsystem::WantedState::STAND_BY:
+        //         if(m_pIntake->IsOut())
+        //         {
+        //             m_intakeWantedState = IntakeSubsystem::WantedState::PROTECT_YOURSELF_AGAINST_EVIL_PILOT;
+        //         }
+        //         break;
 
-            case IntakeSubsystem::WantedState::REFUEL:
-            case IntakeSubsystem::WantedState::EJECT:
-            case IntakeSubsystem::WantedState::EXTEND:
-            case IntakeSubsystem::WantedState::PROTECT_YOURSELF_AGAINST_EVIL_PILOT:
-                break;
+        //     case IntakeSubsystem::WantedState::REFUEL:
+        //     case IntakeSubsystem::WantedState::EJECT:
+        //     case IntakeSubsystem::WantedState::EXTEND:
+        //     case IntakeSubsystem::WantedState::PROTECT_YOURSELF_AGAINST_EVIL_PILOT:
+        //         break;
 
-            case IntakeSubsystem::WantedState::RETURN_AT_HOME:
-            case IntakeSubsystem::WantedState::BECOME_AN_INDEXER:
-                m_intakeWantedState = IntakeSubsystem::WantedState::EXTEND;
-                break;
+        //     case IntakeSubsystem::WantedState::RETURN_AT_HOME:
+        //     case IntakeSubsystem::WantedState::BECOME_AN_INDEXER:
+        //         m_intakeWantedState = IntakeSubsystem::WantedState::EXTEND;
+        //         break;
 
-            default:
-                DEBUG_ASSERT(false,"Superstructure : unknown intake wanted state used");
-                break; 
-        }
+        //     default:
+        //         DEBUG_ASSERT(false,"Superstructure : unknown intake wanted state used");
+        //         break; 
+        // }
 
         switch(m_shooterWantedState)
         {

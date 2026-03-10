@@ -219,7 +219,21 @@ void ShooterSubsystem::Periodic()
     switch (m_flywheelControlMode) //actualise flywheel motion
     {
         case ControlMode::VOLTAGE:
-            m_flywheelOutput = units::volt_t{m_flywheelFeedforward.Calculate(0.0, m_flywheelTargetSpeed, 0.0)};
+            if (m_systemState == SystemState::SHOOTING_TO_HUB)
+            {
+                m_flywheelTargetSpeed = FlywheelConstants::Speed::AGAINST_HUB;
+                m_flywheelOutput = units::volt_t{m_flywheelFeedforward.Calculate(0.0, m_flywheelTargetSpeed, 0.0)};
+            }
+            else if (m_systemState == SystemState::THATS_ALL_MINE)
+            {
+                m_flywheelTargetSpeed = FlywheelConstants::Speed::AGAINST_ALLIANCE_ZONE;
+                m_flywheelOutput = units::volt_t{m_flywheelFeedforward.Calculate(0.0, m_flywheelTargetSpeed, 0.0)};
+            }
+            else
+            {
+                m_flywheelOutput = 0.0_V;
+            }
+            
             break;
         case ControlMode::VELOCITY_MODEL_CONTROLLED:
             switch(m_systemState)
@@ -306,7 +320,20 @@ void ShooterSubsystem::Periodic()
             break;
         
         case ControlMode::MANUAL_POSITION:
-            m_hoodOutput = units::volt_t{m_hoodPIDController.CalculateWithRealTime(m_manualControlInput, hoodInputs.hoodAngle, m_timestamp)};
+            if (m_systemState == SystemState::SHOOTING_TO_HUB)
+            {
+                m_hoodTargetPos = HoodConstants::Position::AGAINST_HUB;
+            }
+            else if (m_systemState == SystemState::THATS_ALL_MINE)
+            {
+                m_hoodTargetPos = HoodConstants::Position::TO_FAR_AWAY;
+            }
+            else
+            {
+                m_hoodTargetPos = 0.0;
+            }
+            m_hoodOutput = units::volt_t{m_hoodPIDController.CalculateWithRealTime(m_hoodTargetPos, hoodInputs.hoodAngle, m_timestamp)};
+            // m_hoodOutput = units::volt_t{m_hoodPIDController.CalculateWithRealTime(m_manualControlInput, hoodInputs.hoodAngle, m_timestamp)};
             break;
 
         default:

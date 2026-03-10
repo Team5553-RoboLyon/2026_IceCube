@@ -14,4 +14,5 @@ ToggleShooterControlMode::ToggleShooterControlMode(Superstructure *pSuperstructu
 // Called when the command is initially scheduled.
 void ToggleShooterControlMode::Initialize() {
   m_pSuperstructure->ToggleShooterControlMode();
+  m_pSuperstructure->ToggleTurretControlMode();
 }

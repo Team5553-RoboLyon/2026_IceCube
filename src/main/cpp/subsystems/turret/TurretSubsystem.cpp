@@ -182,8 +182,7 @@ void TurretSubsystem::Periodic()
                 break;
 
             case ControlMode::MANUAL_POSITION :
-                m_manualControlInput = m_TurretPIDController.GetSetpoint() 
-                                    + m_manualControlInput * TurretConstants::Settings::MANUAL_SETPOINT_CHANGE_LIMIT;
+                m_manualControlInput = 0.0;
 
                 m_output = m_TurretPIDController.CalculateWithRealTime(m_manualControlInput,
                                                                             inputs.orientation,
