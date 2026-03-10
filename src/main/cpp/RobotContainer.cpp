@@ -28,11 +28,6 @@ RobotContainer::RobotContainer()
 }
 void RobotContainer::ConfigureBindings() {
 
-    refuelButton.ToggleOnTrue(SetWantedSuperstructureSuperStateCmd(&superstructure, Superstructure::WantedSuperState::REFUEL)
-                              .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
-    refuelButton.ToggleOnFalse(SetWantedSuperstructureSuperStateCmd(&superstructure, Superstructure::WantedSuperState::STOP_INTAKE)
-                              .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
-
     operatorGamepad.PREPARE_REFUEL.ToggleOnTrue(SetWantedSuperstructureSuperStateCmd(&superstructure, Superstructure::WantedSuperState::PREPARE_REFUEL)
                               .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
     operatorGamepad.RETRACT_INTAKE.ToggleOnTrue(SetWantedSuperstructureSuperStateCmd(&superstructure, Superstructure::WantedSuperState::RETRACT_INTAKE)
@@ -78,6 +73,11 @@ void RobotContainer::ConfigureBindings() {
                               .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
 
     m_toggleMaintainPidButton.ToggleOnTrue(ToggleMaintainPidCmd(&superstructure).ToPtr());
+
+    refuelButton.ToggleOnTrue(SetWantedSuperstructureSuperStateCmd(&superstructure, Superstructure::WantedSuperState::REFUEL)
+                              .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
+    refuelButton.ToggleOnFalse(SetWantedSuperstructureSuperStateCmd(&superstructure, Superstructure::WantedSuperState::STOP_INTAKE)
+                              .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
 
     vision.SetDefaultCommand(vision.ProcessVision(
     [this] {

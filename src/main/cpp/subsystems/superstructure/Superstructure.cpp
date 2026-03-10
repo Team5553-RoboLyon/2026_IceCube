@@ -282,7 +282,7 @@ void Superstructure::Periodic()
             break;
 
         case SystemSuperState::CLIMBING:
-            m_intakeWantedState = IntakeSubsystem::WantedState::STAND_BY;
+            m_intakeWantedState = IntakeSubsystem::WantedState::RETURN_AT_HOME;
             m_shooterWantedState = ShooterSubsystem::WantedState::STOP;
             m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::STAND_BY);
             m_pTurret->SetWantedState(TurretSubsystem::WantedState::STAND_BY);
