@@ -66,7 +66,7 @@ namespace PivotConstants
         constexpr double EXTENDED_POS = MIN;
         constexpr double HOME_POS = NF64_PI/2.0;
         constexpr double SAFETY_POS = NDEGtoRAD(56.0);
-        constexpr double POS_TOLERANCE = NDEGtoRAD(1.0);
+        constexpr double POS_TOLERANCE = NDEGtoRAD(10.0);
     }
 
     namespace Gains
