@@ -34,7 +34,7 @@ namespace TurretConstants
         constexpr double MOTOR_RATIO = (5.23)*(5.23);
         constexpr double GEAR_RATIO = (130.0/24.0)*MOTOR_RATIO; //ul
         constexpr double MOTOR_FREE_SPEED = Motor::VOLTAGE_COMPENSATION * Motor::KV; //RPM
-        constexpr frc::Translation2d ROBOT_TO_TURRET{-0.165_m, 0.149_m}; //TUNEME
+        constexpr frc::Translation2d ROBOT_TO_TURRET{-0.165_m, -0.149_m}; //TUNEME
     }
 
     namespace Encoder 
