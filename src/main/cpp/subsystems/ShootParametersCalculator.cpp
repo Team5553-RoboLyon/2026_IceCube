@@ -14,10 +14,10 @@ ShootParametersCalculator::ShootParametersCalculator()
     m_hoodPosMap.insert(3.037, NDEGtoRAD(14));
     m_hoodPosMap.insert(5.163, NDEGtoRAD(19.1));
 
-    m_flywheelSpeedMap.insert(1.20, 2200.0);
-    m_flywheelSpeedMap.insert(2.535, 3150.0);
-    m_flywheelSpeedMap.insert(3.037, 3350.0);
-    m_flywheelSpeedMap.insert(5.163, 3580.0);
+    m_flywheelSpeedMap.insert(1.20, 2500.0);
+    m_flywheelSpeedMap.insert(2.535, 3200.0);
+    m_flywheelSpeedMap.insert(3.037, 3450.0);
+    m_flywheelSpeedMap.insert(5.163, 3500.0);
 
     m_timeToReachTargetMap.insert(1.20, 1.2); //tuneme
     m_timeToReachTargetMap.insert(2.535, 1.3); //tuneme

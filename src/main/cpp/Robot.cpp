@@ -74,6 +74,11 @@ void Robot::AutonomousExit() {}
 
 void Robot::TeleopInit() {
   //TODO : set pose
+
+  if(m_container.forwardJoystick.GetRawButtonPressed(3))
+  {
+    m_container.robotState.ResetPoseWithVision();
+  }
   m_container.drivetrain.SetWantedDrive(DriveMode::ARCADE_DRIVE);
 }
 void Robot::TeleopPeriodic() {
