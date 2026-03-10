@@ -61,11 +61,11 @@ namespace PivotConstants
     namespace Position //in rad TUNEME
     {
         constexpr double MIN = NDEGtoRAD(5.0);
-        constexpr double MAX = NF64_PI/2.0;
+        constexpr double MAX = NDEGtoRAD(96.0);
         constexpr double RANGE = MAX-MIN;
         constexpr double EXTENDED_POS = MIN;
-        constexpr double HOME_POS = MAX;
-        constexpr double SAFETY_POS = NDEGtoRAD(61.0);
+        constexpr double HOME_POS = NF64_PI/2.0;
+        constexpr double SAFETY_POS = NDEGtoRAD(56.0);
         constexpr double POS_TOLERANCE = NDEGtoRAD(1.0);
     }
 
@@ -73,8 +73,7 @@ namespace PivotConstants
     {
         namespace POSITION_DUTYCYCLE_PID
         {
-            constexpr double KP = 0.5
-            ; //TUNEME
+            constexpr double KP = 0.5; //TUNEME
             constexpr double KI = 0.0; //TUNEME
             constexpr double KD = 0.02; //TUNEME
             constexpr double KG = 0.0; //TUNEME
@@ -86,7 +85,7 @@ namespace PivotConstants
         constexpr double MAX = 1.0; 
         constexpr double MIN = -1.0;
         constexpr double REST = 0.0;
-        constexpr double INDEXER_MODE = 0.2; //TUNEME
+        constexpr double INDEXER_MODE = 0.05; //TUNEME
     }
     
     namespace Settings

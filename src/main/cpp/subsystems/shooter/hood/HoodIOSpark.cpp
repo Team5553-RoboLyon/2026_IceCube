@@ -26,8 +26,8 @@ void HoodIOSpark::UpdateInputs(HoodIOInputs& inputs)
 {
     inputs.isMotorConnected = (m_hoodMotor.GetBusVoltage() !=0.0) && !m_hoodMotor.GetFaults().can;
 
-    inputs.motorAppliedVoltage = m_hoodMotor.GetAppliedOutput() * HoodConstants::HoodMotor::VOLTAGE_COMPENSATION;
     inputs.motorBusVoltage = m_hoodMotor.GetBusVoltage();
+    inputs.motorAppliedVoltage = m_hoodMotor.GetAppliedOutput() * inputs.motorBusVoltage;
     inputs.motorCurrent = m_hoodMotor.GetOutputCurrent();
     inputs.motorTemperature = m_hoodMotor.GetMotorTemperature();
 

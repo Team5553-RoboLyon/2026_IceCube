@@ -18,8 +18,7 @@ IntakeSubsystem::IntakeSubsystem(RollerIO *pRollerIO, PivotIO *pPivotIO) :
 
 void IntakeSubsystem::SetWantedState(const WantedState wantedState)
 {
-    if (!(m_wantedState == WantedState::PROTECT_YOURSELF_AGAINST_EVIL_PILOT && wantedState != WantedState::STAND_BY))
-        m_wantedState = wantedState;
+    m_wantedState = wantedState;
 }
 
 IntakeSubsystem::SystemState IntakeSubsystem::GetSystemState()
@@ -33,10 +32,9 @@ void IntakeSubsystem::SetControlMode(const ControlMode pivotMode, const ControlM
     SetRollerControlMode(rollerMode);
 }
 
-void IntakeSubsystem::ActualisePIDCoef()
+void IntakeSubsystem::ToggleMantainPID()
 {
-    m_pivotPIDController.SetGains(m_tunableRollerP.Get(), m_tunableRollerI.Get(), m_tunableRollerD.Get());
-    m_pivotPIDController.Reset();
+    m_mantainPIDAtBottom = !m_mantainPIDAtBottom;
 }
 
 void IntakeSubsystem::SetPivotControlMode(ControlMode mode)
@@ -247,6 +245,17 @@ void IntakeSubsystem::Periodic()
                     case SystemState::CHILLING_OUT:
                     case SystemState::REFUELING:
                     case SystemState::EJECTING:
+                        if(m_mantainPIDAtBottom)
+                        {
+                            m_pivotTargetPos = PivotConstants::Position::EXTENDED_POS;
+                            m_pivotOutput = m_pivotPIDController.CalculateWithRealTime(m_pivotTargetPos,pivotInputs.pivotPos, m_timestamp);
+                        }
+                        else
+                        {
+                            m_pivotOutput = 0.0;
+                        }
+                        break;
+
                     case SystemState::EXTENDING:
                         m_pivotTargetPos = PivotConstants::Position::EXTENDED_POS;
                         m_pivotOutput = m_pivotPIDController.CalculateWithRealTime(m_pivotTargetPos,pivotInputs.pivotPos, m_timestamp);

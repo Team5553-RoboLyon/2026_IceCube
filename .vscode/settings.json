@@ -98,7 +98,6 @@
     "xtr1common": "cpp",
     "xmemory": "cpp",
     "xstring": "cpp",
-    "xtr1common": "cpp",
     "xutility": "cpp",
     "buffer": "cpp",
     "executor": "cpp",

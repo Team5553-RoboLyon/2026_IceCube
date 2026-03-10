@@ -8,7 +8,7 @@ using IdleMode = rev::spark::SparkBaseConfig::IdleMode;
 
 namespace IndexerConstants
 {
-    constexpr ControlMode MainControlMode = ControlMode::MANUAL_VOLTAGE;
+    constexpr ControlMode MainControlMode = ControlMode::VOLTAGE;
     constexpr ControlMode EmergencyControlMode = ControlMode::DISABLED;
 
     namespace indexerMotor
@@ -28,7 +28,7 @@ namespace IndexerConstants
     namespace clodeMotor
     {
         constexpr int ID = 6;
-        constexpr bool INVERTED = true;
+        constexpr bool INVERTED = false;
 
         constexpr IdleMode IDLE_MODE = IdleMode::kCoast;
         constexpr double VOLTAGE_COMPENSATION = 12.0;
@@ -36,7 +36,7 @@ namespace IndexerConstants
         constexpr double RAMP_RATE = 0.5;
         constexpr int HOT_THRESHOLD = 60;
         constexpr int OVERHEATING_THRESHOLD = 75;
-        constexpr double KV = 496.3; // RPM.V-1
+        constexpr int KV = 496.3; // RPM.V-1
         constexpr double GEAR_RATIO = 45.0; //TUNEME
     }
 
@@ -77,8 +77,8 @@ namespace IndexerConstants
         constexpr double REST = 0.0;
         constexpr double MAX = indexerMotor::VOLTAGE_COMPENSATION; 
         constexpr double MIN = -indexerMotor::VOLTAGE_COMPENSATION;
-        constexpr double FEED = 8.0;
-        constexpr double CLODE_POWER = 8.0;
+        constexpr double FEED = 12.0;
+        constexpr double CLODE_POWER = -10.0;
     }
 
     namespace Speed //in RPM

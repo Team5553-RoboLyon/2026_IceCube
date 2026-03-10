@@ -3,6 +3,7 @@
 #include "frc/geometry/Pose2d.h"
 #include "frc/DriverStation.h"
 #include <wpi/interpolating_map.h>
+#include "LyonLib/logging/ComplexStructLogger.h"
 
 struct ShootParameters {
     frc::Pose2d lookAheadTargetPos;
@@ -20,9 +21,10 @@ class ShootParametersCalculator
 
      void SetAlliance(frc::DriverStation::Alliance alliance);
      void SetRobotPos(frc::Pose2d robotPos, double timestamp);
-     void CalculateHubNewParameters(ShootParameters& params, frc::Pose2d robotPos, double timestamp);
-     void CalculateAllianceZoneNewParameters(ShootParameters& params, frc::Pose2d robotPos, double timestamp);
+     void CalculateHubNewParameters(ShootParameters& params, frc::Pose2d robotPos, double turretOrientation, double timestamp);
+     void CalculateAllianceZoneNewParameters(ShootParameters& params, frc::Pose2d robotPos, double turretOrientation, double timestamp);
 
+     double PIPI(double angle_rad);
 
     private:
 
@@ -33,4 +35,8 @@ class ShootParametersCalculator
      wpi::interpolating_map<double,double> m_hoodPosMap; //TODO : do tests to get at least 10 values for each interpolating map
      wpi::interpolating_map<double,double> m_flywheelSpeedMap;
      wpi::interpolating_map<double,double> m_timeToReachTargetMap;
+     StructLogger<frc::Pose2d> m_logger{"/HubPos"};
+     StructLogger<frc::Pose2d> m_projectedLogger{"/2xProjectedTurret"};
+     StructLogger<frc::Pose2d> m_turretLogger{"/TurretPos"};
+
 };

@@ -29,27 +29,29 @@ class ShooterSubsystem : public frc2::SubsystemBase {
       SHOOT_TO_HUB = 1,
       // FEED_ALLY = 2,
       STOP = 3,
-      REVERSE = 4,
-      // PREPARE_TO_HUB = 5
-      //RETRACT_HOOD
-      // KEEP_ALL_FOR_YOU = 5 //TASK1
+      // REVERSE = 4,
+      PREPARE_SHOOT = 5,
+      PREPARE_TO_KEEP_ALL = 6,
+      RETRACT_HOOD = 7,
+      KEEP_ALL_FOR_YOU = 8
     };
 
     enum class SystemState
     {
       IDLE = 0,
       //Steady states
-      AT_SHOOT_SPEED = 1,
+      SHOOTING_TO_HUB = 1,
       // READY_TO_FEED = 2,
       RESTING = 3,
-      SHOOTING_BACKWARD = 4,
-      // THATS_ALL_MINE = 5,
+      // SHOOTING_BACKWARD = 4,
+      THATS_ALL_MINE = 5,
       //Transition states
       RAMPING_TO_SHOOT = 6,
       // RAMPING_TO_FEED = 7,
-      RAMPING_BACKWARD = 8,
-      SLOWING_DOWN = 9
-      // SOON_MINE = 10
+      // RAMPING_BACKWARD = 8,
+      SLOWING_DOWN = 9,
+      SOON_MINE = 10,
+      RETRACTING_HOOD = 11
     };
 
     void SetWantedState(const WantedState wantedState);
@@ -62,6 +64,8 @@ class ShooterSubsystem : public frc2::SubsystemBase {
     ControlMode GetHoodControlMode();
     void ToggleFlywheelControlMode();
     void ToggleHoodControlMode();
+
+    bool IsHoodRetract();
 
     bool IsResting();
     bool IsInitialized() { return m_isInitialized; }
@@ -92,15 +96,7 @@ class ShooterSubsystem : public frc2::SubsystemBase {
       double m_timestamp{0.0};
       units::volt_t m_flywheelOutput{0.0};
       units::volt_t m_hoodOutput{0.0};
-      TunableValueLogger m_tunableFlywheelVelocityLogger{"/Shooter/FlywheelVelocity", 0.0};
 
-      #if ROBOT_MODEL == PROTOTYPE
-        TunableValueLogger m_tunableFlywheelKVLogger{"/Shooter/KV", FlywheelConstants::Gains::FLYWHEEL_FEEDFORWARD::KV};
-        TunableValueLogger m_tunableFlywheelKPLogger{"/Shooter/KP", FlywheelConstants::Gains::VELOCITY_VOLTAGE_PID::KP};
-        TunableValueLogger m_tunableFlywheelKDLogger{"/Shooter/KD", FlywheelConstants::Gains::VELOCITY_VOLTAGE_PID::KD};
-      #endif
-
-      TunableValueLogger m_tunableHoodVoltageLogger{"/Shooter/HoodVoltage", 0.0};
       double m_flywheelTargetSpeed{0.0};
       double m_hoodTargetPos{0.0};
 

@@ -12,8 +12,8 @@ using IdleMode = rev::spark::SparkBaseConfig::IdleMode;
 #endif
 namespace TurretConstants
 {
-    constexpr ControlMode MainControlMode = ControlMode::MANUAL_VOLTAGE;
-    constexpr ControlMode EmergencyControlMode = ControlMode::DISABLED;
+    constexpr ControlMode MainControlMode = ControlMode::POSITION_DUTYCYCLE_PID;
+    constexpr ControlMode EmergencyControlMode = ControlMode::MANUAL_POSITION;
 
     namespace Motor
     {
@@ -21,7 +21,7 @@ namespace TurretConstants
         constexpr bool INVERTED = false;
 
         constexpr IdleMode IDLE_MODE = IdleMode::kBrake;
-        constexpr double VOLTAGE_COMPENSATION = 10.0;
+        constexpr double VOLTAGE_COMPENSATION = 7.0;
         constexpr double CURRENT_LIMIT = 20.0;
         constexpr double RAMP_RATE = 0.4;
         constexpr int HOT_THRESHOLD = 60;
@@ -34,7 +34,7 @@ namespace TurretConstants
         constexpr double MOTOR_RATIO = (5.23)*(5.23);
         constexpr double GEAR_RATIO = (130.0/24.0)*MOTOR_RATIO; //ul
         constexpr double MOTOR_FREE_SPEED = Motor::VOLTAGE_COMPENSATION * Motor::KV; //RPM
-        constexpr frc::Transform2d ROBOT_TO_TURRET{155.0_m, 155.0_m,{}}; //TUNEME
+        constexpr frc::Translation2d ROBOT_TO_TURRET{-0.165_m, 0.149_m}; //TUNEME
     }
 
     namespace Encoder 
@@ -47,8 +47,8 @@ namespace TurretConstants
 
     namespace HallEffectSensor
     {
-        constexpr int ID = 21;
-        constexpr double MIN_VALUE_WHEN_MAGNET = 2.5; //TUNEME
+        constexpr int ID = 2;
+        constexpr double MIN_VALUE_WHEN_MAGNET = 2300; //TUNEME
     }
 
     namespace Simulation
@@ -70,7 +70,8 @@ namespace TurretConstants
     namespace Setpoints
     {
         constexpr double EJECT = NF64_PI; //TUNEME
-        constexpr double TOLERANCE = NDEGtoRAD(0.1);
+        constexpr double TOLERANCE = NDEGtoRAD(2.0);
+        constexpr double INIT_POS = 0.0;
     }
 
     namespace DutyCycle 
@@ -78,13 +79,13 @@ namespace TurretConstants
         constexpr double MAX = 1.0; 
         constexpr double MIN = -1.0;
         constexpr double REST = 0.0;
-        constexpr double INIT = 0.1;
+        constexpr double INIT = 0.0;
     }
     
     namespace Settings
     {
-        constexpr double BOTTOM_LIMIT = NDEGtoRAD(-132.0); //TUNEME
-        constexpr double TOP_LIMIT = NDEGtoRAD(138.0); //TUNEME
+        constexpr double BOTTOM_LIMIT = -NF64_PI_2; //TUNEME
+        constexpr double TOP_LIMIT = NF64_PI_2; //TUNEME
         constexpr double MANUAL_SETPOINT_CHANGE_LIMIT = (TOP_LIMIT - BOTTOM_LIMIT) / (2.0/TIME_PER_CYCLE); //TUNEME
         constexpr double OPEN_LOOP_REDUC = 10.0;
     }

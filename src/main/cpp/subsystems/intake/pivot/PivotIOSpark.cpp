@@ -27,8 +27,8 @@ void PivotIOSpark::UpdateInputs(PivotIOInputs& inputs)
 {    
     inputs.isPivotMotorConnected = (m_pivotMotor.GetBusVoltage() !=0.0) && !m_pivotMotor.GetFaults().can;
 
-    inputs.pivotMotorAppliedVoltage = m_pivotMotor.GetAppliedOutput() * PivotConstants::pivotMotor::VOLTAGE_COMPENSATION;
     inputs.pivotMotorBusVoltage = m_pivotMotor.GetBusVoltage();
+    inputs.pivotMotorAppliedVoltage = m_pivotMotor.GetAppliedOutput() * inputs.pivotMotorBusVoltage;
     inputs.pivotMotorCurrent = m_pivotMotor.GetOutputCurrent();
     inputs.pivotMotorTemperature = m_pivotMotor.GetMotorTemperature();
 
@@ -49,10 +49,12 @@ void PivotIOSpark::UpdateInputs(PivotIOInputs& inputs)
     //     inputs.pivotPos = m_leftEncoder.Get();
     // }
 
-    // frc::SmartDashboard::PutBoolean("Pivot/IsRightEncoderConnected", inputs.isRightEncoderConnected);
+    frc::SmartDashboard::PutBoolean("Pivot/IsEncoderConnected", inputs.isPivotMotorConnected);
+    frc::SmartDashboard::PutNumber("Pivot/MotorBusVoltage", inputs.pivotMotorBusVoltage);
+    frc::SmartDashboard::PutNumber("Pivot/MotorAppliedVoltage", inputs.pivotMotorAppliedVoltage);
+    frc::SmartDashboard::PutNumber("Pivot/MotorCurrent", inputs.pivotMotorCurrent);
+    frc::SmartDashboard::PutNumber("Pivot/MotorTemperature", inputs.pivotMotorTemperature);
     frc::SmartDashboard::PutNumber("Pivot/PivotPos", inputs.pivotPos);
-    frc::SmartDashboard::PutBoolean("Pivot/IsLeftEncoderConnected", inputs.isLeftEncoderConnected);
-    frc::SmartDashboard::PutNumber("Pivot/LeftEncoderPos", m_leftEncoder.Get());
     // frc::SmartDashboard::PutNumber("Pivot/RightEncoderPos", m_rightEncoder.Get());
 }
 

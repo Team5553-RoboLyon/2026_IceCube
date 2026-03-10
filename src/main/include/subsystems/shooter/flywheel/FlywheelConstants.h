@@ -12,8 +12,8 @@ using IdleMode = rev::spark::SparkBaseConfig::IdleMode;
 #endif
 namespace FlywheelConstants
 {
-    constexpr ControlMode MainControlMode = ControlMode::MANUAL_VOLTAGE; //VOLTAGE
-    constexpr ControlMode EmergencyControlMode = ControlMode::DISABLED;
+    constexpr ControlMode MainControlMode = ControlMode::VELOCITY_MODEL_CONTROLLED;
+    constexpr ControlMode EmergencyControlMode = ControlMode::VOLTAGE;
 
     namespace LeftMotor
     {
@@ -22,7 +22,7 @@ namespace FlywheelConstants
 
         constexpr IdleMode IDLE_MODE = IdleMode::kCoast;
         constexpr double VOLTAGE_COMPENSATION = 12.0; //TUNEME
-        constexpr double CURRENT_LIMIT = 40.0;
+        constexpr double CURRENT_LIMIT = 60.0;
         constexpr double RAMP_RATE = 0.0;
         constexpr int HOT_THRESHOLD = 60;
         constexpr int OVERHEATING_THRESHOLD = 75;
@@ -35,7 +35,7 @@ namespace FlywheelConstants
 
         constexpr IdleMode IDLE_MODE = IdleMode::kCoast;
         constexpr double VOLTAGE_COMPENSATION = 12.0; //TUNEME
-        constexpr double CURRENT_LIMIT = 40.0;
+        constexpr double CURRENT_LIMIT = 60.0;
         constexpr double RAMP_RATE = 0.0;
         constexpr int HOT_THRESHOLD = 60;
         constexpr int OVERHEATING_THRESHOLD = 75;
@@ -60,13 +60,13 @@ namespace FlywheelConstants
     {
         namespace VELOCITY_VOLTAGE_PID
         {
-            constexpr double KP = 0.001; //TUNEME
+            constexpr double KP = 0.0018; //TUNEME
             constexpr double KI = 0.0; //TUNEME
-            constexpr double KD = 0.00001; //TUNEME
+            constexpr double KD = 0.00003; //TUNEME
         }
         namespace FLYWHEEL_FEEDFORWARD
         {
-            constexpr double KV = 1/563.0;
+            constexpr double KV = 1/503.0;
             constexpr double KS = 1/28.4;
         }
     }
@@ -94,8 +94,9 @@ namespace FlywheelConstants
         constexpr double TOLERANCE = 200.0; //TUNEME
         constexpr double FEED = 1200.0; //TUNEME
         constexpr double BACKWARD = -1000.0; //TUNEME
-        constexpr double AGAINST_HUB = 2000.0; //TUNEME
-        constexpr double AGAINST_ALLIANCE_ZONE = 1000.0; //TUNEME
+        constexpr double AGAINST_ALLIANCE_ZONE = 1000.0;
+        constexpr double AGAINST_HUB = 2300.0; //TUNEME
+        constexpr double TO_ALLIANCE_ZONE = 3000.0; //TUNEME
         constexpr double MAX_FOR_SHOOT = 4500.0; //TUNEME
     }
     

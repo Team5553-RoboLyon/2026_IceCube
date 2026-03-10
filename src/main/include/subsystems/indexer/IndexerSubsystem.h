@@ -26,7 +26,7 @@ class IndexerSubsystem : public frc2::SubsystemBase {
       STAND_BY = 0, // no wanted state scheduled. (It's all good man, it's all good !)
       FEED_SHOOTER = 1,
       EVACUATE_SHOOTER = 2,
-      PREPARE_SHOOT = 3,
+      // PREPARE_SHOOT = 3,
     };
     enum class SystemState
     {
@@ -35,9 +35,9 @@ class IndexerSubsystem : public frc2::SubsystemBase {
       SLEEPING = 1,
       FEEDING_SHOOTER = 2,
       EVACUATING_SHOOTER = 3,
-      READY_TO_SHOOT = 4,
+      // READY_TO_SHOOT = 4,
       //Transition state
-      PREPARING_SHOOT = 5,
+      // PREPARING_SHOOT = 5,
     };
     void SetWantedState(const WantedState wantedState);
     SystemState GetSystemState();
@@ -46,7 +46,6 @@ class IndexerSubsystem : public frc2::SubsystemBase {
     void ToggleControlMode();
 
     bool IsResting();
-    bool IsInitialized() { return m_isInitialized; }
     void SetManualControlInput(const double value);
 
 
@@ -69,11 +68,7 @@ class IndexerSubsystem : public frc2::SubsystemBase {
       double m_manualControlInput{0.0};
       double m_targetVelocity{0.0};
       double m_timestamp{0.0};
-    // std::function<double()> m_fxAxis; //temporary
-      TunableValueLogger m_tunableVoltageLogger{"Indexer/IndexerVoltage",12.0};
-      TunableValueLogger m_tunableClodeVoltageLogger{"Indexer/SpindexerVoltage", 10.0}; //RPM
     // === Status Flags ===
-      bool m_isInitialized = true;
     // === System Alerts ===
       Alert m_indexerMotorDisconnected{"Indexer indexerMotor: Disconnected", Alert::AlertType::ERROR};
       Alert m_indexerMotorHot{"Indexer indexerMotor: Temperature exceeds 60°C", Alert::AlertType::WARNING};

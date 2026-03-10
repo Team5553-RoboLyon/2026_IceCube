@@ -53,12 +53,12 @@ class TurretSubsystem : public frc2::SubsystemBase {
     bool IsInitialized() { return m_isInitialized; }
     void SetManualControlInput(const double value);
 
+    TurretIOInputs inputs;
 
     void Periodic() override;
   private:
     // === Hardware & IO Interfaces ===
       TurretIO *m_pTurretIO;
-      TurretIOInputs inputs;
       // AprilTagPhotonCamera m_turretCamera{new photon::PhotonCamera{TurretConstants::TurretCamera::NAME}};
       ShootParameters* m_pShootParams;
     // === System States & Control Modes ===
@@ -77,7 +77,8 @@ class TurretSubsystem : public frc2::SubsystemBase {
       TunableValueLogger m_voltageTuner{"Turret/TurretVoltage", 1.0};
     // === Status Flags ===
       bool m_isInitialized = true;
-      bool m_isInBlueAlliance = true;
+      // bool m_isInBlueAlliance = true;
+      bool m_hasSpotedMagnet = false;
     // === System Alerts ===
       Alert m_motorDisconnected{"Turret Motor: Disconnected", Alert::AlertType::ERROR};
       Alert m_motorHot{"Turret Motor: Temperature exceeds 60°C", Alert::AlertType::WARNING};

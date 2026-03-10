@@ -56,13 +56,11 @@ void Robot::RobotPeriodic() {
 void Robot::DriverStationConnected() {
   //link driver station to data logging
   frc::DriverStation::StartDataLog(frc::DataLogManager::GetLog());
-  m_container.ShootParamCalculator.SetAlliance(frc::DriverStation::GetAlliance().value());
-  // m_container.turretSubsystem.SetAlliance(frc::DriverStation::GetAlliance().value());
-  // m_container.ahrs.Reset();
+  m_container.superstructure.SetAlliance();
 }
 
 void Robot::AutonomousInit() {
-  // //TODO : set pose
+  //TODO : set pose
   // m_container.drivetrain.ResetOdometryPose(trajectory.GetInitialSample().value().GetPose());
   // m_container.drivetrain.SetWantedDrive(DriveMode::AUTO_PATH_FOLLOWER);
   // m_container.drivetrain.SetDesiredAutoTrajectory(trajectory);
@@ -76,11 +74,10 @@ void Robot::TeleopInit() {
   m_container.drivetrain.SetWantedDrive(DriveMode::ARCADE_DRIVE);
 }
 void Robot::TeleopPeriodic() {
-  m_container.turretSubsystem.SetManualControlInput(m_container.operatorGamepad.GetAButton() ? 1.0 : 0.0);
-  m_container.shooterSubsystem.SetManualControlInput(m_container.operatorGamepad.GetLeftY(), m_container.operatorGamepad.GetL1Button() ? 1.0 : 0.0);
-  m_container.indexer.SetManualControlInput(m_container.operatorGamepad.GetR1Button() ? 1.0 : 0.0);
-  m_container.climber.SetManualControlInput(m_container.operatorGamepad.GetL2Axis()-m_container.operatorGamepad.GetR2Axis());
-  m_container.intakeSubsystem.SetManualControlInput(m_container.operatorGamepad.GetRightX(), m_container.operatorGamepad.GetXButton() ? 1.0 : 0.0);
+  // if(BYPASS_STATE_MACHINE(m_container.climber.GetControlMode()))
+  // {
+  //   m_container.climber.SetManualControlInput(m_container.operatorGamepad.GetLeftY());
+  // }
   // if (m_container.operatorGamepad.GetAButtonPressed())
   // {
   //   m_container.intakeSubsystem.ActualisePIDCoef();
@@ -92,21 +89,22 @@ void Robot::TeleopPeriodic() {
 void Robot::TeleopExit() {}
 
 void Robot::DisabledInit() {
-  m_container.intakeSubsystem.SetControlMode(ControlMode::DISABLED, ControlMode::DISABLED);
+  // m_container.intakeSubsystem.SetControlMode(ControlMode::DISABLED, ControlMode::DISABLED);
 
-  m_container.climber.SetControlMode(ControlMode::DISABLED);
-  m_container.drivetrain.SetWantedDrive(DriveMode::DISABLE);
-  m_container.turretSubsystem.SetControlMode(ControlMode::DISABLED);
-  m_container.shooterSubsystem.SetControlMode(ControlMode::DISABLED, ControlMode::DISABLED);
+  // m_container.climber.SetControlMode(ControlMode::DISABLED);
+  // m_container.drivetrain.SetWantedDrive(DriveMode::DISABLE);
+  // m_container.turretSubsystem.SetControlMode(ControlMode::DISABLED);
+  // m_container.shooterSubsystem.SetControlMode(ControlMode::DISABLED, ControlMode::DISABLED);
+  m_container.superstructure.DisableSubsystems();
 }
 void Robot::DisabledPeriodic() {}
 void Robot::DisabledExit() {
-  m_container.climber.SetControlMode(ClimberConstants::MainControlMode);
-  m_container.climber.SetWantedState(ClimberSubsystem::WantedState::INITIALIZATION);
-  m_container.intakeSubsystem.SetControlMode(PivotConstants::MainControlMode, RollerConstants::MainControlMode);
-  m_container.turretSubsystem.SetControlMode(TurretConstants::MainControlMode);
-  m_container.shooterSubsystem.SetControlMode(FlywheelConstants::MainControlMode, HoodConstants::MainControlMode);
-  m_container.robotState.ResetPoseWithVision();
+  // m_container.climber.SetControlMode(ClimberConstants::MainControlMode);
+  // m_container.climber.SetWantedState(ClimberSubsystem::WantedState::INITIALIZATION);
+  // m_container.intakeSubsystem.SetControlMode(PivotConstants::MainControlMode, RollerConstants::MainControlMode);
+  // m_container.turretSubsystem.SetControlMode(TurretConstants::MainControlMode);
+  // m_container.shooterSubsystem.SetControlMode(FlywheelConstants::MainControlMode, HoodConstants::MainControlMode);
+  m_container.superstructure.EnableSubsystems();
 }
 
 void Robot::TestInit() {}

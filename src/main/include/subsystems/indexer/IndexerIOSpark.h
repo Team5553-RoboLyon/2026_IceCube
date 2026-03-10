@@ -5,6 +5,7 @@
 
 #include "indexerIO.h"
 #include "indexerConstants.h"
+#include "frc/DigitalInput.h"
 
 class IndexerIOSpark  final : public IndexerIO
 {
@@ -14,6 +15,8 @@ class IndexerIOSpark  final : public IndexerIO
     rev::spark::SparkMax m_clodeMotor {IndexerConstants::clodeMotor::ID, rev::spark::SparkMax::MotorType::kBrushless};
     rev::spark::SparkBaseConfig m_clodeMotorConfig;
 
+    frc::DigitalInput m_bestSensor{IndexerConstants::theMostImportantSensorOfTheRobot::ID}; //Indexer IRBreaker
+
   public:
     IndexerIOSpark();
     ~IndexerIOSpark() = default;
@@ -21,6 +24,4 @@ class IndexerIOSpark  final : public IndexerIO
     void UpdateInputs(IndexerIOInputs& inputs) override;
     void SetVoltage(double voltage, double clodeVoltage) override; //COMMENTME
     void SetDutyCycle(double dutyCycle, double clodeVoltage) override; //COMMENTME
-
-    
 };

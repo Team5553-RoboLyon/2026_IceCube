@@ -17,7 +17,7 @@
 #define LENA 3
 #define TEST 4
 
-#define ROBOT_MODEL (PROTOTYPE) // Change this to the desired robot model
+#define ROBOT_MODEL (TRAINING)// Change this to the desired robot model
 #define PILOT (ALEXIS)
 #define OPERATOR (VICTOR)
 
@@ -114,14 +114,21 @@ namespace FieldConstants
     {
         constexpr units::meter_t LENGTH = 158.6_in;
         constexpr units::meter_t WIDTH = 317.7_in;
-        constexpr frc::Pose2d BLUE_CENTER_POSITION = {LENGTH/2.0, WIDTH/2.0, {180.0_deg}};
-        constexpr frc::Pose2d RED_CENTER_POSITION = {FIELD_LENGTH-LENGTH/2.0, WIDTH/2.0, {0.0_deg}};
+        constexpr frc::Pose2d BLUE_CENTER_POSITION = {LENGTH/2.0, WIDTH/2.0, {}};
+        constexpr frc::Pose2d RED_CENTER_POSITION = {FIELD_LENGTH-LENGTH/2.0, WIDTH/2.0, {}};
     }
 
     namespace Hub
     {
         constexpr units::meter_t WIDTH = 47_in;
-        constexpr frc::Pose2d BLUE_PLACEMENT = {AllianceZone::LENGTH + WIDTH/2.0, (FIELD_WIDTH+WIDTH)/2.0,{0.0_deg}}; //placement of the center point of the blue hub
-        constexpr frc::Pose2d RED_PLACEMENT = {FIELD_LENGTH - (AllianceZone::LENGTH + WIDTH/2.0), (FIELD_WIDTH+WIDTH)/2.0,{180.0_deg}}; //placement of the center point of the red hub
+        constexpr frc::Pose2d BLUE_PLACEMENT = {AllianceZone::LENGTH + WIDTH/2.0, (FIELD_WIDTH)/2.0,{0.0_deg}}; //placement of the center point of the blue hub
+        constexpr frc::Pose2d RED_PLACEMENT = {FIELD_LENGTH - (AllianceZone::LENGTH + WIDTH/2.0), (FIELD_WIDTH)/2.0,{}}; //placement of the center point of the red hub
+    }
+
+    namespace Trench
+    {
+        constexpr units::meter_t WIDTH = 50.35_in;
+        constexpr units::meter_t LENGTH = 47.0_in;
+        constexpr units::meter_t SECURITY_DISTANCE = LENGTH/2.0;
     }
 }

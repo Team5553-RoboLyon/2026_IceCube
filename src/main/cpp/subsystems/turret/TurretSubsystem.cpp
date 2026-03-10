@@ -129,18 +129,30 @@ void TurretSubsystem::Periodic()
     
     if(!m_isInitialized)
     {
-        // m_output = TurretConstants::DutyCycle::INIT;
-        // if(inputs.hallEffectSensorValue > m_highestHallEffectSensorValue)
-        // {
-        //     m_highestHallEffectSensorValue = inputs.hallEffectSensorValue;
-        //     m_pTurretIO->ResetOrientation();
-        // }
-        // else if (inputs.hallEffectSensorValue < TurretConstants::HallEffectSensor::MIN_VALUE_WHEN_MAGNET &&
-        //          m_highestHallEffectSensorValue >= TurretConstants::HallEffectSensor::MIN_VALUE_WHEN_MAGNET)
-        // {
-        //     m_isInitialized = true;
-        //     m_output = TurretConstants::DutyCycle::REST;
-        // }
+        if (!m_hasSpotedMagnet)
+        {
+            m_output = TurretConstants::DutyCycle::INIT;
+            if(inputs.hallEffectSensorValue > m_highestHallEffectSensorValue)
+            {
+                m_highestHallEffectSensorValue = inputs.hallEffectSensorValue;
+                m_targetPos = inputs.orientation;
+            }
+            else if (inputs.hallEffectSensorValue < TurretConstants::HallEffectSensor::MIN_VALUE_WHEN_MAGNET &&
+                    m_highestHallEffectSensorValue >= TurretConstants::HallEffectSensor::MIN_VALUE_WHEN_MAGNET)
+            {
+                m_output = m_TurretPIDController.CalculateWithRealTime(m_targetPos,inputs.orientation,m_timestamp);
+                m_hasSpotedMagnet = true;
+            }
+        }
+        else
+        {
+            m_output = m_TurretPIDController.CalculateWithRealTime(m_targetPos,inputs.orientation,m_timestamp);
+            if (IS_IN_RANGE(inputs.orientation, m_targetPos, TurretConstants::Setpoints::TOLERANCE))
+            {
+                m_pTurretIO->ResetOrientation();
+                m_isInitialized = true;
+            }
+        }
     }
     else 
     {

@@ -32,6 +32,7 @@
   #include "subsystems/indexer/IndexerIOSpark.h"
 #endif
 
+#include "subsystems/superstrucure/Superstructure.h"
 #include "subsystems/shooter/ShooterSubsystem.h"
 #include "subsystems/ShootParametersCalculator.h"
 #include "subsystems/turret/TurretSubsystem.h"
@@ -42,11 +43,10 @@
 #include "subsystems/indexer/IndexerSubsystem.h"
 
 
-
-
 #include "LyonLib/Vision/Vision.h"
 #include "LyonLib/Vision/VisionFilterParameters.h"
 #include "LyonLib/Vision/RealPhotonVisionIO.h"
+#include "LyonLib/utils/MacroUtilsRBL.h"
 #include <frc/apriltag/AprilTagFieldLayout.h>
 
 class RobotContainer {
@@ -56,26 +56,19 @@ class RobotContainer {
   ShootParametersCalculator ShootParamCalculator{};
   double robotOrientation{0.0};
 
-  #if ROBOT_MODEL == SIMULATION
-  ShooterSubsystem shooterSubsystem{new FlywheelIOSim{}, new HoodIOSim{}, pShootParameter};
-  TurretSubsystem turretSubsystem{new TurretIOSim(), pShootParameter};
-  ClimberSubsystem climber{new ClimberIOSim()};
-  IndexerSubsystem indexer{new IndexerIOSim()};
-  DrivetrainSubsystem drivetrain{new DrivetrainIOSim()};
-  IntakeSubsystem intakeSubsystem{new RollerIOSim(), new PivotIOSim()};
-  #else
-  ShooterSubsystem shooterSubsystem{new FlywheelIOSpark(), new HoodIOSpark(), pShootParameter};
-  TurretSubsystem turretSubsystem{new TurretIOSpark(), pShootParameter};
-  ClimberSubsystem climber{new ClimberIOSpark()};
-  IndexerSubsystem indexer{new IndexerIOSpark()};
-  DrivetrainSubsystem drivetrain{new DrivetrainIOFlex()};
-  IntakeSubsystem intakeSubsystem{new RollerIOSpark(), new PivotIOSpark()};
-  #endif
-  
-
   Operator operatorGamepad{ControlPanelConstants::OPERATOR_GAMEPAD_PORT, ControlPanelConstants::OPERATOR_GAMEPAD_THRESHOLD};
   frc::Joystick forwardJoystick{ControlPanelConstants::JOYSTICK_FORWARD_ID};
   frc::Joystick rotationJoystick{ControlPanelConstants::JOYSTICK_ROTATION_ID};
+
+  frc2::JoystickButton refuelButton{&rotationJoystick, 1};
+
+  ShootParameters *pShootParams{new ShootParameters};
+
+  #if ROBOT_MODEL == SIMULATION
+    DrivetrainSubsystem drivetrain{new DrivetrainIOSim()};
+  #else
+    DrivetrainSubsystem drivetrain{new DrivetrainIOFlex()};
+  #endif
 
   frc::AprilTagFieldLayout aprilTagFieldLayout = frc::AprilTagFieldLayout::LoadField(frc::AprilTagField::k2026RebuiltAndyMark);
   VisionFilterParameters visionFilterParameters{
@@ -84,8 +77,8 @@ class RobotContainer {
     .aprilTagWidth = 0.1524_m, // 6 inches in meters
     .maxAmbiguityRatio = 0.15,
     .maxAprilTagDistance = 5.5, // meters
-    .estimatedFOV = frc::Rotation2d(units::radian_t(60.0 * (M_PI / 180.0))), // 60 degrees in radians
-    .zMargin = 0.5_m, // meters
+    .estimatedFOV = frc::Rotation2d(units::radian_t(60.0 * (NF64_PI / 180.0))), // 60 degrees in radians
+    .zMargin = 0.9_m, // meters
     .aprilTagFieldLayout = aprilTagFieldLayout
   };
 
@@ -95,26 +88,25 @@ std::vector<std::shared_ptr<VisionIO>> visionIOs{
   std::make_shared<RealPhotonVisionIO>(
     "Big_brother",
     frc::Transform3d(
-      frc::Translation3d(-0.302_m, -0.32_m, 0.37_m),
-      frc::Rotation3d(-0.24_deg, -22.26_deg, 180.0_deg)
+      frc::Translation3d(-0.30_m, -0.20_m, 0.53_m),
+      frc::Rotation3d(-1.16_deg, -17.34_deg, 164.95_deg)
     ),
     aprilTagFieldLayout
   )
-  // ,std::make_shared<RealPhotonVisionIO>(
-  //   "Lil'Bro",
-  //   frc::Transform3d(
-  //     frc::Translation3d(-0.15_m, 0.20_m, 0.50_m),  // Position relative au centre robot
-  //     frc::Rotation3d(0_deg, 0_deg, 180_deg)        // Orientation si caméra arrière
-  //   ),
-  //   aprilTagFieldLayout
-  // )
+  ,std::make_shared<RealPhotonVisionIO>(
+    "Lil_bro",
+    frc::Transform3d(
+      frc::Translation3d(-0.87_m, 0.05_m, 0.375_m),
+      frc::Rotation3d(-0.05_deg, -26.27_deg, 2.67_deg)
+    ),
+    aprilTagFieldLayout
+  )
 };
 
   Vision vision{visionFilterParameters,visionIOs};
   frc::Pose2d initialPose{0_m, 0_m, frc::Rotation2d()};
   frc::DifferentialDriveKinematics kinematics{
     units::meter_t(driveConstants::Specifications::TRACKWIDTH)};
-
 
   RobotState robotState{
     initialPose,
@@ -123,9 +115,27 @@ std::vector<std::shared_ptr<VisionIO>> visionIOs{
     &drivetrain
   };
 
+  #if ROBOT_MODEL == SIMULATION
+  IndexerIOSim *indexerIOSim = new IndexerIOSim{};
+  Superstructure superstructure{new IntakeSubsystem {new RollerIOSim{}, new PivotIOSim{}},
+                                new IndexerSubsystem {indexerIOSim},
+                                new TurretSubsystem {new TurretIOSim, pShootParams},
+                                new ShooterSubsystem {new FlywheelIOSim{}, new HoodIOSim{}, pShootParams},
+                                new ClimberSubsystem {new ClimberIOSim},
+                                pShootParams};
+  #else
+  Superstructure superstructure{new IntakeSubsystem {new RollerIOSpark{}, new PivotIOSpark{}},
+                                new IndexerSubsystem {new IndexerIOSpark{}},
+                                new TurretSubsystem {new TurretIOSpark{}, pShootParams},
+                                new ShooterSubsystem {new FlywheelIOSpark{}, new HoodIOSpark{}, pShootParams},
+                                new ClimberSubsystem {new ClimberIOSpark},
+                                pShootParams,
+                                &robotState};
+  #endif
+
  private:
   void ConfigureBindings();
-  frc2::JoystickButton m_SlowDriveButton{&forwardJoystick, ControlPanelConstants::SLOW_DRIVE_BUTTON};
-  frc2::JoystickButton m_driveActionButton{&rotationJoystick, ControlPanelConstants::ACTION_DRIVE_BUTTON};
 
+  frc2::JoystickButton m_toggleMaintainPidButton{&forwardJoystick, 4};
+  frc2::JoystickButton m_slowdownButton{&forwardJoystick, 1}; //Binder to find
 };
