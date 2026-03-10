@@ -136,6 +136,6 @@ std::vector<std::shared_ptr<VisionIO>> visionIOs{
  private:
   void ConfigureBindings();
 
-  frc2::JoystickButton m_toggleMaintainPidButton{&forwardJoystick, 1};
+  frc2::JoystickButton m_toggleMaintainPidButton{&forwardJoystick, 4};
   frc2::JoystickButton m_slowdownButton{&forwardJoystick, 1}; //Binder to find
 };
