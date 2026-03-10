@@ -20,6 +20,7 @@
   #include "subsystems/intake/pivot/PivotIOSim.h"
   #include "subsystems/drivetrain/DrivetrainIOSim.h"
   #include "subsystems/turret/TurretIOSim.h"
+  #include "subsystems/indexer/IndexerIOSim.h"
 #else
   #include "subsystems/shooter/flywheel/FlywheelIOSpark.h"
   #include "subsystems/shooter/hood/HoodIOSpark.h"
@@ -116,22 +117,27 @@ std::vector<std::shared_ptr<VisionIO>> visionIOs{
   };
 
   #if ROBOT_MODEL == SIMULATION
-  IndexerIOSim *indexerIOSim = new IndexerIOSim{};
-  Superstructure superstructure{new IntakeSubsystem {new RollerIOSim{}, new PivotIOSim{}},
-                                new IndexerSubsystem {indexerIOSim},
-                                new TurretSubsystem {new TurretIOSim, pShootParams},
-                                new ShooterSubsystem {new FlywheelIOSim{}, new HoodIOSim{}, pShootParams},
-                                new ClimberSubsystem {new ClimberIOSim},
-                                pShootParams};
+
+  IntakeSubsystem intakeSubsystem{new RollerIOSim{}, new PivotIOSim{}};
+  IndexerSubsystem indexerSubsystem{new IndexerIOSim{}};
+  TurretSubsystem turretSubsystem{new TurretIOSim{}, pShootParams};
+  ShooterSubsystem shooterSubsystem{new FlywheelIOSim{}, new HoodIOSim{}, pShootParams};
+  ClimberSubsystem climberSubsystem{new ClimberIOSim};
+  
   #else
-  Superstructure superstructure{new IntakeSubsystem {new RollerIOSpark{}, new PivotIOSpark{}},
-                                new IndexerSubsystem {new IndexerIOSpark{}},
-                                new TurretSubsystem {new TurretIOSpark{}, pShootParams},
-                                new ShooterSubsystem {new FlywheelIOSpark{}, new HoodIOSpark{}, pShootParams},
-                                new ClimberSubsystem {new ClimberIOSpark},
-                                pShootParams,
-                                &robotState};
+  IntakeSubsystem intakeSubsystem{new RollerIOSpark{}, new PivotIOSpark{}};
+  IndexerSubsystem indexerSubsystem{new IndexerIOSpark{}};
+  TurretSubsystem turretSubsystem{new TurretIOSpark{}, pShootParams};
+  ShooterSubsystem shooterSubsystem{new FlywheelIOSpark{}, new HoodIOSpark{}, pShootParams};
+  ClimberSubsystem climberSubsystem{new ClimberIOSpark};
   #endif
+  Superstructure superstructure{&intakeSubsystem,
+                                 &indexerSubsystem,
+                                 &turretSubsystem,
+                                 &shooterSubsystem,
+                                 &climberSubsystem,
+                                 pShootParams,
+                                 &robotState};
 
  private:
   void ConfigureBindings();

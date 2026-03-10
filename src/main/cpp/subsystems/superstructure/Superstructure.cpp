@@ -186,7 +186,10 @@ void Superstructure::Periodic()
             m_shooterWantedState = ShooterSubsystem::WantedState::STOP;
             m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::STAND_BY);
             m_pTurret->SetWantedState(TurretSubsystem::WantedState::STAND_BY);
-            m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STAND_BY);
+            if(m_pClimber->IsInitialized())
+            {
+                m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STAND_BY);
+            }
             break;
 
         case SystemSuperState::REFUELING:
