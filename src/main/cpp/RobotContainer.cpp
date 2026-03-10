@@ -11,6 +11,7 @@
 
 #include "commands/SetWantedSuperstructureSuperStateCmd.h"
 #include "commands/ToggleMaintainPidCmd.h"
+#include "commands/ToggleShooterControlMode.h"
 
 // #include "commands/SetWantedStateClimberCmd.h"
 // #include "LyonLib/utils/MacroUtilsRBL.h"
@@ -78,6 +79,8 @@ void RobotContainer::ConfigureBindings() {
                               .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
     refuelButton.ToggleOnFalse(SetWantedSuperstructureSuperStateCmd(&superstructure, Superstructure::WantedSuperState::STOP_INTAKE)
                               .WithInterruptBehavior(frc2::Command::InterruptionBehavior::kCancelSelf));
+
+    operatorGamepad.TOGGLE_SHOOTER.ToggleOnTrue(ToggleShooterControlMode(&superstructure).ToPtr());
 
     vision.SetDefaultCommand(vision.ProcessVision(
     [this] {

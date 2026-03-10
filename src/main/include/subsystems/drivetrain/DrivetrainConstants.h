@@ -79,7 +79,7 @@ namespace driveConstants
 
     namespace ArcadeDrive
     {
-        constexpr double MIN_ROTATION_SIGMA = 0.15; //TUNEME
+        constexpr double MIN_ROTATION_SIGMA = 0.05; //TUNEME
         constexpr double MAX_ROTATION_SIGMA = 0.3; //TUNEME
 
         constexpr double TIME_TO_REACH_FULL_FORWARD = 0.35; //TUNEME

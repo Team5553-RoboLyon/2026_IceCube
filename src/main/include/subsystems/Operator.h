@@ -57,6 +57,8 @@ public:
     frc2::Trigger RETRACT_HOOD{_optionsButton};
     frc2::Trigger REJECT_FROM_INTAKE{_BButton};
     frc2::Trigger PROTECT_INTAKE{_AButton};
+    frc2::Trigger TOGGLE_SHOOTER{_upPOVButton};
+
     
     Operator(int port) : XboxGamepad(port){};
     Operator(int port, double threshold) : XboxGamepad(port, threshold){};

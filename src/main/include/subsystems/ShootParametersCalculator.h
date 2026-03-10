@@ -10,6 +10,7 @@ struct ShootParameters {
     double lookAheadTargetTurretPos = 0.0;
     double hoodAngle = 0.0;
     double flywheelSpeed = 0.0;
+    bool isTargetInDeadZone = true;
 };
 
 class ShootParametersCalculator

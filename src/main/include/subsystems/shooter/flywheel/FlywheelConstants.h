@@ -95,7 +95,7 @@ namespace FlywheelConstants
         constexpr double FEED = 1200.0; //TUNEME
         constexpr double BACKWARD = -1000.0; //TUNEME
         constexpr double AGAINST_ALLIANCE_ZONE = 1000.0;
-        constexpr double AGAINST_HUB = 2300.0; //TUNEME
+        constexpr double AGAINST_HUB = 2200.0; //TUNEME
         constexpr double TO_ALLIANCE_ZONE = 3000.0; //TUNEME
         constexpr double MAX_FOR_SHOOT = 4500.0; //TUNEME
     }

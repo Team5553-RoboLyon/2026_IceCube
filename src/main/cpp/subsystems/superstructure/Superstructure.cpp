@@ -200,7 +200,14 @@ void Superstructure::Periodic()
         case SystemSuperState::SHOOTING_TO_ALLIANCE_ZONE:
             m_intakeWantedState = IntakeSubsystem::WantedState::BECOME_AN_INDEXER;
             m_shooterWantedState = ShooterSubsystem::WantedState::KEEP_ALL_FOR_YOU;
-            m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::FEED_SHOOTER);
+            if (!m_pShootParameters->isTargetInDeadZone)
+            {
+                m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::FEED_SHOOTER);
+            }
+            else
+            {
+                m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::STAND_BY);
+            }
             m_pTurret->SetWantedState(TurretSubsystem::WantedState::POINT_AT_ALLIANCE_ZONE);
             m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STAND_BY);
             break;
@@ -208,7 +215,14 @@ void Superstructure::Periodic()
         case SystemSuperState::SHOOTING_TO_HUB:
             m_intakeWantedState = IntakeSubsystem::WantedState::BECOME_AN_INDEXER;
             m_shooterWantedState = ShooterSubsystem::WantedState::SHOOT_TO_HUB;
-            m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::FEED_SHOOTER);
+            if (!m_pShootParameters->isTargetInDeadZone)
+            {
+                m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::FEED_SHOOTER);
+            }
+            else
+            {
+                m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::STAND_BY);
+            }
             m_pTurret->SetWantedState(TurretSubsystem::WantedState::FOLLOW_HUB);
             m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STAND_BY);
             break;
@@ -312,7 +326,14 @@ void Superstructure::Periodic()
         case SystemSuperState::SHOOTING_TO_HUB_WHILE_REFUELING:
             m_intakeWantedState = IntakeSubsystem::WantedState::REFUEL;
             m_shooterWantedState = ShooterSubsystem::WantedState::SHOOT_TO_HUB;
-            m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::FEED_SHOOTER);
+            if (!m_pShootParameters->isTargetInDeadZone)
+            {
+                m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::FEED_SHOOTER);
+            }
+            else
+            {
+                m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::STAND_BY);
+            }
             m_pTurret->SetWantedState(TurretSubsystem::WantedState::FOLLOW_HUB);
             m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STAND_BY);
             break;
@@ -336,7 +357,14 @@ void Superstructure::Periodic()
         case SystemSuperState::SHOOTING_TO_ALLIANCE_ZONE_WHILE_REFUELING:
             m_intakeWantedState = IntakeSubsystem::WantedState::REFUEL;
             m_shooterWantedState = ShooterSubsystem::WantedState::KEEP_ALL_FOR_YOU;
-            m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::FEED_SHOOTER);
+            if (!m_pShootParameters->isTargetInDeadZone)
+            {
+                m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::FEED_SHOOTER);
+            }
+            else
+            {
+                m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::STAND_BY);
+            }
             m_pTurret->SetWantedState(TurretSubsystem::WantedState::POINT_AT_ALLIANCE_ZONE);
             m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STAND_BY);
             break;
