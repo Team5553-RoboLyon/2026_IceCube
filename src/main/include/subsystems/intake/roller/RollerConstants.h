@@ -47,7 +47,7 @@ namespace RollerConstants
     namespace Voltage
     {
         constexpr double REST = 0.0;
-        constexpr double REFUEL = 10.0; //TUNEME
+        constexpr double REFUEL = 12.0; //TUNEME
         constexpr double IM_AN_INDEXER = 4.0; //TUNEME
         constexpr double EJECT = -10.0;
     }
