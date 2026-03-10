@@ -20,7 +20,7 @@ namespace PivotConstants
         constexpr int ID = 8;
         constexpr bool INVERTED = false;
 
-        constexpr IdleMode IDLE_MODE = IdleMode::kBrake;
+        constexpr IdleMode IDLE_MODE = IdleMode::kCoast;
         constexpr double VOLTAGE_COMPENSATION = 12.0;
         constexpr double CURRENT_LIMIT = 40.0;
         constexpr double RAMP_RATE = 0.5;

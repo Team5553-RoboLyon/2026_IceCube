@@ -41,6 +41,7 @@ void IntakeSubsystem::ActualisePIDCoef()
 void IntakeSubsystem::ToggleMantainPID()
 {
     m_mantainPIDAtBottom = !m_mantainPIDAtBottom;
+    m_pivotPIDController.Reset(m_timestamp);
 }
 
 void IntakeSubsystem::SetPivotControlMode(ControlMode mode)
@@ -369,6 +370,7 @@ void IntakeSubsystem::Periodic()
     frc::SmartDashboard::PutNumber("intake/intakeOutput", m_rollerOutput);
     frc::SmartDashboard::PutNumber("intake/pivotVoltage", pivotInputs.pivotMotorAppliedVoltage);
     frc::SmartDashboard::PutNumber("intake/pivotOutput", m_pivotOutput);
+    frc::SmartDashboard::PutBoolean("intake/PidAtBottom", m_mantainPIDAtBottom);
 }
 
 
@@ -377,12 +379,6 @@ void IntakeSubsystem::RunStateMachine()
     switch (m_currentWantedState) //Handle State transition
     {
         case WantedState::STAND_BY :
-            if (IsOut())
-            {
-                m_systemState = SystemState::EXTENDING;
-            }
-            else
-                m_systemState = SystemState::COMING_BACK_HOME;
             break;
 
         case WantedState::REFUEL:
@@ -400,12 +396,13 @@ void IntakeSubsystem::RunStateMachine()
         case WantedState::EJECT:
             if (m_systemState != SystemState::EJECTING)
             {
-                if(IsOut() && !IsPivotMoving())
+                /*if(IsOut() && !IsPivotMoving())
                 {
                     m_systemState = SystemState::EJECTING;
                 }
                 else
-                    m_systemState = SystemState::EXTENDING;
+                    m_systemState = SystemState::EXTENDING;*/
+                m_systemState = SystemState::EJECTING;
             }
             break;
 
@@ -417,29 +414,29 @@ void IntakeSubsystem::RunStateMachine()
             break;
 
         case WantedState::EXTEND:
-            if(!IsOut() || IsPivotMoving())
-            {
+            // if(!IsOut() || IsPivotMoving())
+            // {
                 m_systemState = SystemState::EXTENDING;
-            }
-            else 
-            {
-                m_systemState = SystemState::CHILLING_OUT;
-                m_wantedState = WantedState::STAND_BY;
-                m_currentWantedState = m_wantedState;
-            }
+            // }
+            // else 
+            // {
+            //     m_systemState = SystemState::CHILLING_OUT;
+            //     m_wantedState = WantedState::STAND_BY;
+            //     m_currentWantedState = m_wantedState;
+            // }
             break;
 
         case WantedState::RETURN_AT_HOME:
-            if(IsOut() || IsPivotMoving())
-            {
+            // if(IsOut() || IsPivotMoving())
+            // {
                 m_systemState = SystemState::COMING_BACK_HOME;
-            }
-            else if (m_systemState != SystemState::COMING_BACK_HOME)
-            {
-                m_systemState = SystemState::STAYING_AT_HOME;
-                m_wantedState = WantedState::STAND_BY;
-                m_currentWantedState = m_wantedState;
-            }
+            // }
+            // else if (m_systemState != SystemState::COMING_BACK_HOME)
+            // {
+            //     m_systemState = SystemState::STAYING_AT_HOME;
+            //     m_wantedState = WantedState::STAND_BY;
+            //     m_currentWantedState = m_wantedState;
+            // }
             break;
 
         case WantedState::PROTECT_YOURSELF_AGAINST_EVIL_PILOT:
@@ -474,50 +471,56 @@ void IntakeSubsystem::RunStateMachine()
         case SystemState::EXTENDING:
             if (IS_IN_RANGE(pivotInputs.pivotPos, PivotConstants::Position::EXTENDED_POS,PivotConstants::Position::POS_TOLERANCE ))
             {
-                switch(m_currentWantedState)
-                {
-                    case WantedState::EJECT:
-                        m_systemState = SystemState::EJECTING;
-                        break;
+                // switch(m_currentWantedState)
+                // {
+                //     case WantedState::EJECT:
+                //         m_systemState = SystemState::EJECTING;
+                //         break;
 
-                    case WantedState::REFUEL:
-                        m_systemState = SystemState::REFUELING;
-                        break;
+                //     case WantedState::REFUEL:
+                //         m_systemState = SystemState::REFUELING;
+                //         break;
 
-                    case WantedState::STAND_BY:
-                    case WantedState::EXTEND:
-                        m_systemState = SystemState::CHILLING_OUT;
-                        m_wantedState = WantedState::STAND_BY;
-                        m_currentWantedState = m_wantedState;
-                        break;
+                //     case WantedState::STAND_BY:
+                //     case WantedState::EXTEND:
+                //         m_systemState = SystemState::CHILLING_OUT;
+                //         m_wantedState = WantedState::STAND_BY;
+                //         m_currentWantedState = m_wantedState;
+                //         break;
 
-                    default:
-                        DEBUG_ASSERT(false, "Intake : Why am I EXTENDING if my Wanted State don't ask me to do it ?");
-                        break;
-                }
+                //     default:
+                //         DEBUG_ASSERT(false, "Intake : Why am I EXTENDING if my Wanted State don't ask me to do it ?");
+                //         break;
+                // }
+                m_systemState = SystemState::CHILLING_OUT;
+                m_wantedState = WantedState::STAND_BY;
+                m_currentWantedState = m_wantedState;
             }
             break;
 
         case SystemState::COMING_BACK_HOME:
             if (IS_IN_RANGE(pivotInputs.pivotPos, PivotConstants::Position::HOME_POS, PivotConstants::Position::POS_TOLERANCE))
                 {
-                    switch(m_currentWantedState)
-                    {
-                        case WantedState::BECOME_AN_INDEXER:
-                            m_systemState = SystemState::FEELING_LIKE_AN_INDEXER;
-                            break;
+                    // switch(m_currentWantedState)
+                    // {
+                    //     case WantedState::BECOME_AN_INDEXER:
+                    //         m_systemState = SystemState::FEELING_LIKE_AN_INDEXER;
+                    //         break;
                         
-                        case WantedState::STAND_BY:
-                        case WantedState::RETURN_AT_HOME:
-                            m_systemState = SystemState::STAYING_AT_HOME;
-                            m_wantedState = WantedState::STAND_BY;
-                            m_currentWantedState = m_wantedState;
-                            break;
+                    //     case WantedState::STAND_BY:
+                    //     case WantedState::RETURN_AT_HOME:
+                    //         m_systemState = SystemState::STAYING_AT_HOME;
+                    //         m_wantedState = WantedState::STAND_BY;
+                    //         m_currentWantedState = m_wantedState;
+                    //         break;
 
-                        default:
-                            DEBUG_ASSERT(false, "Intake : Why am I COMING_BACK_HOME if my Wanted State don't ask me to do it ?");
-                            break;
-                    }
+                    //     default:
+                    //         DEBUG_ASSERT(false, "Intake : Why am I COMING_BACK_HOME if my Wanted State don't ask me to do it ?");
+                    //         break;
+                    // }
+                    m_systemState = SystemState::STAYING_AT_HOME;
+                    m_wantedState = WantedState::STAND_BY;
+                    m_currentWantedState = m_wantedState;
                 }
             break;
 

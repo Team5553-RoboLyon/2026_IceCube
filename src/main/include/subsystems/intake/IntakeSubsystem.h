@@ -86,7 +86,7 @@ class IntakeSubsystem : public frc2::SubsystemBase {
       ControlMode m_rollerControlMode = RollerConstants::MainControlMode;
     // === Motion Control (PID / Filters) ===
       PidRBL m_pivotPIDController;
-      bool m_mantainPIDAtBottom = false;
+      bool m_mantainPIDAtBottom = true;
     // === Control Inputs / Outputs ===
       double m_rollerOutput{0.0};
       double m_pivotOutput{0.0};
