@@ -210,6 +210,7 @@ void Superstructure::Periodic()
             }
             m_pTurret->SetWantedState(TurretSubsystem::WantedState::POINT_AT_ALLIANCE_ZONE);
             m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STAND_BY);
+            frc::SmartDashboard::PutBoolean("istargetInDeadZone",m_pShootParameters->isTargetInDeadZone);
             break;
 
         case SystemSuperState::SHOOTING_TO_HUB:
@@ -225,6 +226,7 @@ void Superstructure::Periodic()
             }
             m_pTurret->SetWantedState(TurretSubsystem::WantedState::FOLLOW_HUB);
             m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STAND_BY);
+            frc::SmartDashboard::PutBoolean("istargetInDeadZone",m_pShootParameters->isTargetInDeadZone);
             break;
 
         case SystemSuperState::READY_TO_REFUEL:
