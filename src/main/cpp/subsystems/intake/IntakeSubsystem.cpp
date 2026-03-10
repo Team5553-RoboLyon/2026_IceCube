@@ -32,12 +32,6 @@ void IntakeSubsystem::SetControlMode(const ControlMode pivotMode, const ControlM
     SetRollerControlMode(rollerMode);
 }
 
-void IntakeSubsystem::ActualisePIDCoef()
-{
-    m_pivotPIDController.SetGains(m_tunableRollerP.Get(), m_tunableRollerI.Get(), m_tunableRollerD.Get());
-    m_pivotPIDController.Reset();
-}
-
 void IntakeSubsystem::ToggleMantainPID()
 {
     m_mantainPIDAtBottom = !m_mantainPIDAtBottom;

@@ -16,7 +16,6 @@ void IndexerIOSim::UpdateInputs(IndexerIOInputs &inputs)
     inputs.indexerMotorBusVoltage = 12.0;
     inputs.indexerMotorCurrent = m_indexerSim.GetCurrentDraw().value();
     inputs.indexerMotorTemperature = 24.0;
-    inputs.indexerMotorSpeed = m_indexerSim.GetAngularVelocity().value()*60.0/(2.0*NF64_PI);
 
     inputs.clodeAppliedVoltage = double(m_clodeSim.GetInputVoltage());
     inputs.clodeBusVoltage = 12.0;

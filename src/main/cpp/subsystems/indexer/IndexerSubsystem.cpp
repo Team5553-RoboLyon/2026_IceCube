@@ -8,10 +8,10 @@
 IndexerSubsystem::IndexerSubsystem(IndexerIO *pIO) : 
                                                     m_pIndexerIO(pIO)
 {
-    m_indexerFeedforwardController.SetGains(IndexerConstants::Gains::FEEDFORWARD_VELOCITY_VOLTAGE::KS,
-                                          IndexerConstants::Gains::FEEDFORWARD_VELOCITY_VOLTAGE::KV,
-                                          IndexerConstants::Gains::FEEDFORWARD_VELOCITY_VOLTAGE::KA);
-    m_indexerFeedforwardController.SetOutputLimits(IndexerConstants::Voltage::MIN, IndexerConstants::Voltage::MAX);
+    // m_indexerFeedforwardController.SetGains(IndexerConstants::Gains::FEEDFORWARD_VELOCITY_VOLTAGE::KS,
+    //                                       IndexerConstants::Gains::FEEDFORWARD_VELOCITY_VOLTAGE::KV,
+    //                                       IndexerConstants::Gains::FEEDFORWARD_VELOCITY_VOLTAGE::KA);
+    // m_indexerFeedforwardController.SetOutputLimits(IndexerConstants::Voltage::MIN, IndexerConstants::Voltage::MAX);
 }
 
 void IndexerSubsystem::SetWantedState(const WantedState wantedState)
@@ -128,11 +128,6 @@ void IndexerSubsystem::Periodic()
     m_clodeMotorHot.Set(inputs.clodeTemperature > IndexerConstants::clodeMotor::HOT_THRESHOLD);
     m_clodeMotorOverheating.Set(inputs.clodeTemperature > IndexerConstants::clodeMotor::OVERHEATING_THRESHOLD);
     
-    if(!m_isInitialized)
-    {
-    }
-    else 
-    {
         if(ALLOWS_STATE_MACHINE(m_controlMode))
         {
             RunStateMachine();
@@ -223,7 +218,6 @@ void IndexerSubsystem::Periodic()
                 DEBUG_ASSERT(false, "Indexer : impossible state");
                 break; //end of default
         }
-    }
 
 
      // ----------------- Limits -----------------
@@ -248,13 +242,9 @@ void IndexerSubsystem::Periodic()
     frc::SmartDashboard::PutNumber("indexer/WantedState", (int)m_currentWantedState);
     frc::SmartDashboard::PutNumber("indexer/SystemState", (int)m_systemState);
     frc::SmartDashboard::PutNumber("indexer/ControlMode", (int)m_controlMode);
-    frc::SmartDashboard::PutBoolean("indexer/isInit", m_isInitialized);
-    frc::SmartDashboard::PutBoolean("indexer/IRBreaker", inputs.isThereABall);
-    frc::SmartDashboard::PutNumber("indexer/Motor Voltage", m_output);
-    frc::SmartDashboard::PutNumber("indexer/Target Velocity", m_targetVelocity);
-    frc::SmartDashboard::PutNumber("indexer/Clode Voltage ", m_clodeOutput);
-    frc::SmartDashboard::PutNumber("indexer/Motor speed", inputs.indexerMotorSpeed);
-    frc::SmartDashboard::PutNumber("You have shot ", inputs.nbrOfBallShot);
+    frc::SmartDashboard::PutNumber("indexer/IndexerTarget", m_output);
+    // frc::SmartDashboard::PutNumber("indexer/Target Velocity", m_targetVelocity);
+    frc::SmartDashboard::PutNumber("indexer/ClodeTarget", m_clodeOutput);
 }
 
 void IndexerSubsystem::RunStateMachine()

@@ -25,8 +25,6 @@ void Superstructure::SetWantedSuperState(WantedSuperState wantedSuperState)
 {
     switch (wantedSuperState)
     {
-        default:
-            break;
 
         case WantedSuperState::STOP_SHOOT:
             if (m_wantedSuperState == WantedSuperState::SHOOT_AT_ALLIANCE_ZONE_REFUELING
@@ -86,7 +84,11 @@ void Superstructure::SetWantedSuperState(WantedSuperState wantedSuperState)
                 wantedSuperState = WantedSuperState::SHOOT_AT_HUB_REFUELING;
             }
             break;
+        
+        default:
+            break;
     }
+    //TEST
     m_wantedSuperState = wantedSuperState;
 }
 
@@ -301,7 +303,7 @@ void Superstructure::Periodic()
 
         case SystemSuperState::EVACUATING_SHOOTER:
             m_intakeWantedState = IntakeSubsystem::WantedState::EJECT;
-            m_shooterWantedState = ShooterSubsystem::WantedState::REVERSE;
+            m_shooterWantedState = ShooterSubsystem::WantedState::STOP;
             m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::EVACUATE_SHOOTER);
             m_pTurret->SetWantedState(TurretSubsystem::WantedState::STAND_BY);
             m_pClimber->SetWantedState(ClimberSubsystem::WantedState::STAND_BY);
@@ -391,7 +393,6 @@ void Superstructure::Periodic()
         {
             case ShooterSubsystem::WantedState::STAND_BY:
             case ShooterSubsystem::WantedState::STOP:
-            case ShooterSubsystem::WantedState::REVERSE:
                 m_shooterWantedState = ShooterSubsystem::WantedState::RETRACT_HOOD;
                 break;
 
@@ -428,28 +429,14 @@ void Superstructure::RunSuperStateMachine()
     switch(m_currentWantedSuperState)
     {
         case WantedSuperState::STAND_BY:
-            if (m_pIntake->IsOut())
-            {
-                if (m_pIntake->IsPivotMoving())
-                {
-                    m_systemSuperState = SystemSuperState::EXTENDING_INTAKE;
-                }
-                else
-                {
-                    m_systemSuperState = SystemSuperState::READY_TO_REFUEL;
-                }
-            }
-            else
-            {
-                if (m_pIntake->IsPivotMoving())
-                {
-                    m_systemSuperState = SystemSuperState::RETRACTING_INTAKE;
-                }
-                else
-                {
-                    m_systemSuperState = SystemSuperState::AT_HOME;
-                }
-            }
+                // if (m_pIntake->IsPivotMoving() && m_pIntake->IsOut())
+                // {
+                //     m_systemSuperState = SystemSuperState::RETRACTING_INTAKE;
+                // }
+                // else
+                // {
+                //     m_systemSuperState = SystemSuperState::AT_HOME;
+                // }
             break;
 
         case WantedSuperState::PROTECT_INTAKE:
@@ -573,29 +560,15 @@ void Superstructure::RunSuperStateMachine()
 
     switch (m_systemSuperState)
     {
-        case SystemSuperState::IDLE:
-            if(m_pIntake->IsOut())
-            {
-                if (m_pIntake->IsPivotMoving())
-                {
-                    m_systemSuperState = SystemSuperState::EXTENDING_INTAKE;
-                }
-                else
-                {
-                    m_systemSuperState = SystemSuperState::READY_TO_REFUEL;
-                }  
-            }
-            else
-            {
-                if (m_pIntake->IsPivotMoving())
-                {
-                    m_systemSuperState = SystemSuperState::RETRACTING_INTAKE;
-                }
-                else
-                {
-                    m_systemSuperState = SystemSuperState::AT_HOME;
-                }   
-            }
+        case SystemSuperState::IDLE: 
+                // if (m_pIntake->IsPivotMoving())
+                // {
+                //     m_systemSuperState = SystemSuperState::RETRACTING_INTAKE;
+                // }
+                // else
+                // {
+                //     m_systemSuperState = SystemSuperState::AT_HOME;
+                // }   
             break;
 
         case SystemSuperState::REFUELING:
@@ -681,14 +654,6 @@ void Superstructure::RunSuperStateMachine()
             break;
 
         case SystemSuperState::EVACUATING_SHOOTER:
-            if(m_pIndexer->GetSystemState() == IndexerSubsystem::SystemState::SLEEPING &&
-               (m_pShooter->GetSystemState() == ShooterSubsystem::SystemState::RAMPING_BACKWARD
-                 || m_pShooter->GetSystemState() == ShooterSubsystem::SystemState::SHOOTING_BACKWARD))
-                {
-                    m_systemSuperState = SystemSuperState::IDLE;
-                    m_wantedSuperState = WantedSuperState::STAND_BY;
-                    m_currentWantedSuperState = m_wantedSuperState;
-                }
                 break;
 
         case SystemSuperState::SHOOTING_TO_HUB_WHILE_REFUELING:

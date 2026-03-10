@@ -8,7 +8,6 @@ struct IndexerIOInputs
     double indexerMotorBusVoltage = 0.0;
     double indexerMotorCurrent = 0.0;
     double indexerMotorTemperature = 0.0;
-    double indexerMotorSpeed = 0.0;
 
     bool isClodeMotorConnected = true;
 

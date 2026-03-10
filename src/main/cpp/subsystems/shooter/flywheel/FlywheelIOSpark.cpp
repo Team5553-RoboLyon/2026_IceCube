@@ -35,8 +35,8 @@ void FlywheelIOSpark::UpdateInputs(FlywheelIOInputs& inputs)
 {
     inputs.isLeftMotorConnected = (m_leftMotor.GetBusVoltage() !=0.0) && !m_leftMotor.GetFaults().can;
 
-    inputs.leftMotorAppliedVoltage = m_leftMotor.GetAppliedOutput() * FlywheelConstants::LeftMotor::VOLTAGE_COMPENSATION;
     inputs.leftMotorBusVoltage = m_leftMotor.GetBusVoltage();
+    inputs.leftMotorAppliedVoltage = m_leftMotor.GetAppliedOutput() * inputs.leftMotorBusVoltage;
     inputs.leftMotorCurrent = m_leftMotor.GetOutputCurrent();
     inputs.leftMotorTemperature = m_leftMotor.GetMotorTemperature();
     inputs.leftMotorInternalEncoderVelocity = m_leftMotor.GetEncoder().GetVelocity();
@@ -52,12 +52,12 @@ void FlywheelIOSpark::UpdateInputs(FlywheelIOInputs& inputs)
     inputs.shooterVelocity = (inputs.leftMotorInternalEncoderVelocity + inputs.rightMotorInternalEncoderVelocity) / 2; // Convert from RPS to RPM
 
     #ifdef FLYWHEEL_SMARTDASHBOARD_LOG
-    frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Left/AppliedVoltage",inputs.leftMotorInternalEncoderVelocity);
-    frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Left/Voltage", inputs.leftMotorAppliedVoltage);
+    frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Left/AppliedVoltage",inputs.leftMotorAppliedVoltage);
+    frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Left/BusVoltage", inputs.leftMotorBusVoltage);
     frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Left/Current", inputs.leftMotorCurrent);
     frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Left/Temperature", inputs.leftMotorTemperature);
-    frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Right/AppliedVoltage",inputs.rightMotorInternalEncoderVelocity);
-    frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Right/Voltage", inputs.rightMotorAppliedVoltage);
+    frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Right/AppliedVoltage",inputs.rightMotorAppliedVoltage);
+    frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Right/BusVoltage", inputs.rightMotorBusVoltage);
     frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Right/Current", inputs.rightMotorCurrent);
     frc::SmartDashboard::PutNumber("shooter/flywheel/Motor/Right/Temperature", inputs.rightMotorTemperature);
 

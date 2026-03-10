@@ -29,7 +29,7 @@ class ShooterSubsystem : public frc2::SubsystemBase {
       SHOOT_TO_HUB = 1,
       // FEED_ALLY = 2,
       STOP = 3,
-      REVERSE = 4,
+      // REVERSE = 4,
       PREPARE_SHOOT = 5,
       PREPARE_TO_KEEP_ALL = 6,
       RETRACT_HOOD = 7,
@@ -43,12 +43,12 @@ class ShooterSubsystem : public frc2::SubsystemBase {
       SHOOTING_TO_HUB = 1,
       // READY_TO_FEED = 2,
       RESTING = 3,
-      SHOOTING_BACKWARD = 4,
+      // SHOOTING_BACKWARD = 4,
       THATS_ALL_MINE = 5,
       //Transition states
       RAMPING_TO_SHOOT = 6,
       // RAMPING_TO_FEED = 7,
-      RAMPING_BACKWARD = 8,
+      // RAMPING_BACKWARD = 8,
       SLOWING_DOWN = 9,
       SOON_MINE = 10,
       RETRACTING_HOOD = 11
@@ -95,15 +95,7 @@ class ShooterSubsystem : public frc2::SubsystemBase {
       double m_timestamp{0.0};
       units::volt_t m_flywheelOutput{0.0};
       units::volt_t m_hoodOutput{0.0};
-      TunableValueLogger m_tunableFlywheelVoltageLogger{"/Shooter/FlywheelVoltage", 0.0};
 
-      #if ROBOT_MODEL == PROTOTYPE
-        TunableValueLogger m_tunableFlywheelKVLogger{"/Shooter/KV", FlywheelConstants::Gains::FLYWHEEL_FEEDFORWARD::KV};
-        TunableValueLogger m_tunableFlywheelKPLogger{"/Shooter/KP", FlywheelConstants::Gains::VELOCITY_VOLTAGE_PID::KP};
-        TunableValueLogger m_tunableFlywheelKDLogger{"/Shooter/KD", FlywheelConstants::Gains::VELOCITY_VOLTAGE_PID::KD};
-      #endif
-
-      TunableValueLogger m_tunableHoodVoltageLogger{"/Shooter/HoodVoltage", 0.0};
       double m_flywheelTargetSpeed{0.0};
       double m_hoodTargetPos{0.0};
 

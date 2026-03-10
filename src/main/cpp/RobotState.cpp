@@ -30,7 +30,7 @@ void RobotState::AddVisionMeasurement(const VisionMeasurement& measurement)
 
 void RobotState::UpdateOdometry()
 {
-  frc::Rotation2d heading(units::radian_t(-m_navX.GetYaw() * M_PI / 180.0));
+  frc::Rotation2d heading(units::radian_t(-m_navX.GetYaw() * NF64_PI / 180.0));
 
   // Détection glissement / bosses
   if (IsOdometryReliable()) {

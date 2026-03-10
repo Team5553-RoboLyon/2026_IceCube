@@ -22,8 +22,8 @@ RobotContainer::RobotContainer()
     ConfigureBindings();
     drivetrain.ConfigureManualControlInputsAxis([this] { return NDEADBAND(-forwardJoystick.GetY(), driveConstants::Settings::DEADBAND); },
                                       [this] { return NDEADBAND(-rotationJoystick.GetZ(), driveConstants::Settings::DEADBAND); },
-                                      [this] { return 0.0; },
-                                      [this] { return 0.0;});
+                                      [this] { return m_slowdownButton.Get(); },
+                                      [this] { return 0;});
 
 }
 void RobotContainer::ConfigureBindings() {

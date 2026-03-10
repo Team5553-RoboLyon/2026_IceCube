@@ -46,6 +46,7 @@
 #include "LyonLib/Vision/Vision.h"
 #include "LyonLib/Vision/VisionFilterParameters.h"
 #include "LyonLib/Vision/RealPhotonVisionIO.h"
+#include "LyonLib/utils/MacroUtilsRBL.h"
 #include <frc/apriltag/AprilTagFieldLayout.h>
 
 class RobotContainer {
@@ -76,8 +77,8 @@ class RobotContainer {
     .aprilTagWidth = 0.1524_m, // 6 inches in meters
     .maxAmbiguityRatio = 0.15,
     .maxAprilTagDistance = 5.5, // meters
-    .estimatedFOV = frc::Rotation2d(units::radian_t(60.0 * (M_PI / 180.0))), // 60 degrees in radians
-    .zMargin = 0.5_m, // meters
+    .estimatedFOV = frc::Rotation2d(units::radian_t(60.0 * (NF64_PI / 180.0))), // 60 degrees in radians
+    .zMargin = 0.9_m, // meters
     .aprilTagFieldLayout = aprilTagFieldLayout
   };
 
@@ -87,16 +88,16 @@ std::vector<std::shared_ptr<VisionIO>> visionIOs{
   std::make_shared<RealPhotonVisionIO>(
     "Big_brother",
     frc::Transform3d(
-      frc::Translation3d(-0.302_m, -0.32_m, 0.37_m),
-      frc::Rotation3d(-0.24_deg, -22.26_deg, 180.0_deg)
+      frc::Translation3d(-0.30_m, -0.20_m, 0.53_m),
+      frc::Rotation3d(-1.16_deg, -17.34_deg, 164.95_deg)
     ),
     aprilTagFieldLayout
   )
   ,std::make_shared<RealPhotonVisionIO>(
     "Lil_bro",
     frc::Transform3d(
-      frc::Translation3d(-0.567_m, -0.145_m, 0.499_m),  // Position relative au centre robot
-      frc::Rotation3d(-1.94_deg, 17.90_deg, -16_deg)        // Orientation si caméra arrière
+      frc::Translation3d(-0.87_m, 0.05_m, 0.375_m),
+      frc::Rotation3d(-0.05_deg, -26.27_deg, 2.67_deg)
     ),
     aprilTagFieldLayout
   )
@@ -136,4 +137,5 @@ std::vector<std::shared_ptr<VisionIO>> visionIOs{
   void ConfigureBindings();
 
   frc2::JoystickButton m_toggleMaintainPidButton{&forwardJoystick, 1};
+  frc2::JoystickButton m_slowdownButton{&forwardJoystick, 1}; //Binder to find
 };

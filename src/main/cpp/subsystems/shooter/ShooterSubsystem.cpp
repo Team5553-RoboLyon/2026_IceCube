@@ -225,9 +225,9 @@ void ShooterSubsystem::Periodic()
             switch(m_systemState)
             {
                 case SystemState::SHOOTING_TO_HUB:
-                case SystemState::SHOOTING_BACKWARD:
+                // case SystemState::SHOOTING_BACKWARD:
                 case SystemState::RAMPING_TO_SHOOT:
-                case SystemState::RAMPING_BACKWARD:
+                // case SystemState::RAMPING_BACKWARD:
                 case SystemState::THATS_ALL_MINE:
                 case SystemState::SOON_MINE:
                     {
@@ -349,16 +349,18 @@ void ShooterSubsystem::RunStateMachine()
 
         case WantedState::SHOOT_TO_HUB:
             m_systemState = SystemState::SHOOTING_TO_HUB;
+            break;
 
         case WantedState::STOP:
             m_systemState = SystemState::SLOWING_DOWN;
-
-        case WantedState::REVERSE:
-            if (m_systemState != SystemState::SHOOTING_BACKWARD)
-                m_systemState = SystemState::RAMPING_BACKWARD;
-            else 
-                m_wantedState = WantedState::STAND_BY; // ignoring the command
             break;
+
+        // case WantedState::REVERSE:
+        //     if (m_systemState != SystemState::SHOOTING_BACKWARD)
+        //         m_systemState = SystemState::RAMPING_BACKWARD;
+        //     else 
+        //         m_wantedState = WantedState::STAND_BY; // ignoring the command
+        //     break;
 
         case WantedState::PREPARE_SHOOT:
             m_systemState = SystemState::RAMPING_TO_SHOOT;
@@ -374,6 +376,7 @@ void ShooterSubsystem::RunStateMachine()
 
         case WantedState::KEEP_ALL_FOR_YOU:
             m_systemState = SystemState::THATS_ALL_MINE;
+            break;
 
         default:
             DEBUG_ASSERT(false,"Shooter : unknown wanted state used");
@@ -384,31 +387,31 @@ void ShooterSubsystem::RunStateMachine()
     {
         case SystemState::IDLE:
         case SystemState::RESTING:
-        case SystemState::SHOOTING_BACKWARD:
+        // case SystemState::SHOOTING_BACKWARD:
             break;
 
         case SystemState::SHOOTING_TO_HUB:
         case SystemState::RAMPING_TO_SHOOT:
-            if(m_flywheelControlMode == FlywheelConstants::MainControlMode || m_hoodControlMode == HoodConstants::MainControlMode)
-            {
+            // if(m_flywheelControlMode == FlywheelConstants::MainControlMode || m_hoodControlMode == HoodConstants::MainControlMode)
+            // {
                 m_hoodTargetPos = m_pShootParameters->hoodAngle;
                 m_flywheelTargetSpeed = m_pShootParameters->flywheelSpeed;
-            }
-            else
-            {
-                m_hoodTargetPos = HoodConstants::Position::AGAINST_HUB;
-                m_flywheelTargetSpeed = FlywheelConstants::Speed::AGAINST_HUB;
-            }
+            // }
+            // else
+            // {
+            //     m_hoodTargetPos = HoodConstants::Position::AGAINST_HUB;
+            //     m_flywheelTargetSpeed = FlywheelConstants::Speed::AGAINST_HUB;
+            // }
             break; 
 
-        case SystemState::RAMPING_BACKWARD:
-            m_flywheelTargetSpeed = FlywheelConstants::Speed::BACKWARD;
-            m_hoodTargetPos = HoodConstants::Position::MIN;
+        // case SystemState::RAMPING_BACKWARD:
+        //     m_flywheelTargetSpeed = FlywheelConstants::Speed::BACKWARD;
+        //     m_hoodTargetPos = HoodConstants::Position::MIN;
 
-            if (IS_IN_RANGE(flywheelInputs.shooterVelocity,m_flywheelTargetSpeed,FlywheelConstants::Speed::TOLERANCE)
-                && IS_IN_RANGE(hoodInputs.hoodAngle, m_hoodTargetPos, HoodConstants::Position::TOLERANCE))
-                    m_systemState = SystemState::SHOOTING_BACKWARD;
-            break;
+        //     if (IS_IN_RANGE(flywheelInputs.shooterVelocity,m_flywheelTargetSpeed,FlywheelConstants::Speed::TOLERANCE)
+        //         && IS_IN_RANGE(hoodInputs.hoodAngle, m_hoodTargetPos, HoodConstants::Position::TOLERANCE))
+        //             m_systemState = SystemState::SHOOTING_BACKWARD;
+        //     break;
         
         case SystemState::SLOWING_DOWN:
             m_flywheelTargetSpeed = FlywheelConstants::Speed::REST;
@@ -448,5 +451,6 @@ void ShooterSubsystem::RunStateMachine()
         default:
             DEBUG_ASSERT(false, "shooter : impossible state");
             break; //end of default
+        }
     }
 }
