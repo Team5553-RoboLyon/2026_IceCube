@@ -202,14 +202,13 @@ void ShootParametersCalculator::CalculateAllianceZoneNewParameters(ShootParamete
     // j_turretTerrain.y = i_robot.x;
 
     //3 alliance zone dans terrain
-    if (turret.y < FieldConstants::FIELD_WIDTH.value()/2.0)
+    allianceZone.x = m_allianceZoneTargetPose.X().value();
+    if (turretTerrain.y < FieldConstants::FIELD_WIDTH.value()/2.0)
     {
-        allianceZone.x = m_allianceZoneTargetPose.X().value();
         allianceZone.y = FieldConstants::FIELD_WIDTH.value()/4.0;
     }
     else
     {
-        allianceZone.x = m_allianceZoneTargetPose.X().value();
         allianceZone.y = 3.0*FieldConstants::FIELD_WIDTH.value()/4.0;
     }
 
