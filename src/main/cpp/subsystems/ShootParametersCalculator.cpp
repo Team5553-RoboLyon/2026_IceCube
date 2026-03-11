@@ -292,6 +292,8 @@ void ShootParametersCalculator::CalculateAllianceZoneNewParameters(ShootParamete
 
     frc::SmartDashboard::PutBoolean("IsInRange", (params.lookAheadTargetTurretPos > TurretConstants::Settings::BOTTOM_LIMIT &&  params.lookAheadTargetTurretPos < TurretConstants::Settings::TOP_LIMIT));
     params.isTargetInDeadZone = !(params.lookAheadTargetTurretPos > TurretConstants::Settings::BOTTOM_LIMIT &&  params.lookAheadTargetTurretPos < TurretConstants::Settings::TOP_LIMIT);
+
+    params.turretInTolerance = (IS_IN_RANGE(turretOrientation, params.lookAheadTargetTurretPos, m_turretTolerance));
 }
 
 

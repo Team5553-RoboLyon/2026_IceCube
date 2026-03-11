@@ -41,7 +41,7 @@ class ShootParametersCalculator
      frc::Pose2d m_hubTargetPos;
      frc::Pose2d m_allianceZoneTargetPose;
      double m_lastTimestamp = 0.0;
-     double m_turretTolerance = NF64_PI_4/2.0;
+     double m_turretTolerance = NF64_PI/6.0;
      wpi::interpolating_map<double,double> m_hoodPosMap; //TODO : do tests to get at least 10 values for each interpolating map
      wpi::interpolating_map<double,double> m_flywheelSpeedMap;
      wpi::interpolating_map<double,double> m_timeToReachTargetMap;
