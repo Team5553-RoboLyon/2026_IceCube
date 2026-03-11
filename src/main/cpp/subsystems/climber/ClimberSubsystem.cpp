@@ -34,8 +34,12 @@ ClimberSubsystem::ClimberSubsystem(ClimberIO *pIO) :
 
 void ClimberSubsystem::SetWantedState(const WantedState wantedState)
 {
-    if(!m_isInitialized)  // Skip initialization if the subsystem is already initialized
+    if(wantedState == WantedState::INITIALIZATION)
+    {
+        if(!m_isInitialized)  // Skip initialization if the subsystem is already initialized
             m_wantedState = WantedState::INITIALIZATION; 
+    }
+    else // if(wantedState != WantedState::INITIALIZATION)
     {
         m_wantedState = wantedState;
     }

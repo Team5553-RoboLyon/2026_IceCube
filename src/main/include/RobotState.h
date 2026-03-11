@@ -10,7 +10,7 @@
 
 #include "LyonLib/vision/VisionMeasurement.h"
 
-#include "subsystems/drivetrain/DrivetrainSubsystem.h"
+class DrivetrainSubsystem;
 
 #include "LyonLib/logging/ComplexStructLogger.h"
 
@@ -20,12 +20,13 @@ class RobotState {
 public:
     RobotState(frc::Pose2d& initialPose,
                frc::DifferentialDriveKinematics& kinematics,
-               studica::AHRS& navX,
-               DrivetrainSubsystem *pDrivetrain);
+               studica::AHRS& navX);
 
     void UpdateOdometry();
 
     void AddVisionMeasurement(const VisionMeasurement& measurement);
+
+    void SetDrivetrain(DrivetrainSubsystem *pDrivetrain) {m_pDrivetrain = pDrivetrain;}
 
     void ResetPoseWithVision();
     void ResetPose(frc::Pose2d &resetPosition);

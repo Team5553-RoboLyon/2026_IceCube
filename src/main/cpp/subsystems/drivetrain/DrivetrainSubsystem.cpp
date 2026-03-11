@@ -3,14 +3,16 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
 #include "LyonLib/utils/MacroUtilsRBL.h"
+#include "RobotState.h"
 
+#include "subsystems/drivetrain/DrivetrainIO.h"
 
-DrivetrainSubsystem::DrivetrainSubsystem(DrivetrainIO *pIO) 
+DrivetrainSubsystem::DrivetrainSubsystem(DrivetrainIO* pIO, RobotState* pRobotState) 
 : DrivetrainSubsystem(pIO,
                     []() { return 0.0; },
                     []() { return 0.0; },
                     []() { return false; },
-                    []() { return false; })
+                    []() { return false; }, pRobotState)
 {
     m_axesAreActive = false;
 }
@@ -19,12 +21,14 @@ DrivetrainSubsystem::DrivetrainSubsystem(DrivetrainIO *pIO,
                     std::function<double()> fxForwardAxis,
                     std::function<double()> fxRotationAxis,
                     std::function<bool()> fxSlowDriveButton,
-                    std::function<bool()> fxDriveActionButton)
+                    std::function<bool()> fxDriveActionButton,
+                    RobotState* pRobotState)
                     : m_pTankDriveIO(pIO), 
                     m_fxForwardAxis(fxForwardAxis),
                     m_fxRotationAxis(fxRotationAxis),
                     m_fxSlowDriveButton(fxSlowDriveButton),
                     m_fxDriveActionButton(fxDriveActionButton),
+                    m_pRobotState(pRobotState),
                     m_axesAreActive(true)
 {
 }
@@ -276,7 +280,7 @@ frc::ChassisSpeeds DrivetrainSubsystem::FollowPath()
     const choreo::DifferentialSample& currentSample = m_autoSampleToBeApplied.value();
     const frc::ChassisSpeeds targetSpeeds = currentSample.GetChassisSpeeds();
     const frc::Pose2d targetPose = currentSample.GetPose();
-    m_ErreurLogger.Log(inputs.odometryPosition.RelativeTo(targetPose));
+    m_ErreurLogger.Log(m_pRobotState->GetPose().value().RelativeTo(targetPose));
     m_theoriticalLogger.Log(targetPose);
      
     output = m_ltvController.Calculate(inputs.odometryPosition, targetPose, targetSpeeds.vx, targetSpeeds.omega);

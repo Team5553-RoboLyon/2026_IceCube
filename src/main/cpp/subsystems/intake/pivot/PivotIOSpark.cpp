@@ -34,20 +34,6 @@ void PivotIOSpark::UpdateInputs(PivotIOInputs& inputs)
 
     inputs.isLeftEncoderConnected = m_leftEncoder.IsConnected();
     inputs.pivotPos = m_leftEncoder.Get();
-    // inputs.isRightEncoderConnected = m_rightEncoder.IsConnected();
-
-    // if (inputs.isLeftEncoderConnected && inputs.isLeftEncoderConnected)
-    // {
-    //     inputs.pivotPos = (m_leftEncoder.Get()+m_rightEncoder.Get())/2;
-    // }
-    // else if (!inputs.isLeftEncoderConnected && inputs.isLeftEncoderConnected)
-    // {
-    //     inputs.pivotPos = m_rightEncoder.Get();
-    // }
-    // else if (inputs.isLeftEncoderConnected && !inputs.isLeftEncoderConnected)
-    // {
-    //     inputs.pivotPos = m_leftEncoder.Get();
-    // }
 
     frc::SmartDashboard::PutBoolean("Pivot/IsEncoderConnected", inputs.isPivotMotorConnected);
     frc::SmartDashboard::PutNumber("Pivot/MotorBusVoltage", inputs.pivotMotorBusVoltage);
@@ -55,7 +41,6 @@ void PivotIOSpark::UpdateInputs(PivotIOInputs& inputs)
     frc::SmartDashboard::PutNumber("Pivot/MotorCurrent", inputs.pivotMotorCurrent);
     frc::SmartDashboard::PutNumber("Pivot/MotorTemperature", inputs.pivotMotorTemperature);
     frc::SmartDashboard::PutNumber("Pivot/PivotPos", inputs.pivotPos);
-    // frc::SmartDashboard::PutNumber("Pivot/RightEncoderPos", m_rightEncoder.Get());
 }
 
 void PivotIOSpark::SetVoltage(double voltage)

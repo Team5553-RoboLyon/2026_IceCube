@@ -37,7 +37,7 @@ namespace ClimberConstants
 
     namespace Simulation
     {
-        constexpr double CARRIAGE_MASSE = 65.0; //kg 
+        constexpr double CARRIAGE_MASSE = 35.0; //kg 
         constexpr double MOI = 0.002; //kg.m^2 //TUNEME
         constexpr double MIN_HEIGHT = 0.000; //m //TUNEME
         constexpr double MAX_HEIGHT = 0.300; //m //TUNEME

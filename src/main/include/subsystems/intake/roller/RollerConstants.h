@@ -9,6 +9,9 @@
 
 using IdleMode = rev::spark::SparkBaseConfig::IdleMode;
 
+#if ROBOT_MODEL != COMPETITON
+    #define ROLLER_SMARTDASHBOARD_LOG
+#endif
 namespace RollerConstants
 {
     

@@ -50,9 +50,7 @@ void Robot::RobotPeriodic() {
     //Code for no data received yet
   }
 
-  frc::SmartDashboard::PutBoolean("Robot X", m_container.ahrs.IsConnected());
-  frc::SmartDashboard::PutNumber("Robot Yaw", m_container.ahrs.GetAngle());
-
+  frc::SmartDashboard::PutBoolean("NavX is Connected", m_container.ahrs.IsConnected());
   m_container.robotState.UpdateOdometry();
 }
 
@@ -74,14 +72,13 @@ void Robot::AutonomousExit() {}
 
 void Robot::TeleopInit() {
   //TODO : set pose
-
+  m_container.drivetrain.SetWantedDrive(DriveMode::ARCADE_DRIVE);
+}
+void Robot::TeleopPeriodic() {
   if(m_container.forwardJoystick.GetRawButtonPressed(3))
   {
     m_container.robotState.ResetPoseWithVision();
   }
-  m_container.drivetrain.SetWantedDrive(DriveMode::ARCADE_DRIVE);
-}
-void Robot::TeleopPeriodic() {
   // if(BYPASS_STATE_MACHINE(m_container.climber.GetControlMode()))
   // {
   //   m_container.climber.SetManualControlInput(m_container.operatorGamepad.GetLeftY());

@@ -28,12 +28,16 @@ void RollerIOSpark::UpdateInputs(RollerIOInputs& inputs)
     inputs.rollerMotorCurrent = m_rollerMotor.GetOutputCurrent();
     inputs.rollerMotorTemperature = m_rollerMotor.GetMotorTemperature();
     
+    #ifdef ROLLER_SMARTDASHBOARD_LOG
     frc::SmartDashboard::PutBoolean("intake/roller/IsMotorConnected", inputs.isRollerMotorConnected);
-    frc::SmartDashboard::PutNumber("intake/roller/MotorBusVoltage", inputs.rollerMotorBusVoltage);
-    frc::SmartDashboard::PutNumber("intake/roller/MotorAppliedVoltage", inputs.rollerMotorAppliedVoltage);
-    frc::SmartDashboard::PutNumber("intake/roller/MotorCurrent", inputs.rollerMotorCurrent);
+    frc::SmartDashboard::PutNumber("intake/roller/Motor/AppliedVoltage",inputs.rollerMotorAppliedVoltage);
+    frc::SmartDashboard::PutNumber("intake/roller/Motor/BusVoltage", inputs.rollerMotorBusVoltage);
+    frc::SmartDashboard::PutNumber("intake/roller/Motor/Current", inputs.rollerMotorCurrent);
     frc::SmartDashboard::PutNumber("intake/roller/MotorTemperature", inputs.rollerMotorTemperature);
-    frc::SmartDashboard::PutNumber("intake/roller/MotorVelocity", m_rollerMotor.GetEncoder().GetVelocity());   
+    frc::SmartDashboard::PutNumber("intake/roller/MotorVelocity", m_rollerMotor.GetEncoder().GetVelocity()); 
+    #else
+    m_logger.Log(inputs);
+    #endif
 }
 
 void RollerIOSpark::SetVoltage(double voltage)
