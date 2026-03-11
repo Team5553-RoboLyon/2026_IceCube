@@ -203,7 +203,7 @@ void Superstructure::Periodic()
         case SystemSuperState::SHOOTING_TO_ALLIANCE_ZONE:
             m_intakeWantedState = IntakeSubsystem::WantedState::BECOME_AN_INDEXER;
             m_shooterWantedState = ShooterSubsystem::WantedState::KEEP_ALL_FOR_YOU;
-            if (!m_pShootParameters->isTargetInDeadZone)
+            if ((!m_pShootParameters->isTargetInDeadZone) && m_pShootParameters->turretInTolerance)
             {
                 m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::FEED_SHOOTER);
             }
@@ -219,7 +219,7 @@ void Superstructure::Periodic()
         case SystemSuperState::SHOOTING_TO_HUB:
             m_intakeWantedState = IntakeSubsystem::WantedState::BECOME_AN_INDEXER;
             m_shooterWantedState = ShooterSubsystem::WantedState::SHOOT_TO_HUB;
-            if (!m_pShootParameters->isTargetInDeadZone)
+            if ((!m_pShootParameters->isTargetInDeadZone) && m_pShootParameters->turretInTolerance)
             {
                 m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::FEED_SHOOTER);
             }
@@ -331,7 +331,7 @@ void Superstructure::Periodic()
         case SystemSuperState::SHOOTING_TO_HUB_WHILE_REFUELING:
             m_intakeWantedState = IntakeSubsystem::WantedState::REFUEL;
             m_shooterWantedState = ShooterSubsystem::WantedState::SHOOT_TO_HUB;
-            if (!m_pShootParameters->isTargetInDeadZone)
+            if ((!m_pShootParameters->isTargetInDeadZone) && m_pShootParameters->turretInTolerance)
             {
                 m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::FEED_SHOOTER);
             }
@@ -362,7 +362,7 @@ void Superstructure::Periodic()
         case SystemSuperState::SHOOTING_TO_ALLIANCE_ZONE_WHILE_REFUELING:
             m_intakeWantedState = IntakeSubsystem::WantedState::REFUEL;
             m_shooterWantedState = ShooterSubsystem::WantedState::KEEP_ALL_FOR_YOU;
-            if (!m_pShootParameters->isTargetInDeadZone)
+            if ((!m_pShootParameters->isTargetInDeadZone) && m_pShootParameters->turretInTolerance)
             {
                 m_pIndexer->SetWantedState(IndexerSubsystem::WantedState::FEED_SHOOTER);
             }
@@ -394,6 +394,8 @@ void Superstructure::Periodic()
             DEBUG_ASSERT(false,"Superstructure : unknwon system super state used");
             break;
     }
+
+    frc::SmartDashboard::PutBoolean("turretInRange", m_pShootParameters->turretInTolerance);
 
     if (IsRobotCloseToTrench())
     {

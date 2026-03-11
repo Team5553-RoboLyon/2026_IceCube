@@ -4,6 +4,7 @@
 #include "frc/DriverStation.h"
 #include <wpi/interpolating_map.h>
 #include "LyonLib/logging/ComplexStructLogger.h"
+#include "LyonLib/utils/MacroUtilsRBL.h"
 
 struct ShootParameters {
     frc::Pose2d lookAheadTargetPos;
@@ -11,6 +12,7 @@ struct ShootParameters {
     double hoodAngle = 0.0;
     double flywheelSpeed = 0.0;
     bool isTargetInDeadZone = true;
+    bool turretInTolerance;
 };
 
 struct vec2D
@@ -39,6 +41,7 @@ class ShootParametersCalculator
      frc::Pose2d m_hubTargetPos;
      frc::Pose2d m_allianceZoneTargetPose;
      double m_lastTimestamp = 0.0;
+     double m_turretTolerance = NF64_PI_4/2.0;
      wpi::interpolating_map<double,double> m_hoodPosMap; //TODO : do tests to get at least 10 values for each interpolating map
      wpi::interpolating_map<double,double> m_flywheelSpeedMap;
      wpi::interpolating_map<double,double> m_timeToReachTargetMap;

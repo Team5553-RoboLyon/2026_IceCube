@@ -169,6 +169,8 @@ void ShootParametersCalculator::CalculateHubNewParameters(ShootParameters& param
 
     frc::SmartDashboard::PutBoolean("IsInRange", (params.lookAheadTargetTurretPos > TurretConstants::Settings::BOTTOM_LIMIT &&  params.lookAheadTargetTurretPos < TurretConstants::Settings::TOP_LIMIT));
     params.isTargetInDeadZone = !(params.lookAheadTargetTurretPos > TurretConstants::Settings::BOTTOM_LIMIT &&  params.lookAheadTargetTurretPos < TurretConstants::Settings::TOP_LIMIT);
+
+    params.turretInTolerance = (IS_IN_RANGE(turretOrientation, params.lookAheadTargetTurretPos, m_turretTolerance));
 }
 
 void ShootParametersCalculator::CalculateAllianceZoneNewParameters(ShootParameters& params, frc::Pose2d robotPos, double turretOrientation, double timestamp)
