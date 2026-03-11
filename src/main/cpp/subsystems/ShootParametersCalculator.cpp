@@ -9,20 +9,29 @@
 
 ShootParametersCalculator::ShootParametersCalculator()
 {
-    m_hoodPosMap.insert(1.20, NDEGtoRAD(1.2));
-    m_hoodPosMap.insert(2.535, NDEGtoRAD(12));
-    m_hoodPosMap.insert(3.037, NDEGtoRAD(14));
-    m_hoodPosMap.insert(5.163, NDEGtoRAD(19.1));
+    m_hoodPosMap.insert(0.87, NDEGtoRAD(1.3)); 
+    m_hoodPosMap.insert(1.14, NDEGtoRAD(1.85)); 
+    m_hoodPosMap.insert(1.72, NDEGtoRAD(2.95));
+    // m_hoodPosMap.insert(1.12, NDEGtoRAD(1.2)); //tuneme
+    m_hoodPosMap.insert(2.535, NDEGtoRAD(12)); //tuneme
+    m_hoodPosMap.insert(3.037, NDEGtoRAD(14)); //tuneme
+    m_hoodPosMap.insert(5.163, NDEGtoRAD(19.1)); //tuneme
 
-    m_flywheelSpeedMap.insert(1.20, 2500.0);
-    m_flywheelSpeedMap.insert(2.535, 3200.0);
-    m_flywheelSpeedMap.insert(3.037, 3450.0);
-    m_flywheelSpeedMap.insert(5.163, 3500.0);
+    m_flywheelSpeedMap.insert(0.87, 2250.0);
+    m_flywheelSpeedMap.insert(1.14, 2500.0);
+    m_flywheelSpeedMap.insert(1.72, 2850.0);
+    // m_flywheelSpeedMap.insert(1.25, 2500.0); //tuneme
+    m_flywheelSpeedMap.insert(2.535, 3200.0); //tuneme
+    m_flywheelSpeedMap.insert(3.037, 3450.0); //tuneme
+    m_flywheelSpeedMap.insert(5.163, 3500.0); //tuneme
 
-    m_timeToReachTargetMap.insert(1.20, 1.2); //tuneme
+    m_timeToReachTargetMap.insert(1.25, 1.06);
+    m_timeToReachTargetMap.insert(1.25, 1.04); 
+    m_timeToReachTargetMap.insert(1.25, 1.25); 
+    // m_timeToReachTargetMap.insert(1.25, 1.03); //tuneme
     m_timeToReachTargetMap.insert(2.535, 1.3); //tuneme
     m_timeToReachTargetMap.insert(3.037, 1.4); //tuneme
-    m_timeToReachTargetMap.insert(5.163, 1.63);
+    m_timeToReachTargetMap.insert(5.163, 1.63); //tuneme
 }
 
 void ShootParametersCalculator::SetAlliance(frc::DriverStation::Alliance alliance)

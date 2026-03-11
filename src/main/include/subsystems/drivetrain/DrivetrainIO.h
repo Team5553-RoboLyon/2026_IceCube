@@ -55,5 +55,6 @@ public:
     
     virtual void SetChassisSpeed(const frc::ChassisSpeeds &speeds) = 0;
 
+    virtual frc::ChassisSpeeds GetChassisSpeed() const = 0;
     virtual void ResetPosition(const frc::Pose2d& position) = 0;
 };

@@ -170,6 +170,17 @@ void DrivetrainIOFlex::SetChassisSpeed(const frc::ChassisSpeeds &speeds)
                                             * driveConstants::Motors::VOLTAGE_COMPENSATION));
 }
 
+frc::ChassisSpeeds DrivetrainIOFlex::GetChassisSpeed() const
+{
+    double leftSideSpeed = m_realLeftSideSpeed;
+    double rightSideSpeed = m_realRightSideSpeed;
+
+    double linearVelocity = (leftSideSpeed + rightSideSpeed) / 2.0;
+    double angularVelocity = (rightSideSpeed - leftSideSpeed) / driveConstants::Specifications::TRACKWIDTH;
+
+    return frc::ChassisSpeeds{units::meters_per_second_t(linearVelocity), 0_mps, units::radians_per_second_t(angularVelocity)};
+}
+
 void DrivetrainIOFlex::ResetPosition(const frc::Pose2d& position)
 {
     m_encoderLeft.Reset();

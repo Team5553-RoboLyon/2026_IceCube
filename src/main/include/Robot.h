@@ -7,9 +7,8 @@
 #include <frc/TimedRobot.h>
 #include <optional>
 #include "RobotContainer.h"
-#include "choreo/Choreo.h"
+
 #include "LyonLib/logging/Alert.h"
-#include "LyonLib/logging/ComplexStructLogger.h"
 
 class Robot : public frc::TimedRobot {
  public:
@@ -38,16 +37,9 @@ class Robot : public frc::TimedRobot {
   void SimulationInit() override;
   void SimulationPeriodic() override;
  private:
-  // Trajectories should always be loaded at startup, not when the autonomous period begins. 
-  //  Loading trajectories is a blocking operation, and larger trajectories may take multiple seconds to load on a RoboRIO, 
-  //  cutting into the time a robot has to run its autonomous routine in a match.
- void LoadAutonomousTrajectories();
- 
   RobotContainer m_container; 
   std::string gameData;
 
-  StructArrayLogger<frc::Pose2d> trajectoryLogger{"/Trajectory/Robot"};
-  choreo::Trajectory<choreo::DifferentialSample> trajectory;
   Alert m_isNotCompetitionRobot{"Not CompBot used", Alert::AlertType::WARNING};
 
   Alert m_pilot{"Pilot currently driving :", Alert::AlertType::INFO};

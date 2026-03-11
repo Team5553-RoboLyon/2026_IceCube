@@ -52,6 +52,8 @@ class DrivetrainIOFlex  final : public DrivetrainIO
     void SetVoltage(const units::volt_t leftSideVoltage, const units::volt_t rightSideVoltage) override;
     void SetDutyCycle(const double leftSideDutyCycle, const double rightSideDutyCycle) override;
     void SetChassisSpeed(const frc::ChassisSpeeds &speeds) override;
+
+    frc::ChassisSpeeds GetChassisSpeed() const override;
     
     void ResetPosition(const frc::Pose2d& position) override;
 };

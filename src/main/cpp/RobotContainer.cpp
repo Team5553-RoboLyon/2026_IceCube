@@ -17,6 +17,8 @@
 // #include "LyonLib/utils/MacroUtilsRBL.h"
 // #include "commands/SetWantedShooterStateCmd.h"
 // #include "commands/SetSystemTurretStateCmd.h"
+#include "LyonLib/utils/MacroUtilsRBL.h"
+#include "frc/smartdashboard/SmartDashboard.h"
 
 RobotContainer::RobotContainer()
 {
@@ -27,6 +29,10 @@ RobotContainer::RobotContainer()
                                       [this] { return m_slowdownButton.Get(); },
                                       [this] { return 0;});
 
+  // Build an auto chooser. This will use frc2::cmd::None() as the default option.
+  autoChooser = pathplanner::AutoBuilder::buildAutoChooser();
+
+  frc::SmartDashboard::PutData("Auto Chooser", &autoChooser);
 }
 void RobotContainer::ConfigureBindings() {
 
@@ -91,4 +97,9 @@ void RobotContainer::ConfigureBindings() {
         robotState.AddVisionMeasurement(measurement);
     }));
 
+}
+
+frc2::Command* RobotContainer::GetAutonomousCommand() {
+    // return pathplanner::PathPlannerAuto("1stAuto").ToPtr();
+    return autoChooser.GetSelected();
 }
