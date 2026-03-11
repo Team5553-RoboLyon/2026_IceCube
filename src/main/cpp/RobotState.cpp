@@ -14,7 +14,7 @@ RobotState::RobotState(frc::Pose2d& initialPose,
           0.0_m,
           initialPose,
     #if ROBOT_MODEL != SIMULATION          
-          wpi::array<double, 3>{0.2, 0.2, 0.05},     // std dev odometry (m, m, rad)
+          wpi::array<double, 3>{5, 5, 0.2},     // std dev odometry (m, m, rad)
           wpi::array<double, 3>{0.1, 0.1, 0.3}         // std dev vision (m, m, rad)
     #else
             wpi::array<double, 3>{0.05, 0.05, 0.1},     // std dev odometry (m, m, rad)
@@ -39,24 +39,24 @@ void RobotState::AddVisionMeasurement(const VisionMeasurement& measurement)
 
 void RobotState::UpdateOdometry()
 {
-    #if ROBOT_MODEL != SIMULATION
+    // #if ROBOT_MODEL != SIMULATION
   frc::Rotation2d heading(units::radian_t(-m_navX.GetYaw() * NF64_PI / 180.0));
   // Détection glissement / bosses
-  if (IsOdometryReliable()) {
+//   if (IsOdometryReliable()) {
       m_poseEstimator.UpdateWithTime(frc::Timer::GetFPGATimestamp(),
                                     heading, m_pDrivetrain->GetDistancesSupplier().first, m_pDrivetrain->GetDistancesSupplier().second);
-  } else {
-      // poids odométrie réduit sur boss
-      m_poseEstimator.SetVisionMeasurementStdDevs({0.05, 0.05, 0.1});
-      m_poseEstimator.UpdateWithTime(frc::Timer::GetFPGATimestamp(),
-                                    heading, m_pDrivetrain->GetDistancesSupplier().first, m_pDrivetrain->GetDistancesSupplier().second);
-      // remise à la normale
-      m_poseEstimator.SetVisionMeasurementStdDevs({0.1, 0.1, 0.1});
-  }
-  #else
-  m_poseEstimator.UpdateWithTime(frc::Timer::GetFPGATimestamp(),
-                                    m_pDrivetrain->GetOdometryPose().Rotation(), m_pDrivetrain->GetDistancesSupplier().first, m_pDrivetrain->GetDistancesSupplier().second);
-  #endif
+//   } else {
+//       // poids odométrie réduit sur boss
+//       m_poseEstimator.SetVisionMeasurementStdDevs({0.05, 0.05, 0.1});
+//       m_poseEstimator.UpdateWithTime(frc::Timer::GetFPGATimestamp(),
+//                                     heading, m_pDrivetrain->GetDistancesSupplier().first, m_pDrivetrain->GetDistancesSupplier().second);
+//       // remise à la normale
+//       m_poseEstimator.SetVisionMeasurementStdDevs({0.1, 0.1, 0.1});
+//   }
+//   #else
+//   m_poseEstimator.UpdateWithTime(frc::Timer::GetFPGATimestamp(),
+//                                     m_pDrivetrain->GetOdometryPose().Rotation(), m_pDrivetrain->GetDistancesSupplier().first, m_pDrivetrain->GetDistancesSupplier().second);
+//   #endif
   m_logger.Log(m_poseEstimator.GetEstimatedPosition());
 }
 
