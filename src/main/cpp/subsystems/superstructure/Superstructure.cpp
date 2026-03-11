@@ -174,7 +174,7 @@ void Superstructure::Periodic()
     }
     else
     {
-        m_shootParameterCalculator.SetRobotPos(m_robotPos, m_timestamp);
+        m_shootParameterCalculator.SetTurretPos(m_robotPos, m_pTurret->inputs.orientation, m_timestamp);
     }
 
     RunSuperStateMachine();
