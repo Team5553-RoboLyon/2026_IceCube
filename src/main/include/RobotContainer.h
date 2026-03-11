@@ -50,6 +50,8 @@
 #include "LyonLib/utils/MacroUtilsRBL.h"
 #include <frc/apriltag/AprilTagFieldLayout.h>
 
+#include <pathplanner/lib/commands/PathPlannerAuto.h>
+
 class RobotContainer {
  public:
   RobotContainer();
@@ -140,8 +142,10 @@ std::vector<std::shared_ptr<VisionIO>> visionIOs{
                                  pShootParams,
                                  &robotState};
 
+                                 frc2::Command* GetAutonomousCommand();
  private:
   void ConfigureBindings();
+  frc::SendableChooser<frc2::Command *> autoChooser;
 
   frc2::JoystickButton m_toggleMaintainPidButton{&forwardJoystick, 4};
   frc2::JoystickButton m_slowdownButton{&forwardJoystick, 1}; //Binder to find

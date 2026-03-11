@@ -28,8 +28,6 @@ void Robot::RobotInit() {
   m_robot.Set(true);
   m_robot.SetText(std::string("Robot used : ") + RobotToString());
   m_isNotCompetitionRobot.Set(ROBOT_MODEL != COMPETITON);
-
-  LoadAutonomousTrajectories();
 }
 void Robot::RobotPeriodic() {
   frc2::CommandScheduler::GetInstance().Run();
@@ -61,11 +59,11 @@ void Robot::DriverStationConnected() {
 }
 
 void Robot::AutonomousInit() {
-  //TODO : set pose
-  // m_container.drivetrain.ResetOdometryPose(trajectory.GetInitialSample().value().GetPose());
-  // m_container.drivetrain.SetWantedDrive(DriveMode::AUTO_PATH_FOLLOWER);
-  // m_container.drivetrain.SetDesiredAutoTrajectory(trajectory);
-
+  m_container.drivetrain.SetWantedDrive(DriveMode::AUTO_PATH_FOLLOWER);
+  frc2::Command * m_autonomousCommand = m_container.GetAutonomousCommand();
+  if (m_autonomousCommand) {
+    frc2::CommandScheduler::GetInstance().Schedule(m_autonomousCommand);
+  }
 }
 void Robot::AutonomousPeriodic() {}
 void Robot::AutonomousExit() {}
@@ -121,10 +119,6 @@ void Robot::TestExit() {}
 void Robot::SimulationInit() {}
 void Robot::SimulationPeriodic() {}
 
-void Robot::LoadAutonomousTrajectories() {
- trajectory = choreo::Choreo::LoadTrajectory<choreo::DifferentialSample>("Virgule").value(); 
- trajectoryLogger.Log(trajectory.GetPoses());
-}
 
 #ifndef RUNNING_FRC_TESTS
 int main() {

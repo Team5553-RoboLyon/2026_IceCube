@@ -1,0 +1,55 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RightTrenchToRefuel"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RightBumpToDepot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DepotToOutpost"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "GoToOutpost"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "OutpostToPrepareClimb"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RightClimb"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

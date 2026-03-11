@@ -127,6 +127,16 @@ void DrivetrainIOSim::SetChassisSpeed(const frc::ChassisSpeeds &speeds)
     m_drivetrainSim.SetInputs(m_leftVoltage, m_rightVoltage);
 }
 
+frc::ChassisSpeeds DrivetrainIOSim::GetChassisSpeed() const
+{
+    units::meters_per_second_t leftSideSpeed = m_drivetrainSim.GetLeftVelocity();
+    units::meters_per_second_t rightSideSpeed = m_drivetrainSim.GetRightVelocity();
+
+    units::meters_per_second_t linearSpeed = (leftSideSpeed + rightSideSpeed) / 2.0;
+    units::radians_per_second_t angularSpeed = units::radians_per_second_t((rightSideSpeed.value() - leftSideSpeed.value()) / (driveConstants::Specifications::TRACKWIDTH));
+    return frc::ChassisSpeeds(linearSpeed, 0.0_mps, angularSpeed);
+}
+
 void DrivetrainIOSim::ResetPosition(const frc::Pose2d& position)
 {
     m_drivetrainSim.SetPose(position);
