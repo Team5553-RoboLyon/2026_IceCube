@@ -13,6 +13,12 @@ struct ShootParameters {
     bool isTargetInDeadZone = true;
 };
 
+struct vec2D
+{
+    double x;
+    double y;
+};
+
 class ShootParametersCalculator
 {
     public:
@@ -21,7 +27,7 @@ class ShootParametersCalculator
      ~ShootParametersCalculator() = default;
 
      void SetAlliance(frc::DriverStation::Alliance alliance);
-     void SetRobotPos(frc::Pose2d robotPos, double timestamp);
+     void SetTurretPos(frc::Pose2d robotPos, double turretOrientation, double timestamp);
      void CalculateHubNewParameters(ShootParameters& params, frc::Pose2d robotPos, double turretOrientation, double timestamp);
      void CalculateAllianceZoneNewParameters(ShootParameters& params, frc::Pose2d robotPos, double turretOrientation, double timestamp);
 
@@ -29,7 +35,7 @@ class ShootParametersCalculator
 
     private:
 
-     frc::Pose2d m_lastRobotPos;
+     frc::Pose2d m_lastTurretPos;
      frc::Pose2d m_hubTargetPos;
      frc::Pose2d m_allianceZoneTargetPose;
      double m_lastTimestamp = 0.0;
@@ -37,7 +43,7 @@ class ShootParametersCalculator
      wpi::interpolating_map<double,double> m_flywheelSpeedMap;
      wpi::interpolating_map<double,double> m_timeToReachTargetMap;
      StructLogger<frc::Pose2d> m_logger{"/HubPos"};
-     StructLogger<frc::Pose2d> m_projectedLogger{"/2xProjectedTurret"};
+     StructLogger<frc::Pose2d> m_projectedLogger{"/ProjectedTarget"};
      StructLogger<frc::Pose2d> m_turretLogger{"/TurretPos"};
 
 };
