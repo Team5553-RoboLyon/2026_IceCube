@@ -10,7 +10,6 @@ struct PivotIOInputs
     double pivotMotorTemperature = 0.0;
 
     bool isLeftEncoderConnected = true;
-    // bool isRightEncoderConnected = true;
     
     double pivotPos = 0.0;
 };

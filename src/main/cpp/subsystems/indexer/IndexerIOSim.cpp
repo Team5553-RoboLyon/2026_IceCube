@@ -6,8 +6,8 @@ IndexerIOSim::IndexerIOSim()
 
 void IndexerIOSim::UpdateInputs(IndexerIOInputs &inputs)
 {
-    m_indexerSim.Update(2.0_ms);
-    m_clodeSim.Update(2.0_ms);
+    m_indexerSim.Update(20_ms);
+    m_clodeSim.Update(20_ms);
 
     inputs.isindexerMotorConnected = true;
     inputs.isClodeMotorConnected = true;

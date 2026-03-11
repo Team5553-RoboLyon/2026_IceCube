@@ -23,6 +23,9 @@
 #include "choreo/trajectory/DifferentialSample.h"
 #include "choreo/trajectory/Trajectory.h"
 
+
+class RobotState;
+
 class DrivetrainSubsystem : public frc2::SubsystemBase 
 {
  public:
@@ -34,12 +37,12 @@ class DrivetrainSubsystem : public frc2::SubsystemBase
     DISABLE  
   };
 
-  DrivetrainSubsystem(DrivetrainIO *pIO);
+  DrivetrainSubsystem(DrivetrainIO* pIO, RobotState* pRobotState);
   DrivetrainSubsystem(DrivetrainIO *pIO, 
                      std::function<double()> fxForwardAxis,
                      std::function<double()> fxRotationAxis,
                      std::function<bool()> fxSlowDriveButton,
-                     std::function<bool()> fxDriveActionButton);
+                     std::function<bool()> fxDriveActionButton, RobotState* pRobotState);
 
   void SetWantedDrive(const DriveMode wantedDrive);
   SystemDrive GetSystemDrive() const;
@@ -52,6 +55,8 @@ class DrivetrainSubsystem : public frc2::SubsystemBase
 
   void SetDesiredAutoTrajectory(choreo::Trajectory<choreo::DifferentialSample> trajectory);
   void ResetOdometryPose(const frc::Pose2d pose);
+
+  frc::Pose2d GetOdometryPose() {return inputs.odometryPosition;};
   
   void Periodic() override;
 
@@ -60,6 +65,8 @@ class DrivetrainSubsystem : public frc2::SubsystemBase
  private:
   DrivetrainIO *m_pTankDriveIO;
   DrivetrainIOInputs inputs;
+
+  RobotState *m_pRobotState;
 
   DriveMode m_wantedDrive = DriveMode::DISABLE;
   SystemDrive m_systemDrive = SystemDrive::DISABLE;

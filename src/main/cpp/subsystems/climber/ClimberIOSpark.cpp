@@ -25,8 +25,9 @@ void ClimberIOSpark::UpdateInputs(ClimberIOInputs& inputs)
 {
     inputs.isMotorConnected = (m_climberMotor.GetBusVoltage() !=0.0) && !m_climberMotor.GetFaults().can;
 
-    inputs.motorAppliedVoltage = m_climberMotor.GetAppliedOutput() * ClimberConstants::Motor::VOLTAGE_COMPENSATION;
     inputs.motorBusVoltage = m_climberMotor.GetBusVoltage();
+    
+    inputs.motorAppliedVoltage = m_climberMotor.GetAppliedOutput() * inputs.motorBusVoltage;
     inputs.motorCurrent = m_climberMotor.GetOutputCurrent();
     inputs.motorTemperature = m_climberMotor.GetMotorTemperature();
     

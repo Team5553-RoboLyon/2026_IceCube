@@ -17,8 +17,12 @@ void RollerIOSim::UpdateInputs(RollerIOInputs& inputs)
     inputs.rollerMotorCurrent = m_rollerSim.GetCurrentDraw().value();
     inputs.rollerMotorTemperature = 23.0;
     
-    frc::SmartDashboard::PutNumber("Roller Applied voltage", inputs.rollerMotorAppliedVoltage);
-    frc::SmartDashboard::PutNumber("Roller motor current", inputs.rollerMotorCurrent);
+    frc::SmartDashboard::PutBoolean("intake/roller/IsMotorConnected", inputs.isRollerMotorConnected);
+    frc::SmartDashboard::PutNumber("intake/roller/Motor/AppliedVoltage",inputs.rollerMotorAppliedVoltage);
+    frc::SmartDashboard::PutNumber("intake/roller/Motor/BusVoltage", inputs.rollerMotorBusVoltage);
+    frc::SmartDashboard::PutNumber("intake/roller/Motor/Current", inputs.rollerMotorCurrent);
+    frc::SmartDashboard::PutNumber("intake/roller/MotorTemperature", inputs.rollerMotorTemperature);
+    frc::SmartDashboard::PutNumber("intake/roller/MotorVelocity", m_rollerSim.GetAngularVelocity().value()); 
 }
 
 void RollerIOSim::SetVoltage(double voltage)

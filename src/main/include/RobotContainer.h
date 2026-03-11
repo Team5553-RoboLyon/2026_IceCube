@@ -65,11 +65,7 @@ class RobotContainer {
 
   ShootParameters *pShootParams{new ShootParameters};
 
-  #if ROBOT_MODEL == SIMULATION
-    DrivetrainSubsystem drivetrain{new DrivetrainIOSim()};
-  #else
-    DrivetrainSubsystem drivetrain{new DrivetrainIOFlex()};
-  #endif
+
 
   frc::AprilTagFieldLayout aprilTagFieldLayout = frc::AprilTagFieldLayout::LoadField(frc::AprilTagField::k2026RebuiltAndyMark);
   VisionFilterParameters visionFilterParameters{
@@ -112,9 +108,14 @@ std::vector<std::shared_ptr<VisionIO>> visionIOs{
   RobotState robotState{
     initialPose,
     kinematics,
-    ahrs,
-    &drivetrain
+    ahrs
   };
+
+    #if ROBOT_MODEL == SIMULATION
+    DrivetrainSubsystem drivetrain{new DrivetrainIOSim(), &robotState};
+  #else
+    DrivetrainSubsystem drivetrain{new DrivetrainIOFlex(), &robotState};
+  #endif
 
   #if ROBOT_MODEL == SIMULATION
 

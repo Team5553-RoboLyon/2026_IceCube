@@ -5,6 +5,7 @@
 #include "frc/DigitalInput.h"
 
 #include "RollerIO.h"
+#include "RollerLogger.h"
 #include "RollerConstants.h"
 
 class RollerIOSpark  final : public RollerIO
@@ -12,6 +13,10 @@ class RollerIOSpark  final : public RollerIO
   private:
     rev::spark::SparkMax m_rollerMotor {RollerConstants::rollerMotor::ID, rev::spark::SparkMax::MotorType::kBrushless};
     rev::spark::SparkBaseConfig m_rollerMotorConfig;
+
+    #ifndef ROLLER_SMARTDASHBOARD_LOG
+    RollerIOLogger m_logger{frc::DataLogManager::GetLog(), "/intake/roller"};
+    #endif
 
   public:
     RollerIOSpark();

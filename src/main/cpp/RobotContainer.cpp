@@ -20,6 +20,7 @@
 
 RobotContainer::RobotContainer()
 {
+    robotState.SetDrivetrain(&drivetrain);
     ConfigureBindings();
     drivetrain.ConfigureManualControlInputsAxis([this] { return NDEADBAND(-forwardJoystick.GetY(), driveConstants::Settings::DEADBAND); },
                                       [this] { return NDEADBAND(-rotationJoystick.GetZ(), driveConstants::Settings::DEADBAND); },
